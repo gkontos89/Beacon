@@ -29,7 +29,7 @@ public class BaseActivity extends AppCompatActivity {
                             break;
                         }
 
-                    case R.id.customer_button:
+                    case R.id.contacts_button:
                         if (!getApplicationContext().getClass().getName().equals(CustomersActivityMain.class.getName())) {
                             Intent accountsIntent = new Intent(getApplicationContext(), CustomersActivityMain.class);
                             startActivity(accountsIntent);

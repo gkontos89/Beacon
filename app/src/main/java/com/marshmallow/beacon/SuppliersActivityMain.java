@@ -2,6 +2,7 @@ package com.marshmallow.beacon;
 
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -29,6 +30,21 @@ public class SuppliersActivityMain extends BaseActivity {
         demandButton = findViewById(R.id.demand_button);
 
         supplierBeaconCount.setText("10");
+
+        supplierListCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        activeBeaconsCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
         demandButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

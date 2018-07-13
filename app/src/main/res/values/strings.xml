@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Beacon</string>
-    <string name="suppliers">Suppliers</string>
-    <string name="customers">Customers</string>
+    <string name="home">Home</string>
+    <string name="contacts">Contacts</string>
     <string name="coming_soon">Coming Soon</string>
     <string name="customer_list_string">Customer List</string>
     <string name="requests_string">Requests</string>
