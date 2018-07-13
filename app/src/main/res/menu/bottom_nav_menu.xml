@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/summary_button"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_gallery"
+        android:title="@string/suppliers"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/accounts_button"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_gallery"
+        android:title="@string/customers"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_nearby"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_gallery"
+        android:title="@string/coming_soon"
+        app:showAsAction="ifRoom" />
+</menu>

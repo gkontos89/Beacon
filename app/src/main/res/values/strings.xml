@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Beacon</string>
+    <string name="suppliers">Suppliers</string>
+    <string name="customers">Customers</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="customer_list_string">Customer List</string>
+    <string name="requests_string">Requests</string>
+    <string name="in_supply_string">In Supply</string>
+    <string name="out_of_supply_string">Out of Supply</string>
+</resources>
