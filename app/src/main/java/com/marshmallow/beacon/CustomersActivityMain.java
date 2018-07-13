@@ -7,7 +7,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-public class CustomersActivityMain extends AppCompatActivity {
+public class CustomersActivityMain extends BaseActivity {
 
     // GUI Handles
     private CardView customerListCard;
@@ -31,11 +31,11 @@ public class CustomersActivityMain extends AppCompatActivity {
         // TODO add functionality for customer and requests
         supplyButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton button, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    button.setBackgroundResource(R.drawable.beacon_on);
+                    buttonView.setBackgroundResource(R.drawable.beacon_on);
                 } else {
-                    button.setBackgroundResource(R.drawable.beacon_off);
+                    buttonView.setBackgroundResource(R.drawable.beacon_off);
                 }
             }
         });

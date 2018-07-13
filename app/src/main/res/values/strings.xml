@@ -7,4 +7,8 @@
     <string name="requests_string">Requests</string>
     <string name="in_supply_string">In Supply</string>
     <string name="out_of_supply_string">Out of Supply</string>
+    <string name="supplier_list_string">Supplier List</string>
+    <string name="supplier_beacons_string">Active Supplier Beacons</string>
+    <string name="demand_on_string">In Demand</string>
+    <string name="demand_off_string">Out of Demand</string>
 </resources>

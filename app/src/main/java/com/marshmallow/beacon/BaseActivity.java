@@ -20,7 +20,23 @@ public class BaseActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // TODO handle bottom navigation
+                switch(item.getItemId()) {
+                    case R.id.supplier_button:
+                        if (!getApplicationContext().getClass().getName().equals(SuppliersActivityMain.class.getName())){
+                            Intent summaryIntent = new Intent(getApplicationContext(), SuppliersActivityMain.class);
+                            startActivity(summaryIntent);
+                            finish();
+                            break;
+                        }
+
+                    case R.id.customer_button:
+                        if (!getApplicationContext().getClass().getName().equals(CustomersActivityMain.class.getName())) {
+                            Intent accountsIntent = new Intent(getApplicationContext(), CustomersActivityMain.class);
+                            startActivity(accountsIntent);
+                            finish();
+                            break;
+                        }
+                }
 
                 return true;
             }
