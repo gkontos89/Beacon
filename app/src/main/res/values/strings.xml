@@ -13,4 +13,8 @@
     <string name="demand_off_string">Out of Demand</string>
     <string name="supply_status_text">supply status</string>
     <string name="demand_status_text">demand status</string>
+    <string name="supply_status_on_text">Contacts are being notified you have supply </string>
+    <string name="supply_status_off_text">Contacts are being notified you have no supply </string>
+    <string name="demand_status_on_text">Contacts are being notified you are in demand </string>
+    <string name="demand_status_off_text">Contacts are being notified you are not in demand </string>
 </resources>

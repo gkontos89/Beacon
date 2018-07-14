@@ -21,21 +21,17 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()) {
-                    case R.id.supplier_button:
-                        if (!getApplicationContext().getClass().getName().equals(SuppliersActivityMain.class.getName())){
-                            Intent summaryIntent = new Intent(getApplicationContext(), SuppliersActivityMain.class);
-                            startActivity(summaryIntent);
-                            finish();
-                            break;
-                        }
+                    case R.id.home_button:
+                        Intent summaryIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                        startActivity(summaryIntent);
+                        finish();
+                        break;
 
                     case R.id.contacts_button:
-                        if (!getApplicationContext().getClass().getName().equals(CustomersActivityMain.class.getName())) {
-                            Intent accountsIntent = new Intent(getApplicationContext(), CustomersActivityMain.class);
-                            startActivity(accountsIntent);
-                            finish();
-                            break;
-                        }
+                        Intent accountsIntent = new Intent(getApplicationContext(), ContactsActivity.class);
+                        startActivity(accountsIntent);
+                        finish();
+                        break;
                 }
 
                 return true;
