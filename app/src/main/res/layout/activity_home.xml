@@ -46,49 +46,22 @@
             android:gravity="start">
 
             <TextView
+                android:id="@+id/interactions_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:layout_margin="8dp"
-                android:text="@string/customer_list_string"
-                android:gravity="start"/>
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/customer_list_card"
-        android:layout_marginBottom="30dp"
-        android:id="@+id/requests_card">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="start">
-
-            <TextView
-                android:id="@+id/requests_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_margin="8dp"
-                android:text="@string/requests_string"
+                android:text="@string/interactions_string"
                 android:gravity="start"/>
 
             <TextView
-                android:id="@+id/request_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_margin="8dp"
-                android:layout_toEndOf="@id/requests_text"
                 android:layout_alignParentEnd="true"
-                android:gravity="end" />
+                android:layout_toEndOf="@id/interactions_text"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:gravity="end"/>
 
         </RelativeLayout>
 
@@ -97,7 +70,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/requests_card"
+        android:layout_below="@id/customer_list_card"
         android:columnCount="2"
         android:orientation="horizontal">
 
