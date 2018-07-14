@@ -33,11 +33,11 @@
 
     <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/customer_list_card"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:layout_below="@id/username_card"
-        android:id="@+id/customer_list_card">
+        android:layout_below="@id/username_card">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -67,87 +67,77 @@
 
     </android.support.v7.widget.CardView>
 
-    <GridLayout
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/supply_status_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/customer_list_card"
-        android:columnCount="2"
-        android:orientation="horizontal">
+        android:layout_margin="8dp"
+        android:layout_below="@id/customer_list_card">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/supply_status_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_gravity="fill"
-            android:layout_columnWeight="1">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+            <ToggleButton
+                android:id="@+id/supply_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/beacon_off"
+                android:textOn="@string/in_supply_string"
+                android:textOff="@string/out_of_supply_string"/>
 
-                <ToggleButton
-                    android:id="@+id/supply_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/beacon_off"
-                    android:textOn="@string/in_supply_string"
-                    android:textOff="@string/out_of_supply_string"/>
-
-                <TextView
-                    android:id="@+id/supply_status_text"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_below="@id/supply_button"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="20sp"
-                    android:text="@string/supply_status_off_text"/>
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/supply_status_text"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_toEndOf="@id/supply_button"
+                android:layout_alignParentEnd="true"
+                android:textSize="20sp"
+                android:text="@string/supply_status_off_text"/>
+        </RelativeLayout>
 
 
-        </android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/demand_status_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_gravity="fill"
-            android:layout_columnWeight="1">
+    <android.support.v7.widget.CardView
+        android:id="@+id/demand_status_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_below="@id/supply_status_card">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-                <ToggleButton
-                    android:id="@+id/demand_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/beacon_off"
-                    android:textOn="@string/demand_on_string"
-                    android:textOff="@string/demand_off_string"/>
+            <ToggleButton
+                android:id="@+id/demand_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/beacon_off"
+                android:textOn="@string/demand_on_string"
+                android:textOff="@string/demand_off_string"/>
 
-                <TextView
-                    android:id="@+id/demand_status_text"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_below="@id/demand_button"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="20sp"
-                    android:text="@string/demand_status_off_text"/>
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/demand_status_text"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_toEndOf="@id/demand_button"
+                android:layout_alignParentEnd="true"
+                android:textSize="20sp"
+                android:text="@string/demand_status_off_text"/>
 
-        </android.support.v7.widget.CardView>
+        </RelativeLayout>
 
-    </GridLayout>
+    </android.support.v7.widget.CardView>
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
