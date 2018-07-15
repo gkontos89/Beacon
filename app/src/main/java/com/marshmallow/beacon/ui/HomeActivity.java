@@ -1,11 +1,11 @@
-package com.marshmallow.beacon;
+package com.marshmallow.beacon.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.marshmallow.beacon.R;
 
 /**
  * Created by George on 7/13/2018.
