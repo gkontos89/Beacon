@@ -1,6 +1,7 @@
 package com.marshmallow.beacon;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,7 +36,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(@NonNull final ContactHolder holder, final int position) {
-        String contact = contacts.get(position);
+        final String contact = contacts.get(position);
         holder.contactNameText.setText(contact);
 
         if (contact.equals("GMoney$$") || contact.equals("Dontrella")) {
@@ -48,6 +49,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             holder.supplyStatus.setImageResource(R.drawable.beacon_on_mini);
             holder.demandStatus.setImageResource(R.drawable.beacon_off_mini);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context.getApplicationContext(), IndividualContactActivity.class);
+                intent.putExtra("contactName", contact);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
