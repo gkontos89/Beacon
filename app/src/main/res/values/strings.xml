@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Beacon</string>
+    <string name="home">Home</string>
+    <string name="contacts">Contacts</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="interactions_string">Interactions</string>
+    <string name="requests_string">Requests</string>
+    <string name="in_supply_string">In Supply</string>
+    <string name="out_of_supply_string">Out of Supply</string>
+    <string name="supplier_list_string">Supplier List</string>
+    <string name="supplier_beacons_string">Active Supplier Beacons</string>
+    <string name="demand_on_string">In Demand</string>
+    <string name="demand_off_string">Out of Demand</string>
+    <string name="supply_status_text">supply status</string>
+    <string name="demand_status_text">demand status</string>
+    <string name="supply_status_on_text">Contacts are being notified you have supply </string>
+    <string name="supply_status_off_text">Contacts are being notified you have no supply </string>
+    <string name="demand_status_on_text">Contacts are being notified you are in demand </string>
+    <string name="demand_status_off_text">Contacts are being notified you are not in demand </string>
+</resources>
