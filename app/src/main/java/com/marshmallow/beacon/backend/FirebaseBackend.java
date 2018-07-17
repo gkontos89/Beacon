@@ -10,8 +10,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
+import com.marshmallow.beacon.models.User;
 
 /**
  * This class implements Firebase backend communications
@@ -20,7 +24,6 @@ import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
  */
 public class FirebaseBackend implements BeaconBackendInterface{
     private FirebaseAuth firebaseAuth;
-
 
     public FirebaseBackend() {
         firebaseAuth = FirebaseAuth.getInstance();
@@ -32,12 +35,14 @@ public class FirebaseBackend implements BeaconBackendInterface{
     }
 
     @Override
-    public void createUserWithEmailAndPassword(final Context context, final Activity activity, String email, String password) {
+    public void createUserWithEmailAndPassword(final Context context, final Activity activity, final String email, String password) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            // TODO change to username
+                            storeNewUser(email);
                             CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
                             Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
                             context.sendBroadcast(intent);
@@ -74,6 +79,13 @@ public class FirebaseBackend implements BeaconBackendInterface{
     @Override
     public void signOutUser() {
         firebaseAuth.signOut();
+    }
+
+    private void storeNewUser(String username) {
+        User user = new User(username);
+        UserManager.getInstance().setUser(user);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        databaseReference.child(firebaseAuth.getUid()).setValue(user);
     }
 
 }

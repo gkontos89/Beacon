@@ -150,6 +150,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void accountCreationSuccess() {
+
+
         hideProgressBar();
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
