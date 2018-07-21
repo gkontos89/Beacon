@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
+import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 
 
@@ -49,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         intentFilter = new IntentFilter();
         intentFilter.addAction(CreateUserStatusBroadcast.action);
         intentFilter.addAction(SignInStatusBroadcast.action);
+        intentFilter.addAction(LoadUserStatusBroadcast.action);
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -74,6 +76,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             signInFailed(intent.getStringExtra(SignInStatusBroadcast.statusMessageKey));
                             break;
                     }
+                } else if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
+                    switch (intent.getStringExtra(LoadUserStatusBroadcast.statusKey)) {
+                        case LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL:
+                            accountLoadingSucceeded();
+                            break;
+                        case LoadUserStatusBroadcast.USER_LOADED_FAILED:
+                            accountLoadingFailed(intent.getStringExtra(LoadUserStatusBroadcast.statusMessageKey));
+                            break;
+                    }
                 }
             }
         };
@@ -96,10 +107,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
+        // TODO turn on loading wheel so the log in screen isn't really showing?
         // Check if the user is already signed in and if so move to home screen
         if (BeaconBackend.getInstance().isUserSignedIn()) {
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
+            BeaconBackend.getInstance().loadUserData(getApplicationContext(), this);
         }
     }
 
@@ -150,8 +161,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void accountCreationSuccess() {
-
-
         hideProgressBar();
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
@@ -171,6 +180,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void signInFailed(String failureString) {
         hideProgressBar();
         Toast.makeText(this, "Sign In Failed: " + failureString, Toast.LENGTH_SHORT).show();
+    }
+
+    public void accountLoadingSucceeded() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
+    public void accountLoadingFailed(String failureString) {
+        Toast.makeText(this, "Loading account on application launch failed: " + failureString, Toast.LENGTH_SHORT).show();
     }
 
     public void showProgressBar(String progressBarText) {

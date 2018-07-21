@@ -3,6 +3,8 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
+import com.marshmallow.beacon.models.User;
+
 /**
  * This interface establishes the contract for all backend communications for Beacon so that
  * different backends can be swapped out as needed
@@ -31,4 +33,10 @@ public interface BeaconBackendInterface {
      * Signs out the current user from the back end services
      */
     void signOutUser();
+
+    void loadUserData(Context context, Activity activity);
+
+    void setUserSupplyStatus(Boolean status);
+
+    void setUserDemandStatus(Boolean status);
 }

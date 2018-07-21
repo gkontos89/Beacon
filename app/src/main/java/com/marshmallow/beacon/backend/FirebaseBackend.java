@@ -10,10 +10,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
+import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 import com.marshmallow.beacon.models.User;
 
@@ -81,6 +85,27 @@ public class FirebaseBackend implements BeaconBackendInterface{
         firebaseAuth.signOut();
     }
 
+    @Override
+    public void loadUserData(final Context context, final Activity activity) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
+                LoadUserStatusBroadcast loadUserStatusBroadcast = new LoadUserStatusBroadcast(null, null);
+                Intent intent = loadUserStatusBroadcast.getSuccessfulBroadcast();
+                context.sendBroadcast(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                LoadUserStatusBroadcast loadUserStatusBroadcast = new LoadUserStatusBroadcast(databaseError.getMessage(), null);
+                Intent intent = loadUserStatusBroadcast.getFailureBroadcast();
+                context.sendBroadcast(intent);
+            }
+        });
+    }
+
     private void storeNewUser(String username) {
         User user = new User(username);
         UserManager.getInstance().setUser(user);
@@ -88,4 +113,19 @@ public class FirebaseBackend implements BeaconBackendInterface{
         databaseReference.child(firebaseAuth.getUid()).setValue(user);
     }
 
+    private void attachUserListeners() {
+
+    }
+
+    @Override
+    public void setUserSupplyStatus(Boolean status) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        databaseReference.child(firebaseAuth.getUid()).child("supplyStatus").setValue(status);
+    }
+
+    @Override
+    public void setUserDemandStatus(Boolean status) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        databaseReference.child(firebaseAuth.getUid()).child("demandStatus").setValue(status);
+    }
 }

@@ -29,10 +29,20 @@ public class User {
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+
     public Boolean getDemandStatus() { return demandStatus; }
-    public void setDemandStatus(Boolean demandStatus) { this.demandStatus = demandStatus; }
+
+    public void setDemandStatus(Boolean demandStatus) {
+        this.demandStatus = demandStatus;
+
+    }
+
     public Boolean getSupplyStatus() { return supplyStatus; }
-    public void setSupplyStatus(Boolean supplyStatus) { this.supplyStatus = supplyStatus; }
+
+    public void setSupplyStatus(Boolean supplyStatus) {
+        this.supplyStatus = supplyStatus;
+    }
+
     public Rolodex getRolodex() { return rolodex; }
     public void setRolodex(Rolodex rolodex) { this.rolodex = rolodex; }
     public List<Request> getRequestsIn() { return requestsIn; }
