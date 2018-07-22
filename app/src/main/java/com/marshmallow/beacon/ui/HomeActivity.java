@@ -27,9 +27,9 @@ public class HomeActivity extends BaseActivity {
         TextView demandStatusText = findViewById(R.id.demand_status_text);
 
         // UI initialization
+        usernameText.setText(UserManager.getInstance().getUser().getUsername());
         supplyButton.initialize(UserManager.getInstance().getUser().getSupplyStatus(), supplyStatusText);
         demandButton.initialize(UserManager.getInstance().getUser().getDemandStatus(), demandStatusText);
-        usernameText.setText(UserManager.getInstance().getUser().getUsername());
     }
 
     @Override

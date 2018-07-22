@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
+import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.User;
@@ -41,8 +42,30 @@ public class FirebaseBackend implements BeaconBackendInterface{
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
-    private void initializeUserListeners() {
+    // TODO bring back loading status
+
+    private void initializeUserListeners(final Context context) {
         userReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
+
+        // Add a listener for the first load
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
+                LoadUserStatusBroadcast loadUserStatusBroadcast = new LoadUserStatusBroadcast(null, null);
+                Intent intent = loadUserStatusBroadcast.getSuccessfulBroadcast();
+                context.sendBroadcast(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                LoadUserStatusBroadcast loadUserStatusBroadcast = new LoadUserStatusBroadcast(databaseError.getMessage(), null);
+                Intent intent = loadUserStatusBroadcast.getFailureBroadcast();
+                context.sendBroadcast(intent);
+            }
+        });
+
+        // Add a listener for all subsequent updates
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -111,8 +134,9 @@ public class FirebaseBackend implements BeaconBackendInterface{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // TODO change to username
                             storeNewUser(email);
+                            initializeUserListeners(context);
+                            initializeStatsListeners();
                             CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
                             Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
                             context.sendBroadcast(intent);
@@ -134,7 +158,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            initializeUserListeners();
+                            initializeUserListeners(context);
                             initializeStatsListeners();
                             SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(null, null);
                             Intent intent = signInStatusBroadcast.getSuccessfulBroadcast();
@@ -160,8 +184,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
         User user = new User(username);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.child(firebaseAuth.getUid()).setValue(user);
-        initializeUserListeners();
-        initializeStatsListeners();
     }
 
     @Override

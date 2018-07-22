@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
+import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 
 
@@ -71,6 +72,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         case SignInStatusBroadcast.SIGN_IN_FAILED:
                         default:
                             signInFailed(intent.getStringExtra(SignInStatusBroadcast.statusMessageKey));
+                            break;
+                    }
+                } else if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
+                    switch (intent.getStringExtra(LoadUserStatusBroadcast.statusKey)) {
+                        case LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL:
+                            accountLoadingSucceeded();
+                            break;
+                        case LoadUserStatusBroadcast.USER_LOADED_FAILED:
+                            accountLoadingFailed(intent.getStringExtra(LoadUserStatusBroadcast.statusMessageKey));
                             break;
                     }
                 }
@@ -175,6 +185,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void signInFailed(String failureString) {
         hideProgressBar();
         Toast.makeText(this, "Sign In Failed: " + failureString, Toast.LENGTH_SHORT).show();
+    }
+
+    public void accountLoadingSucceeded() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
+    public void accountLoadingFailed(String failureString) {
+        Toast.makeText(this, "Loading account on application launch failed: " + failureString, Toast.LENGTH_SHORT).show();
     }
 
     public void showProgressBar(String progressBarText) {
