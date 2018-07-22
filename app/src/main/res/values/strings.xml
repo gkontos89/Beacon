@@ -18,7 +18,7 @@
     <string name="demand_status_on_text">Contacts are being notified you are in demand </string>
     <string name="demand_status_off_text">Contacts are being notified you are not in demand </string>
     <string name="welcome_string">Welcome to Beacon!</string>
-    <string name="email_hint">Email</string>
+    <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
     <string name="login_button_text">Log In</string>
     <string name="create_account_button_text">Create Account</string>

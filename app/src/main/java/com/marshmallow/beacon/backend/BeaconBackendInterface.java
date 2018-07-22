@@ -3,6 +3,7 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
+import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.User;
 
 /**
@@ -34,9 +35,11 @@ public interface BeaconBackendInterface {
      */
     void signOutUser();
 
-    void loadUserData(Context context, Activity activity);
-
     void setUserSupplyStatus(Boolean status);
 
     void setUserDemandStatus(Boolean status);
+
+    void storeCommunityEvent(CommunityEvent communityEvent);
+
+    void storeUserEvent();
 }

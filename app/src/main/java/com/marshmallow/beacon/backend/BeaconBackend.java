@@ -3,6 +3,7 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
+import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.User;
 
 /**
@@ -49,11 +50,6 @@ public class BeaconBackend implements BeaconBackendInterface {
     }
 
     @Override
-    public void loadUserData(Context context, Activity activity) {
-        backendHandle.loadUserData(context, activity);
-    }
-
-    @Override
     public void setUserDemandStatus(Boolean status) {
         backendHandle.setUserDemandStatus(status);
     }
@@ -61,5 +57,15 @@ public class BeaconBackend implements BeaconBackendInterface {
     @Override
     public void setUserSupplyStatus(Boolean status) {
         backendHandle.setUserSupplyStatus(status);
+    }
+
+    @Override
+    public void storeCommunityEvent(CommunityEvent communityEvent) {
+        backendHandle.storeCommunityEvent(communityEvent);
+    }
+
+    @Override
+    public void storeUserEvent() {
+        backendHandle.storeUserEvent();
     }
 }

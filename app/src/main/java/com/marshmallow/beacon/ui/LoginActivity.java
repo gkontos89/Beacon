@@ -9,21 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
-import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     // GUI handles
-    private TextView emailTextEntry;
+    private TextView usernameTextEntry;
     private TextView passwordTextEntry;
     private LinearLayout progressBarLinearLayout;
     private TextView progressBarText;
@@ -38,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         // Set GUI handles
-        emailTextEntry = findViewById(R.id.email_text);
+        usernameTextEntry = findViewById(R.id.username_text);
         passwordTextEntry = findViewById(R.id.password_text);
         progressBarLinearLayout = findViewById(R.id.progress_bar_layout);
         progressBarText = findViewById(R.id.progress_bar_text);
@@ -50,7 +48,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         intentFilter = new IntentFilter();
         intentFilter.addAction(CreateUserStatusBroadcast.action);
         intentFilter.addAction(SignInStatusBroadcast.action);
-        intentFilter.addAction(LoadUserStatusBroadcast.action);
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -74,15 +71,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         case SignInStatusBroadcast.SIGN_IN_FAILED:
                         default:
                             signInFailed(intent.getStringExtra(SignInStatusBroadcast.statusMessageKey));
-                            break;
-                    }
-                } else if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
-                    switch (intent.getStringExtra(LoadUserStatusBroadcast.statusKey)) {
-                        case LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL:
-                            accountLoadingSucceeded();
-                            break;
-                        case LoadUserStatusBroadcast.USER_LOADED_FAILED:
-                            accountLoadingFailed(intent.getStringExtra(LoadUserStatusBroadcast.statusMessageKey));
                             break;
                     }
                 }
@@ -110,7 +98,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // TODO turn on loading wheel so the log in screen isn't really showing?
         // Check if the user is already signed in and if so move to home screen
         if (BeaconBackend.getInstance().isUserSignedIn()) {
-            BeaconBackend.getInstance().loadUserData(getApplicationContext(), this);
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -118,33 +107,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         // Handle Account creation
         if (view.getId() == R.id.create_account_button) {
-            if (emailIsValid() && passwordIsValid()) {
+            if (usernameIsValid() && passwordIsValid()) {
                 showProgressBar("Creating Account...");
+                // Append gmail for now
+                String username = usernameTextEntry.getText().toString();
+                username += "@gmail.com";
                 BeaconBackend.getInstance().createUserWithEmailAndPassword(getApplicationContext(),
                         this,
-                        emailTextEntry.getText().toString(),
+                        username,
                         passwordTextEntry.getText().toString());
             }
         }
         // Handle Sign in
         else if (view.getId() == R.id.sign_in_button) {
-            if (emailIsValid() && passwordIsValid()) {
+            if (usernameIsValid() && passwordIsValid()) {
                 showProgressBar("Signing in...");
+                // Append gmail for now
+                String username = usernameTextEntry.getText().toString();
+                username += "@gmail.com";
                 BeaconBackend.getInstance().signInWithEmailAndPassword(getApplicationContext(),
                         this,
-                        emailTextEntry.getText().toString(),
+                        username,
                         passwordTextEntry.getText().toString());
             }
         }
     }
 
-    public Boolean emailIsValid() {
-        String email = emailTextEntry.getText().toString();
-        if (TextUtils.isEmpty(email)) {
-            emailTextEntry.setError("Email Address Required");
+    public Boolean usernameIsValid() {
+        String username = usernameTextEntry.getText().toString();
+        if (TextUtils.isEmpty(username)) {
+            usernameTextEntry.setError("Username Required");
             return false;
         } else {
-            emailTextEntry.setError(null);
+            usernameTextEntry.setError(null);
             return true;
         }
     }
@@ -180,15 +175,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void signInFailed(String failureString) {
         hideProgressBar();
         Toast.makeText(this, "Sign In Failed: " + failureString, Toast.LENGTH_SHORT).show();
-    }
-
-    public void accountLoadingSucceeded() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-    }
-
-    public void accountLoadingFailed(String failureString) {
-        Toast.makeText(this, "Loading account on application launch failed: " + failureString, Toast.LENGTH_SHORT).show();
     }
 
     public void showProgressBar(String progressBarText) {

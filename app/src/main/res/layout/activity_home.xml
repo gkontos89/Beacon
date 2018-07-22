@@ -80,14 +80,14 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ToggleButton
+            <com.marshmallow.beacon.ui.SupplyButton
                 android:id="@+id/supply_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@drawable/beacon_off"
                 android:textOn="@string/in_supply_string"
-                android:textOff="@string/out_of_supply_string"/>
+                android:textOff="@string/out_of_supply_string" />
 
             <TextView
                 android:id="@+id/supply_status_text"
@@ -115,7 +115,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ToggleButton
+            <com.marshmallow.beacon.ui.DemandButton
                 android:id="@+id/demand_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
