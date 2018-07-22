@@ -14,78 +14,22 @@ import com.marshmallow.beacon.backend.BeaconBackend;
  */
 public class HomeActivity extends BaseActivity {
 
-    // GUI handles
-    private TextView usernameText;
-    private BeaconButton supplyButton;
-    private TextView supplyStatusText;
-    private ToggleButton demandButton;
-    private TextView demandStatusText;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_home);
         super.onCreate(savedInstanceState);
 
         // GUI handle instantiation
-        usernameText = findViewById(R.id.username_title);
-        supplyButton = findViewById(R.id.supply_button);
-        supplyStatusText = findViewById(R.id.supply_status_text);
-        demandButton = findViewById(R.id.demand_button);
-        demandStatusText = findViewById(R.id.demand_status_text);
-        supplyButton = new SupplyButton()
+        TextView usernameText = findViewById(R.id.username_title);
+        BeaconButton supplyButton = findViewById(R.id.supply_button);
+        TextView supplyStatusText = findViewById(R.id.supply_status_text);
+        BeaconButton demandButton = findViewById(R.id.demand_button);
+        TextView demandStatusText = findViewById(R.id.demand_status_text);
 
+        // UI initialization
+        supplyButton.initialize(UserManager.getInstance().getUser().getSupplyStatus(), supplyStatusText);
+        demandButton.initialize(UserManager.getInstance().getUser().getDemandStatus(), demandStatusText);
         usernameText.setText(UserManager.getInstance().getUser().getUsername());
-
-//        Boolean inDemand = UserManager.getInstance().getUser().getDemandStatus();
-//        demandButton.setChecked(inDemand);
-//        // TODO wrap these status buttons in a class
-//        if (inDemand) {
-//            demandButton.setBackgroundResource(R.drawable.beacon_on);
-//            demandStatusText.setText(R.string.demand_status_on_text);
-//        } else {
-//            demandButton.setBackgroundResource(R.drawable.beacon_off);
-//            demandStatusText.setText(R.string.demand_status_off_text);
-//        }
-//
-//        Boolean inSupply = UserManager.getInstance().getUser().getSupplyStatus();
-//        supplyButton.setChecked(inSupply);
-//        if (inSupply) {
-//            supplyButton.setBackgroundResource(R.drawable.beacon_on);
-//            supplyStatusText.setText(R.string.supply_status_on_text);
-//        } else {
-//            supplyButton.setBackgroundResource(R.drawable.beacon_off);
-//            supplyStatusText.setText(R.string.supply_status_off_text);
-//        }
-//
-//        demandButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    buttonView.setBackgroundResource(R.drawable.beacon_on);
-//                    demandStatusText.setText(R.string.demand_status_on_text);
-//                    BeaconBackend.getInstance().setUserDemandStatus(true);
-//                } else {
-//                    buttonView.setBackgroundResource(R.drawable.beacon_off);
-//                    demandStatusText.setText(R.string.demand_status_off_text);
-//                    BeaconBackend.getInstance().setUserDemandStatus(false);
-//                }
-//            }
-//        });
-//
-//        supplyButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    buttonView.setBackgroundResource(R.drawable.beacon_on);
-//                    supplyStatusText.setText(R.string.supply_status_on_text);
-//                    BeaconBackend.getInstance().setUserSupplyStatus(true);
-//                } else {
-//                    buttonView.setBackgroundResource(R.drawable.beacon_off);
-//                    supplyStatusText.setText(R.string.supply_status_off_text);
-//                    BeaconBackend.getInstance().setUserSupplyStatus(false);
-//                }
-//            }
-//        });
     }
 
     @Override

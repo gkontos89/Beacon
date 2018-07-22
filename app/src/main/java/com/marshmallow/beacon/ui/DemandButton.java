@@ -1,13 +1,11 @@
 package com.marshmallow.beacon.ui;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
-import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.backend.BeaconBackend;
 
 /**
