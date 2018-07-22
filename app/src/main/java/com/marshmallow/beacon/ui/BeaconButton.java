@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -21,6 +22,9 @@ public class BeaconButton extends ToggleButton {
 
     public BeaconButton(Context context) {
         super(context);
+    }
+    public BeaconButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     public void initialize(Boolean initialState, TextView statusTextView) {

@@ -3,6 +3,7 @@ package com.marshmallow.beacon.ui;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
+import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -20,6 +21,9 @@ public class SupplyButton extends BeaconButton {
 
     public SupplyButton(Context context) {
         super(context);
+    }
+    public SupplyButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     @Override
