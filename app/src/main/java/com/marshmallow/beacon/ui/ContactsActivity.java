@@ -1,8 +1,10 @@
-package com.marshmallow.beacon;
+package com.marshmallow.beacon.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
+import com.marshmallow.beacon.R;
 
 import java.util.List;
 import java.util.Vector;

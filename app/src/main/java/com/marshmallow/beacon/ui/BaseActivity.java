@@ -1,4 +1,4 @@
-package com.marshmallow.beacon;
+package com.marshmallow.beacon.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import com.marshmallow.beacon.R;
 
 /**
  * Created by George on 7/13/2018.

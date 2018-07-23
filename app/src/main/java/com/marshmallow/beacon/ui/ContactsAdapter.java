@@ -1,7 +1,6 @@
-package com.marshmallow.beacon;
+package com.marshmallow.beacon.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.marshmallow.beacon.R;
 
 import java.util.List;
 
@@ -50,14 +49,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             holder.demandStatus.setImageResource(R.drawable.beacon_off_mini);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context.getApplicationContext(), IndividualContactActivity.class);
-                intent.putExtra("contactName", contact);
-                context.startActivity(intent);
-            }
-        });
+        // TODO handle selecting a single contact
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(context.getApplicationContext(), IndividualContactActivity.class);
+//                intent.putExtra("contactName", contact);
+//                context.startActivity(intent);
+//            }
+//        });
     }
 
     @Override
