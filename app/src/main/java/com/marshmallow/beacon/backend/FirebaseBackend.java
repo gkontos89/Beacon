@@ -21,6 +21,7 @@ import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
+import com.marshmallow.beacon.broadcasts.StatusBroadcast;
 import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.User;
 import com.marshmallow.beacon.models.UserEvent;
@@ -46,9 +47,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     private void initializeUserListeners(final Context context) {
         userReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
-
-        // Add a listener for the first load
-        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
@@ -64,12 +63,16 @@ public class FirebaseBackend implements BeaconBackendInterface{
                 context.sendBroadcast(intent);
             }
         });
+    }
 
-        // Add a listener for all subsequent updates
-        userReference.addValueEventListener(new ValueEventListener() {
+    private void initializeStatsListeners() {
+        statsSupplyTotalRef = FirebaseDatabase.getInstance().getReference("stats/supplyTotal");
+        statsDemandTotalRef = FirebaseDatabase.getInstance().getReference("stats/demandTotal");
+
+        statsSupplyTotalRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
+                supplyTotal = dataSnapshot.getValue(Integer.class);
             }
 
             @Override
@@ -77,48 +80,17 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
             }
         });
-    }
 
-    private void initializeStatsListeners() {
-        statsSupplyTotalRef = FirebaseDatabase.getInstance().getReference("stats/supplyTotal");
-        statsDemandTotalRef = FirebaseDatabase.getInstance().getReference("stats/demandTotal");
-
-        statsSupplyTotalRef.addChildEventListener(new ChildEventListener() {
+        statsDemandTotalRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                supplyTotal = dataSnapshot.getValue(Integer.class);
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
-
-        statsDemandTotalRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 demandTotal = dataSnapshot.getValue(Integer.class);
             }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            }
         });
     }
 
@@ -137,9 +109,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
                             storeNewUser(email);
                             initializeUserListeners(context);
                             initializeStatsListeners();
-                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
-                            Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
-                            context.sendBroadcast(intent);
                         } else {
                             CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(task.getException().getMessage(), null);
                             Intent intent = createUserStatusBroadcast.getFailureBroadcast();
@@ -160,9 +129,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
                         if (task.isSuccessful()) {
                             initializeUserListeners(context);
                             initializeStatsListeners();
-                            SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(null, null);
-                            Intent intent = signInStatusBroadcast.getSuccessfulBroadcast();
-                            context.sendBroadcast(intent);
                         } else {
                             SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(task.getException().getMessage(), null);
                             Intent intent = signInStatusBroadcast.getFailureBroadcast();
@@ -191,7 +157,12 @@ public class FirebaseBackend implements BeaconBackendInterface{
         // TODO handle timestamp
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.child(firebaseAuth.getUid()).child("supplyStatus").setValue(status);
-        storeUserEvent();
+        UserEvent userEvent = new UserEvent();
+        userEvent.setTimestamp(33);
+        userEvent.setUserUniqueId(firebaseAuth.getUid());
+        userEvent.setSupplyStatus(status);
+        userEvent.setDemandStatus(UserManager.getInstance().getUser().getDemandStatus());
+        storeUserEvent(userEvent);
 
         CommunityEvent communityEvent = new CommunityEvent();
         // Lock down the demandTotal and supplyTotal seen at this event time
@@ -213,8 +184,16 @@ public class FirebaseBackend implements BeaconBackendInterface{
     public void setUserDemandStatus(Boolean status) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.child(firebaseAuth.getUid()).child("demandStatus").setValue(status);
-        storeUserEvent();
 
+        // Handle user events for changes in Demand
+        UserEvent userEvent = new UserEvent();
+        userEvent.setTimestamp(33);
+        userEvent.setUserUniqueId(firebaseAuth.getUid());
+        userEvent.setDemandStatus(status);
+        userEvent.setSupplyStatus(UserManager.getInstance().getUser().getSupplyStatus());
+        storeUserEvent(userEvent);
+
+        // Handle Community Events
         CommunityEvent communityEvent = new CommunityEvent();
         // Lock down the demandTotal and supplyTotal seen at this event time
         Integer demandTotal = this.demandTotal;
@@ -234,20 +213,15 @@ public class FirebaseBackend implements BeaconBackendInterface{
     @Override
     public void storeCommunityEvent(CommunityEvent communityEvent) {
         // Store the unique event
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("stats/communityEvents");
-        databaseReference.push().setValue(communityEvent);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("stats");
+        databaseReference.child("demandTotal").setValue(communityEvent.getDemandTotal());
+        databaseReference.child("supplyTotal").setValue(communityEvent.getSupplyTotal());
+        databaseReference.child("communityEvents").push().setValue(communityEvent);
     }
 
     @Override
-    public void storeUserEvent() {
+    public void storeUserEvent(UserEvent userEvent) {
         // TODO handle timestamp
-        // Create the event
-        UserEvent userEvent = new UserEvent();
-        userEvent.setTimestamp(33);
-        userEvent.setUserUniqueId(firebaseAuth.getUid());
-        userEvent.setDemandStatus(UserManager.getInstance().getUser().getDemandStatus());
-        userEvent.setSupplyStatus(UserManager.getInstance().getUser().getSupplyStatus());
-
         // Store the unique event
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("stats/userEvents");
         databaseReference.push().setValue(userEvent);

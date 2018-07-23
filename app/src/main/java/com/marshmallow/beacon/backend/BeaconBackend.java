@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.marshmallow.beacon.models.CommunityEvent;
+import com.marshmallow.beacon.models.UserEvent;
 
 /**
  * BeehiveBackend is the front facing API's that are used throughout the application.
@@ -64,7 +65,7 @@ public class BeaconBackend implements BeaconBackendInterface {
     }
 
     @Override
-    public void storeUserEvent() {
-        backendHandle.storeUserEvent();
+    public void storeUserEvent(UserEvent userEvent) {
+        backendHandle.storeUserEvent(userEvent);
     }
 }

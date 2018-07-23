@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.User;
+import com.marshmallow.beacon.models.UserEvent;
 
 /**
  * This interface establishes the contract for all backend communications for Beacon so that
@@ -41,5 +42,5 @@ public interface BeaconBackendInterface {
 
     void storeCommunityEvent(CommunityEvent communityEvent);
 
-    void storeUserEvent();
+    void storeUserEvent(UserEvent userEvent);
 }

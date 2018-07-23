@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         intentFilter = new IntentFilter();
         intentFilter.addAction(CreateUserStatusBroadcast.action);
         intentFilter.addAction(SignInStatusBroadcast.action);
+        intentFilter.addAction(LoadUserStatusBroadcast.action);
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -106,11 +107,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
         // TODO turn on loading wheel so the log in screen isn't really showing?
+        // TODO turn this back on when debugging login capabilities is complete
         // Check if the user is already signed in and if so move to home screen
-        if (BeaconBackend.getInstance().isUserSignedIn()) {
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(intent);
-        }
+//        if (BeaconBackend.getInstance().isUserSignedIn()) {
+//            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//            startActivity(intent);
+//        }
     }
 
     @Override
@@ -166,9 +168,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void accountCreationSuccess() {
-        hideProgressBar();
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
+        // TODO handle intermediary screen till user data has loaded
     }
 
     public void accountCreationFailed(String failureString) {
@@ -177,9 +177,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void signInSucceeded() {
-        hideProgressBar();
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
+        // TODO handle intermediary screen till user data has loaded
     }
 
     public void signInFailed(String failureString) {
