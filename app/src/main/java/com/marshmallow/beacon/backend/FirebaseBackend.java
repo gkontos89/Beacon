@@ -36,6 +36,9 @@ public class FirebaseBackend implements BeaconBackendInterface{
     private DatabaseReference userReference = null;
     private DatabaseReference statsSupplyTotalRef = null;
     private DatabaseReference statsDemandTotalRef = null;
+    private ValueEventListener userValueEventListener = null;
+    private ValueEventListener statsSupplyTotalRefEventListener = null;
+    private ValueEventListener statsDemandTotalRefEventListener = null;
     private Integer supplyTotal;
     private Integer demandTotal;
 
@@ -46,8 +49,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
     // TODO bring back loading status
 
     private void initializeUserListeners(final Context context) {
-        userReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
-        userReference.addValueEventListener(new ValueEventListener() {
+        userValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
@@ -62,14 +64,14 @@ public class FirebaseBackend implements BeaconBackendInterface{
                 Intent intent = loadUserStatusBroadcast.getFailureBroadcast();
                 context.sendBroadcast(intent);
             }
-        });
+        };
+
+        userReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
+        userReference.addValueEventListener(userValueEventListener);
     }
 
     private void initializeStatsListeners() {
-        statsSupplyTotalRef = FirebaseDatabase.getInstance().getReference("stats/supplyTotal");
-        statsDemandTotalRef = FirebaseDatabase.getInstance().getReference("stats/demandTotal");
-
-        statsSupplyTotalRef.addValueEventListener(new ValueEventListener() {
+        statsSupplyTotalRefEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 supplyTotal = dataSnapshot.getValue(Integer.class);
@@ -79,9 +81,9 @@ public class FirebaseBackend implements BeaconBackendInterface{
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
 
-        statsDemandTotalRef.addValueEventListener(new ValueEventListener() {
+        statsDemandTotalRefEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 demandTotal = dataSnapshot.getValue(Integer.class);
@@ -91,7 +93,25 @@ public class FirebaseBackend implements BeaconBackendInterface{
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        statsSupplyTotalRef = FirebaseDatabase.getInstance().getReference("stats/supplyTotal");
+        statsDemandTotalRef = FirebaseDatabase.getInstance().getReference("stats/demandTotal");
+        statsSupplyTotalRef.addValueEventListener(statsSupplyTotalRefEventListener);
+        statsDemandTotalRef.addValueEventListener(statsDemandTotalRefEventListener);
+    }
+
+    private void cleanupDatabaseReferences() {
+        userReference.removeEventListener(userValueEventListener);
+        statsSupplyTotalRef.removeEventListener(statsSupplyTotalRefEventListener);
+        statsDemandTotalRef.removeEventListener(statsDemandTotalRefEventListener);
+
+        userValueEventListener = null;
+        statsSupplyTotalRefEventListener = null;
+        statsDemandTotalRefEventListener = null;
+        userReference = null;
+        statsSupplyTotalRef = null;
+        statsDemandTotalRef = null;
     }
 
     @Override
@@ -140,10 +160,8 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void signOutUser() {
+        cleanupDatabaseReferences();
         firebaseAuth.signOut();
-        userReference = null;
-        statsDemandTotalRef = null;
-        statsSupplyTotalRef = null;
     }
 
     private void storeNewUser(String username) {

@@ -186,11 +186,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void accountLoadingSucceeded() {
+        hideProgressBar();
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 
     public void accountLoadingFailed(String failureString) {
+        hideProgressBar();
         Toast.makeText(this, "Loading account on application launch failed: " + failureString, Toast.LENGTH_SHORT).show();
     }
 
