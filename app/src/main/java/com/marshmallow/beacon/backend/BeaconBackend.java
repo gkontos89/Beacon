@@ -68,4 +68,8 @@ public class BeaconBackend implements BeaconBackendInterface {
     public void storeUserEvent(UserEvent userEvent) {
         backendHandle.storeUserEvent(userEvent);
     }
+
+    public void initializeContactListeners(Context context) { backendHandle.initializeContactListeners(context); }
+
+    public void removeContactListeners() { backendHandle.removeContactListeners(); }
 }

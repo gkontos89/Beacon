@@ -4,18 +4,18 @@ package com.marshmallow.beacon.models;
  * Created by George on 7/22/2018.
  */
 public class CommunityEvent {
-    private int timestamp;
+    private Long timestamp;
     private int supplyTotal;
     private int demandTotal;
 
     public CommunityEvent() {
     }
 
-    public int getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(int timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 

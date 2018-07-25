@@ -4,6 +4,7 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -18,13 +19,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.UserManager;
+import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.StatusBroadcast;
 import com.marshmallow.beacon.models.CommunityEvent;
+import com.marshmallow.beacon.models.Contact;
 import com.marshmallow.beacon.models.User;
 import com.marshmallow.beacon.models.UserEvent;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * This class implements Firebase backend communications
@@ -36,8 +43,12 @@ public class FirebaseBackend implements BeaconBackendInterface{
     private DatabaseReference userReference = null;
     private DatabaseReference statsSupplyTotalRef = null;
     private DatabaseReference statsDemandTotalRef = null;
+    private ValueEventListener userValueEventListener = null;
+    private ValueEventListener statsSupplyTotalRefEventListener = null;
+    private ValueEventListener statsDemandTotalRefEventListener = null;
     private Integer supplyTotal;
     private Integer demandTotal;
+    private HashMap<DatabaseReference, ValueEventListener> contactReferences = null;
 
     public FirebaseBackend() {
         firebaseAuth = FirebaseAuth.getInstance();
@@ -46,8 +57,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
     // TODO bring back loading status
 
     private void initializeUserListeners(final Context context) {
-        userReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
-        userReference.addValueEventListener(new ValueEventListener() {
+        userValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
@@ -62,14 +72,14 @@ public class FirebaseBackend implements BeaconBackendInterface{
                 Intent intent = loadUserStatusBroadcast.getFailureBroadcast();
                 context.sendBroadcast(intent);
             }
-        });
+        };
+
+        userReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
+        userReference.addValueEventListener(userValueEventListener);
     }
 
     private void initializeStatsListeners() {
-        statsSupplyTotalRef = FirebaseDatabase.getInstance().getReference("stats/supplyTotal");
-        statsDemandTotalRef = FirebaseDatabase.getInstance().getReference("stats/demandTotal");
-
-        statsSupplyTotalRef.addValueEventListener(new ValueEventListener() {
+        statsSupplyTotalRefEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 supplyTotal = dataSnapshot.getValue(Integer.class);
@@ -79,9 +89,9 @@ public class FirebaseBackend implements BeaconBackendInterface{
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
 
-        statsDemandTotalRef.addValueEventListener(new ValueEventListener() {
+        statsDemandTotalRefEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 demandTotal = dataSnapshot.getValue(Integer.class);
@@ -91,7 +101,27 @@ public class FirebaseBackend implements BeaconBackendInterface{
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        statsSupplyTotalRef = FirebaseDatabase.getInstance().getReference("stats/supplyTotal");
+        statsDemandTotalRef = FirebaseDatabase.getInstance().getReference("stats/demandTotal");
+        statsSupplyTotalRef.addValueEventListener(statsSupplyTotalRefEventListener);
+        statsDemandTotalRef.addValueEventListener(statsDemandTotalRefEventListener);
+    }
+
+    private void cleanupDatabaseReferences() {
+        userReference.removeEventListener(userValueEventListener);
+        statsSupplyTotalRef.removeEventListener(statsSupplyTotalRefEventListener);
+        statsDemandTotalRef.removeEventListener(statsDemandTotalRefEventListener);
+
+        userValueEventListener = null;
+        statsSupplyTotalRefEventListener = null;
+        statsDemandTotalRefEventListener = null;
+        userReference = null;
+        statsSupplyTotalRef = null;
+        statsDemandTotalRef = null;
+
+        removeContactListeners();
     }
 
     @Override
@@ -140,10 +170,8 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void signOutUser() {
+        cleanupDatabaseReferences();
         firebaseAuth.signOut();
-        userReference = null;
-        statsDemandTotalRef = null;
-        statsSupplyTotalRef = null;
     }
 
     private void storeNewUser(String username) {
@@ -157,8 +185,10 @@ public class FirebaseBackend implements BeaconBackendInterface{
         // TODO handle timestamp
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.child(firebaseAuth.getUid()).child("supplyStatus").setValue(status);
+        Long timestamp = System.currentTimeMillis();
+
         UserEvent userEvent = new UserEvent();
-        userEvent.setTimestamp(33);
+        userEvent.setTimestamp(timestamp);
         userEvent.setUserUniqueId(firebaseAuth.getUid());
         userEvent.setSupplyStatus(status);
         userEvent.setDemandStatus(UserManager.getInstance().getUser().getDemandStatus());
@@ -176,7 +206,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
         }
 
         communityEvent.setSupplyTotal(supplyTotal);
-        communityEvent.setTimestamp(55);
+        communityEvent.setTimestamp(timestamp);
         storeCommunityEvent(communityEvent);
     }
 
@@ -184,10 +214,11 @@ public class FirebaseBackend implements BeaconBackendInterface{
     public void setUserDemandStatus(Boolean status) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.child(firebaseAuth.getUid()).child("demandStatus").setValue(status);
+        Long timestamp = System.currentTimeMillis();
 
         // Handle user events for changes in Demand
         UserEvent userEvent = new UserEvent();
-        userEvent.setTimestamp(33);
+        userEvent.setTimestamp(timestamp);
         userEvent.setUserUniqueId(firebaseAuth.getUid());
         userEvent.setDemandStatus(status);
         userEvent.setSupplyStatus(UserManager.getInstance().getUser().getSupplyStatus());
@@ -206,7 +237,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
         }
 
         communityEvent.setDemandTotal(demandTotal);
-        communityEvent.setTimestamp(22);
+        communityEvent.setTimestamp(timestamp);
         storeCommunityEvent(communityEvent);
     }
 
@@ -221,9 +252,46 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void storeUserEvent(UserEvent userEvent) {
-        // TODO handle timestamp
         // Store the unique event
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("stats/userEvents");
         databaseReference.push().setValue(userEvent);
+    }
+
+    public void initializeContactListeners(final Context context) {
+        contactReferences = new HashMap<>();
+        List<String> rolodexIds = UserManager.getInstance().getUser().getRolodex().getUids();
+        for (String rolodexId : rolodexIds) {
+            String contactLookup = "users/" + rolodexId;
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(contactLookup);
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Contact contact = dataSnapshot.getValue(Contact.class);
+                    ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
+                            contact.getDemandStatus(), contact.getSupplyStatus());
+                    context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // TODO what to do with contact failures?
+                }
+            };
+
+            databaseReference.addValueEventListener(valueEventListener);
+            contactReferences.put(databaseReference, valueEventListener);
+        }
+    }
+
+    public void removeContactListeners() {
+        for (HashMap.Entry<DatabaseReference, ValueEventListener> entry : contactReferences.entrySet()) {
+            DatabaseReference databaseReference = entry.getKey();
+            ValueEventListener valueEventListener = entry.getValue();
+            databaseReference.removeEventListener(valueEventListener);
+            valueEventListener = null;
+            databaseReference = null;
+        }
+
+        contactReferences.clear();
     }
 }

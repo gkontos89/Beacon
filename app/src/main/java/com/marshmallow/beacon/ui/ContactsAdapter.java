@@ -10,8 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
+import com.marshmallow.beacon.UserManager;
+import com.marshmallow.beacon.models.Contact;
 
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by George on 7/13/2018.
@@ -19,11 +22,11 @@ import java.util.List;
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactHolder>  {
 
     private Context context;
-    private List<String> contacts;
+    private Vector<String> contactUsernames;
 
-    public ContactsAdapter(Context context, List<String> contacts) {
+    public ContactsAdapter(Context context, Vector<String> contactUsernames) {
         this.context = context;
-        this.contacts = contacts;
+        this.contactUsernames = contactUsernames;
     }
 
     @NonNull
@@ -35,18 +38,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(@NonNull final ContactHolder holder, final int position) {
-        final String contact = contacts.get(position);
-        holder.contactNameText.setText(contact);
-
-        if (contact.equals("GMoney$$") || contact.equals("Dontrella")) {
-            holder.supplyStatus.setImageResource(R.drawable.beacon_off_mini);
-            holder.demandStatus.setImageResource(R.drawable.beacon_on_mini);
-        } else if (contact.equals("JDilla3")) {
-            holder.supplyStatus.setImageResource(R.drawable.beacon_on_mini);
+        String contactString = contactUsernames.get(position);
+        Contact contact = UserManager.getInstance().getContacts().get(contactString);
+        holder.contactNameText.setText(contact.getUsername());
+        if (contact.getDemandStatus()) {
             holder.demandStatus.setImageResource(R.drawable.beacon_on_mini);
         } else {
-            holder.supplyStatus.setImageResource(R.drawable.beacon_on_mini);
             holder.demandStatus.setImageResource(R.drawable.beacon_off_mini);
+        }
+
+        if (contact.getSupplyStatus()) {
+            holder.supplyStatus.setImageResource(R.drawable.beacon_on_mini);
+        } else {
+            holder.supplyStatus.setImageResource(R.drawable.beacon_off_mini);
         }
 
         // TODO handle selecting a single contact
@@ -61,7 +65,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     }
 
     @Override
-    public int getItemCount() { return contacts.size(); }
+    public int getItemCount() { return contactUsernames.size(); }
 
     public class ContactHolder extends RecyclerView.ViewHolder {
         public TextView contactNameText;
