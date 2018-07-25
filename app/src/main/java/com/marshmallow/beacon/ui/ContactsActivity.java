@@ -51,7 +51,6 @@ public class ContactsActivity extends BaseActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                // TODO handle the update
                 Contact contact = new Contact();
                 contact.setUsername(intent.getStringExtra(ContactUpdateBroadcast.usernameKey));
                 contact.setDemandStatus(intent.getBooleanExtra(ContactUpdateBroadcast.demandStatusKey, false));
