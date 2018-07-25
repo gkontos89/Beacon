@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
+import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.Contact;
 
 import java.util.List;
@@ -21,11 +22,11 @@ import java.util.Vector;
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactHolder>  {
 
     private Context context;
-    private Vector<Contact> contacts;
+    private Vector<String> contactUsernames;
 
-    public ContactsAdapter(Context context, Vector<Contact> contacts) {
+    public ContactsAdapter(Context context, Vector<String> contactUsernames) {
         this.context = context;
-        this.contacts = contacts;
+        this.contactUsernames = contactUsernames;
     }
 
     @NonNull
@@ -37,7 +38,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(@NonNull final ContactHolder holder, final int position) {
-        final Contact contact = contacts.get(position);
+        String contactString = contactUsernames.get(position);
+        Contact contact = UserManager.getInstance().getContacts().get(contactString);
         holder.contactNameText.setText(contact.getUsername());
         if (contact.getDemandStatus()) {
             holder.demandStatus.setImageResource(R.drawable.beacon_on_mini);
@@ -63,7 +65,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     }
 
     @Override
-    public int getItemCount() { return contacts.size(); }
+    public int getItemCount() { return contactUsernames.size(); }
 
     public class ContactHolder extends RecyclerView.ViewHolder {
         public TextView contactNameText;

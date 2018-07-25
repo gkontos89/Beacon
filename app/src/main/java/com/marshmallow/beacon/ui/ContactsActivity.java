@@ -28,7 +28,7 @@ public class ContactsActivity extends BaseActivity {
     private RecyclerView contactsRecyclerView;
     private RecyclerView.LayoutManager contactsLayoutManager;
     private ContactsAdapter contactsAdapter;
-    private Vector<Contact> contacts;
+    private Vector<String> contactUsernames;
     private BroadcastReceiver broadcastReceiver;
     private IntentFilter intentFilter;
 
@@ -38,11 +38,11 @@ public class ContactsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         // GUI handle instantiation
-        contacts = new Vector<>();
+        contactUsernames = new Vector<>();
         contactsRecyclerView = findViewById(R.id.contacts_recycler_view);
         contactsLayoutManager = new LinearLayoutManager(this);
         contactsRecyclerView.setLayoutManager(contactsLayoutManager);
-        contactsAdapter = new ContactsAdapter(this, contacts);
+        contactsAdapter = new ContactsAdapter(this, contactUsernames);
         contactsRecyclerView.setAdapter(contactsAdapter);
 
         // Initialize broadcastReceiver and its filter
@@ -56,11 +56,9 @@ public class ContactsActivity extends BaseActivity {
                 contact.setUsername(intent.getStringExtra(ContactUpdateBroadcast.usernameKey));
                 contact.setDemandStatus(intent.getBooleanExtra(ContactUpdateBroadcast.demandStatusKey, false));
                 contact.setSupplyStatus(intent.getBooleanExtra(ContactUpdateBroadcast.supplyStatusKey, false));
-                if (UserManager.getInstance().getContacts().containsKey(contact.getUsername())) {
-                    UserManager.getInstance().getContacts().get
-                } else {
-                    UserManager.getInstance().getContacts().put(contact.getUsername(), contact);
-                    contacts.add(contact);
+                UserManager.getInstance().getContacts().put(contact.getUsername(), contact);
+                if (!contactUsernames.contains(contact.getUsername())) {
+                    contactUsernames.add(contact.getUsername());
                 }
 
                 contactsAdapter.notifyDataSetChanged();
