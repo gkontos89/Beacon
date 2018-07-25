@@ -1,6 +1,9 @@
 package com.marshmallow.beacon;
 
+import com.marshmallow.beacon.models.Contact;
 import com.marshmallow.beacon.models.User;
+
+import java.util.HashMap;
 
 /**
  * Created by George on 7/17/2018.
@@ -8,8 +11,10 @@ import com.marshmallow.beacon.models.User;
 public class UserManager {
     private static UserManager instance = null;
     private User user;
+    private HashMap<String, Contact> contacts;
 
     private UserManager() {
+        contacts = new HashMap<>();
     }
 
     public static UserManager getInstance() {
@@ -26,5 +31,9 @@ public class UserManager {
 
     public User getUser() {
         return user;
+    }
+
+    public HashMap<String, Contact> getContacts() {
+        return contacts;
     }
 }

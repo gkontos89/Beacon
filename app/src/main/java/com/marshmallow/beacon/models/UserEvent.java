@@ -4,7 +4,7 @@ package com.marshmallow.beacon.models;
  * Created by George on 7/22/2018.
  */
 public class UserEvent {
-    private int timestamp;
+    private Long timestamp;
     private String userUniqueId;
     private Boolean supplyStatus;
     private Boolean demandStatus;
@@ -12,11 +12,11 @@ public class UserEvent {
     public UserEvent() {
     }
 
-    public int getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(int timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
