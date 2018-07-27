@@ -328,44 +328,46 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     public void initializeContactListeners(final Context context) {
         contactReferences = new HashMap<>();
-        List<String> usernames = UserManager.getInstance().getUser().getRolodex().getUsernames();
-        for (String username : usernames) {
-            Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("username").equalTo(username);
-            ChildEventListener childEventListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Contact contact = dataSnapshot.getValue(Contact.class);
-                    ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
-                            contact.getDemandStatus(), contact.getSupplyStatus());
-                    context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
-                }
+        if (UserManager.getInstance().getUser().getRolodex() != null) {
+            List<String> usernames = UserManager.getInstance().getUser().getRolodex().getUsernames();
+            for (String username : usernames) {
+                Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("username").equalTo(username);
+                ChildEventListener childEventListener = new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Contact contact = dataSnapshot.getValue(Contact.class);
+                        ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
+                                contact.getDemandStatus(), contact.getSupplyStatus());
+                        context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
+                    }
 
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Contact contact = dataSnapshot.getValue(Contact.class);
-                    ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
-                            contact.getDemandStatus(), contact.getSupplyStatus());
-                    context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
-                }
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Contact contact = dataSnapshot.getValue(Contact.class);
+                        ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
+                                contact.getDemandStatus(), contact.getSupplyStatus());
+                        context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
+                    }
 
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    // TODO removed? Likely just remove from contact list if they deleted profile
-                }
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        // TODO removed? Likely just remove from contact list if they deleted profile
+                    }
 
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                }
+                    }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // TODO failures?
-                }
-            };
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // TODO failures?
+                    }
+                };
 
-            query.addChildEventListener(childEventListener);
-            contactReferences.put(query, childEventListener);
+                query.addChildEventListener(childEventListener);
+                contactReferences.put(query, childEventListener);
+            }
         }
     }
 
