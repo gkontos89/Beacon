@@ -34,7 +34,6 @@ public class User {
 
     public void setDemandStatus(Boolean demandStatus) {
         this.demandStatus = demandStatus;
-
     }
 
     public Boolean getSupplyStatus() { return supplyStatus; }

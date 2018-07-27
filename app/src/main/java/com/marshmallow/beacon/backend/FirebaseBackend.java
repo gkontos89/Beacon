@@ -4,7 +4,6 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -17,13 +16,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
-import com.marshmallow.beacon.broadcasts.StatusBroadcast;
 import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.Contact;
 import com.marshmallow.beacon.models.User;
@@ -31,7 +30,6 @@ import com.marshmallow.beacon.models.UserEvent;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * This class implements Firebase backend communications
@@ -43,20 +41,26 @@ public class FirebaseBackend implements BeaconBackendInterface{
     private DatabaseReference userReference = null;
     private DatabaseReference statsSupplyTotalRef = null;
     private DatabaseReference statsDemandTotalRef = null;
+    private DatabaseReference requestsInRef = null;
+    private DatabaseReference requestsOutRef = null;
     private ValueEventListener userValueEventListener = null;
     private ValueEventListener statsSupplyTotalRefEventListener = null;
     private ValueEventListener statsDemandTotalRefEventListener = null;
+    private ChildEventListener requestsInRefListener = null;
+    private ChildEventListener requestsOutRefListener = null;
+    private HashMap<Query, ChildEventListener> contactReferences = null;
+//    private HashMap<Query, ValueEventListener> contactReferences = null;
+//    private HashMap<DatabaseReference, ValueEventListener> contactReferences = null;
+    private HashMap<DatabaseReference, ChildEventListener> requestReferences = null;
     private Integer supplyTotal;
     private Integer demandTotal;
-    private HashMap<DatabaseReference, ValueEventListener> contactReferences = null;
+
 
     public FirebaseBackend() {
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
-    // TODO bring back loading status
-
-    private void initializeUserListeners(final Context context) {
+    public void initializeUserListeners(final Context context) {
         userValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -78,7 +82,71 @@ public class FirebaseBackend implements BeaconBackendInterface{
         userReference.addValueEventListener(userValueEventListener);
     }
 
-    private void initializeStatsListeners() {
+    public void initializeRequestListeners() {
+        requestsInRefListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                /* Requests will come in the form of a UID for all requests in the system. Set
+                   a listener on that request
+                 */
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        requestsOutRefListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+//        requestsInRef = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid()).child("requestsIn");
+//        requestsOutRef = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid()).child("requestsOut");
+//        requestsInRef.addChildEventListener(requestsInRefListener);
+//        requestsOutRef.addChildEventListener(requestsOutRefListener);
+    }
+
+    public void initializeStatsListeners() {
         statsSupplyTotalRefEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -159,6 +227,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
                         if (task.isSuccessful()) {
                             initializeUserListeners(context);
                             initializeStatsListeners();
+                            initializeRequestListeners();
                         } else {
                             SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(task.getException().getMessage(), null);
                             Intent intent = signInStatusBroadcast.getFailureBroadcast();
@@ -259,13 +328,12 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     public void initializeContactListeners(final Context context) {
         contactReferences = new HashMap<>();
-        List<String> rolodexIds = UserManager.getInstance().getUser().getRolodex().getUids();
-        for (String rolodexId : rolodexIds) {
-            String contactLookup = "users/" + rolodexId;
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(contactLookup);
-            ValueEventListener valueEventListener = new ValueEventListener() {
+        List<String> usernames = UserManager.getInstance().getUser().getRolodex().getUsernames();
+        for (String username : usernames) {
+            Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("username").equalTo(username);
+            ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     Contact contact = dataSnapshot.getValue(Contact.class);
                     ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
                             contact.getDemandStatus(), contact.getSupplyStatus());
@@ -273,23 +341,41 @@ public class FirebaseBackend implements BeaconBackendInterface{
                 }
 
                 @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Contact contact = dataSnapshot.getValue(Contact.class);
+                    ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
+                            contact.getDemandStatus(), contact.getSupplyStatus());
+                    context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    // TODO removed? Likely just remove from contact list if they deleted profile
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // TODO what to do with contact failures?
+                    // TODO failures?
                 }
             };
 
-            databaseReference.addValueEventListener(valueEventListener);
-            contactReferences.put(databaseReference, valueEventListener);
+            query.addChildEventListener(childEventListener);
+            contactReferences.put(query, childEventListener);
         }
     }
 
     public void removeContactListeners() {
-        for (HashMap.Entry<DatabaseReference, ValueEventListener> entry : contactReferences.entrySet()) {
-            DatabaseReference databaseReference = entry.getKey();
-            ValueEventListener valueEventListener = entry.getValue();
-            databaseReference.removeEventListener(valueEventListener);
-            valueEventListener = null;
-            databaseReference = null;
+        for (HashMap.Entry<Query, ChildEventListener> entry : contactReferences.entrySet()) {
+            Query query = entry.getKey();
+            ChildEventListener childEventListener = entry.getValue();
+            query.removeEventListener(childEventListener);
+            childEventListener = null;
+            query = null;
         }
 
         contactReferences.clear();
