@@ -25,6 +25,7 @@ import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
+import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.Contact;
@@ -96,21 +97,21 @@ public class FirebaseBackend implements BeaconBackendInterface{
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Request requestIn = dataSnapshot.getValue(Request.class);
                 ContactRequestManager.getInstance().addRequestIn(requestIn);
-                // TODO submit broadcast
+                context.sendBroadcast(new RequestUpdateBroadcast().getRequestUpdateBroadcast());
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Request requestIn = dataSnapshot.getValue(Request.class);
                 ContactRequestManager.getInstance().addRequestIn(requestIn);
-                // TODO submit broadcast
+                context.sendBroadcast(new RequestUpdateBroadcast().getRequestUpdateBroadcast());
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Request request = dataSnapshot.getValue(Request.class);
                 ContactRequestManager.getInstance().removeRequestIn(request);
-                // TODO submit broadcast
+                context.sendBroadcast(new RequestUpdateBroadcast().getRequestUpdateBroadcast());
             }
 
             @Override
@@ -129,21 +130,21 @@ public class FirebaseBackend implements BeaconBackendInterface{
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Request requestOut = dataSnapshot.getValue(Request.class);
                 ContactRequestManager.getInstance().addRequestOut(requestOut);
-                // TODO submit broadcast
+                context.sendBroadcast(new RequestUpdateBroadcast().getRequestUpdateBroadcast());
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Request requestOut = dataSnapshot.getValue(Request.class);
                 ContactRequestManager.getInstance().addRequestOut(requestOut);
-                // TODO submit broadcast
+                context.sendBroadcast(new RequestUpdateBroadcast().getRequestUpdateBroadcast());
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Request requestOut = dataSnapshot.getValue(Request.class);
-                ContactRequestManager.getInstance().addRequestOut(requestOut);
-                // TODO submit broadcast
+                ContactRequestManager.getInstance().removeRequestsOut(requestOut);
+                context.sendBroadcast(new RequestUpdateBroadcast().getRequestUpdateBroadcast());
             }
 
             @Override
