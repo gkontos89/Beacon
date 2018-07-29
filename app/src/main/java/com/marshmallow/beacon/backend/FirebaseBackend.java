@@ -412,22 +412,19 @@ public class FirebaseBackend implements BeaconBackendInterface{
     }
 
     @Override
-    public void sendNewContactRequest(final Context context, final String username) {
+    public void sendNewContactRequest(final Context context, final Request request) {
         // First make sure the requested user exists
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("users").orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("users").orderByChild("username").equalTo(request.getTo()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // If user exists submit the request!
                 if (dataSnapshot.exists()) {
                     // Create Request model and submit to database
-                    Request request = new Request();
-                    request.setTo(username);
-                    request.setFrom(UserManager.getInstance().getUser().getUsername());
-                    request.setStatus(Request.Status.PENDING);
                     DatabaseReference requestsReference = FirebaseDatabase.getInstance().getReference("requests");
                     String requestUniqueId = requestsReference.child("requests").push().getKey();
                     if (requestUniqueId != null) {
+                        request.setUid(requestUniqueId);
                         requestsReference.child(requestUniqueId).setValue(request);
                         AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast(null, null);
                         context.sendBroadcast(addNewContactBroadcast.getSuccessfulBroadcast());
@@ -447,5 +444,25 @@ public class FirebaseBackend implements BeaconBackendInterface{
                 context.sendBroadcast(addNewContactBroadcast.getFailureBroadcast());
             }
         });
+    }
+
+    @Override
+    public void acceptRequest(Context context, Request request) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        request.setStatus(Request.Status.ACCEPTED);
+        databaseReference.child("requests").child(request.getUid()).setValue(request);
+    }
+
+    @Override
+    public void declineRequest(Context context, Request request) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        request.setStatus(Request.Status.DECLINED);
+        databaseReference.child("requests").child(request.getUid()).setValue(request);
+    }
+
+    @Override
+    public void confirmRequest(Context context, Request request) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("requests").child(request.getUid()).removeValue();
     }
 }

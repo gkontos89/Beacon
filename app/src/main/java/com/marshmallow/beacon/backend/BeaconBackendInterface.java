@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.marshmallow.beacon.models.CommunityEvent;
+import com.marshmallow.beacon.models.Contact;
+import com.marshmallow.beacon.models.Request;
 import com.marshmallow.beacon.models.User;
 import com.marshmallow.beacon.models.UserEvent;
 
@@ -44,5 +46,11 @@ public interface BeaconBackendInterface {
 
     void storeUserEvent(UserEvent userEvent);
 
-    void sendNewContactRequest(final Context context, final String username);
+    void sendNewContactRequest(final Context context, final Request request);
+
+    void acceptRequest(final Context context, Request request);
+
+    void declineRequest(final Context context, Request request);
+
+    void confirmRequest(Context context, Request request);
 }

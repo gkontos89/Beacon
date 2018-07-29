@@ -18,6 +18,7 @@ import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
+import com.marshmallow.beacon.models.Request;
 
 /**
  * Created by George on 7/28/2018.
@@ -55,8 +56,8 @@ public class NewContactActivity extends AppCompatActivity {
                     if (notAlreadyAContact()) {
                         showProgressBar("Submitting contact request...");
                         username = contactUserNameEditText.getText().toString();
-                        String tempUsername = contactUserNameEditText.getText().toString();
-                        BeaconBackend.getInstance().sendNewContactRequest(getApplicationContext(), tempUsername);
+                        Request request = new Request(username, UserManager.getInstance().getUser().getUsername());
+                        BeaconBackend.getInstance().sendNewContactRequest(getApplicationContext(), request);
                     }
                 }
             }

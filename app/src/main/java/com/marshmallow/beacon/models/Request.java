@@ -1,12 +1,11 @@
 package com.marshmallow.beacon.models;
 
-import java.util.Enumeration;
-
 /**
  * Created by George on 7/17/2018.
  */
 public class Request {
 
+    private String uid;
     private String to;
     private String from;
     private Status status;
@@ -18,6 +17,12 @@ public class Request {
     }
 
     public Request() {
+    }
+
+    public Request(String to, String from) {
+        this.to = to;
+        this.from = from;
+        this.status = Status.PENDING;
     }
 
     public String getTo() {
@@ -44,5 +49,11 @@ public class Request {
         this.status = status;
     }
 
+    public String getUid() {
+        return uid;
+    }
 
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 }
