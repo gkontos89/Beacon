@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 
 import com.firebase.ui.database.SnapshotParser;
 import com.marshmallow.beacon.R;
@@ -28,6 +30,7 @@ public class ContactsActivity extends BaseActivity {
     private RecyclerView contactsRecyclerView;
     private RecyclerView.LayoutManager contactsLayoutManager;
     private ContactsAdapter contactsAdapter;
+    private Button addContactButton;
     private Vector<String> contactUsernames;
     private BroadcastReceiver broadcastReceiver;
     private IntentFilter intentFilter;
@@ -44,6 +47,16 @@ public class ContactsActivity extends BaseActivity {
         contactsRecyclerView.setLayoutManager(contactsLayoutManager);
         contactsAdapter = new ContactsAdapter(this, contactUsernames);
         contactsRecyclerView.setAdapter(contactsAdapter);
+        addContactButton = findViewById(R.id.add_contact_button);
+
+        // Set GUI business logic
+        addContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NewContactActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Initialize broadcastReceiver and its filter
         intentFilter = new IntentFilter();
@@ -74,6 +87,7 @@ public class ContactsActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         BeaconBackend.getInstance().removeContactListeners();
+        finish();
     }
 
     @Override

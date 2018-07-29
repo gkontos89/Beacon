@@ -204,7 +204,9 @@ public class FirebaseBackend implements BeaconBackendInterface{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            storeNewUser(email);
+                            // Trim email
+                            String username = email.replace("@gmail.com", "");
+                            storeNewUser(username);
                             initializeUserListeners(context);
                             initializeStatsListeners();
                         } else {
@@ -381,5 +383,27 @@ public class FirebaseBackend implements BeaconBackendInterface{
         }
 
         contactReferences.clear();
+    }
+
+    @Override
+    public void sendNewContactRequest(String username) {
+        // First make sure the requested user exists
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("users").orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                } else {
+                    
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

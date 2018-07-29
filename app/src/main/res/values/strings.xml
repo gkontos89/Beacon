@@ -22,4 +22,9 @@
     <string name="password_hint">Password</string>
     <string name="login_button_text">Log In</string>
     <string name="create_account_button_text">Create Account</string>
+    <string name="add_contact_button_text">Add New Contact</string>
+    <string name="contact_name_title">Contact Username</string>
+    <string name="submit_contact_request_text">Submit Contact Request</string>
+    <string name="contact_user_name_hint">username</string>
+    <string name="adding_contact_progress_bar_text">Submitting Request...</string>
 </resources>
