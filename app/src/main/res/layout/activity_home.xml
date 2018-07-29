@@ -33,7 +33,7 @@
 
     <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/customer_list_card"
+        android:id="@+id/incoming_requests"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
@@ -46,19 +46,57 @@
             android:gravity="start">
 
             <TextView
-                android:id="@+id/interactions_text"
+                android:id="@+id/incoming_requests_card_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:layout_margin="8dp"
-                android:text="@string/interactions_string"
+                android:text="@string/incoming_requests_home_title"
                 android:gravity="start"/>
 
             <TextView
+                android:id="@+id/received_contact_request_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@id/interactions_text"
+                android:layout_toEndOf="@id/incoming_requests_card_text"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:gravity="end"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/outgoing_requests"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_below="@id/incoming_requests">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/outgoing_requests_card_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:text="@string/incoming_requests_home_title"
+                android:gravity="start"/>
+
+            <TextView
+                android:id="@+id/sent_contact_request_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/outgoing_requests_card_text"
                 android:textSize="20sp"
                 android:layout_margin="8dp"
                 android:gravity="end"/>
@@ -73,7 +111,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:layout_below="@id/customer_list_card">
+        android:layout_below="@id/outgoing_requests">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -86,6 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@drawable/beacon_off"
+                android:textSize="12sp"
                 android:textOn="@string/in_supply_string"
                 android:textOff="@string/out_of_supply_string" />
 
@@ -121,6 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@drawable/beacon_off"
+                android:textSize="12sp"
                 android:textOn="@string/demand_on_string"
                 android:textOff="@string/demand_off_string"/>
 

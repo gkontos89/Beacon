@@ -97,7 +97,8 @@ public class NewContactActivity extends AppCompatActivity {
 
     private boolean notAlreadyAContact() {
         String requestedUsername = contactUserNameEditText.getText().toString();
-        if (UserManager.getInstance().getUser().getRolodex().getUsernames().contains(requestedUsername)) {
+        if (UserManager.getInstance().getUser().getRolodex() != null &&
+                UserManager.getInstance().getUser().getRolodex().getUsernames().contains(requestedUsername)) {
             Toast.makeText(this, "You are already connected to " + requestedUsername, Toast.LENGTH_SHORT).show();
             return false;
         } else {
