@@ -80,22 +80,22 @@ public class BeaconBackend implements BeaconBackendInterface {
     }
 
     @Override
-    public void acceptRequest(Context context, Request request) {
-        backendHandle.acceptRequest(context, request);
+    public void acceptRequest(Request request) {
+        backendHandle.acceptRequest(request);
     }
 
     @Override
-    public void declineRequest(Context context, Request request) {
-        backendHandle.declineRequest(context, request);
+    public void declineRequest(Request request) {
+        backendHandle.declineRequest(request);
     }
 
     @Override
-    public void confirmRequest(Context context, Request request) {
-        backendHandle.confirmRequest(context, request);
+    public void confirmRequest(Request request) {
+        backendHandle.confirmRequest(request);
     }
 
     @Override
-    public void cancelRequest(Context context, Request request) {
-        backendHandle.cancelRequest(context, request);
+    public void cancelRequest(Request request) {
+        backendHandle.cancelRequest(request);
     }
 }

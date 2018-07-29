@@ -446,27 +446,27 @@ public class FirebaseBackend implements BeaconBackendInterface{
     }
 
     @Override
-    public void acceptRequest(Context context, Request request) {
+    public void acceptRequest(Request request) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         request.setStatus(Request.Status.ACCEPTED);
         databaseReference.child("requests").child(request.getUid()).setValue(request);
     }
 
     @Override
-    public void declineRequest(Context context, Request request) {
+    public void declineRequest(Request request) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         request.setStatus(Request.Status.DECLINED);
         databaseReference.child("requests").child(request.getUid()).setValue(request);
     }
 
     @Override
-    public void confirmRequest(Context context, Request request) {
+    public void confirmRequest(Request request) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
     }
 
     @Override
-    public void cancelRequest(Context context, Request request) {
+    public void cancelRequest(Request request) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
     }

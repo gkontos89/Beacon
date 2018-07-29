@@ -48,11 +48,11 @@ public interface BeaconBackendInterface {
 
     void sendNewContactRequest(final Context context, final Request request);
 
-    void acceptRequest(final Context context, Request request);
+    void acceptRequest(Request request);
 
-    void declineRequest(final Context context, Request request);
+    void declineRequest(Request request);
 
-    void confirmRequest(Context context, Request request);
+    void confirmRequest(Request request);
 
-    void cancelRequest(Context context, Request request);
+    void cancelRequest(Request request);
 }

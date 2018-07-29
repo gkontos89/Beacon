@@ -3,6 +3,7 @@ package com.marshmallow.beacon;
 import com.marshmallow.beacon.models.Request;
 
 import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * Created by George on 7/28/2018.
@@ -42,4 +43,11 @@ public class ContactRequestManager {
     }
 
 
+    public Vector<Request> getIncomingRequests() {
+        return new Vector<>(requestsIn.values());
+    }
+
+    public Vector<Request> getOutgoingRequests() {
+        return new Vector<>(requestsOut.values());
+    }
 }
