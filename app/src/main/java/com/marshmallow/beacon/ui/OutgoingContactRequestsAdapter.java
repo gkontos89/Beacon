@@ -65,7 +65,7 @@ public class OutgoingContactRequestsAdapter extends RecyclerView.Adapter<Outgoin
                         BeaconBackend.getInstance().confirmRequest(outgoingRequest);
                         break;
                     case DECLINED:
-                        BeaconBackend.getInstance().confirmRequest(outgoingRequest);
+                        BeaconBackend.getInstance().clearRequest(outgoingRequest);
                         break;
                 }
             }

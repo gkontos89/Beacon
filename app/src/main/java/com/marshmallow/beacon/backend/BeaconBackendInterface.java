@@ -55,4 +55,6 @@ public interface BeaconBackendInterface {
     void confirmRequest(Request request);
 
     void cancelRequest(Request request);
+
+    void clearRequest(Request request);
 }

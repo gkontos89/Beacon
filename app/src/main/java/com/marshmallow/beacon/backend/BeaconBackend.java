@@ -98,4 +98,9 @@ public class BeaconBackend implements BeaconBackendInterface {
     public void cancelRequest(Request request) {
         backendHandle.cancelRequest(request);
     }
+
+    @Override
+    public void clearRequest(Request request) {
+        backendHandle.clearRequest(request);
+    }
 }

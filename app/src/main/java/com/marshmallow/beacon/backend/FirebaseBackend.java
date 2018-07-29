@@ -452,6 +452,10 @@ public class FirebaseBackend implements BeaconBackendInterface{
         request.setStatus(Request.Status.ACCEPTED);
         databaseReference.child("requests").child(request.getUid()).setValue(request);
         Rolodex rolodex = UserManager.getInstance().getUser().getRolodex();
+        if (rolodex == null) {
+            rolodex = new Rolodex();
+        }
+
         rolodex.addUsername(request.getFrom());
         databaseReference.child("users").child(firebaseAuth.getUid()).child("rolodex").setValue(rolodex);
     }
@@ -468,8 +472,17 @@ public class FirebaseBackend implements BeaconBackendInterface{
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
         Rolodex rolodex = UserManager.getInstance().getUser().getRolodex();
+        if (rolodex == null) {
+            rolodex = new Rolodex();
+        }
+
         rolodex.addUsername(request.getTo());
         databaseReference.child("users").child(firebaseAuth.getUid()).child("rolodex").setValue(rolodex);
+    }
+
+    @Override
+    public void clearRequest(Request request) {
+        cancelRequest(request);
     }
 
     @Override
