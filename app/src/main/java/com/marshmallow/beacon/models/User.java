@@ -12,8 +12,6 @@ public class User {
     private Boolean demandStatus;
     private Boolean supplyStatus;
     private Rolodex rolodex;
-    private List<Request> requestsIn;
-    private List<Request> requestsOut;
 
     public User () {
     }
@@ -23,8 +21,6 @@ public class User {
         demandStatus = false;
         supplyStatus = false;
         rolodex = new Rolodex();
-        requestsIn = new Vector<>();
-        requestsOut = new Vector<>();
     }
 
     public String getUsername() { return username; }
@@ -44,21 +40,4 @@ public class User {
 
     public Rolodex getRolodex() { return rolodex; }
     public void setRolodex(Rolodex rolodex) { this.rolodex = rolodex; }
-    public List<Request> getRequestsIn() { return requestsIn; }
-    public void setRequestsIn(List<Request> requestsIn) { this.requestsIn = requestsIn; }
-    public List<Request> getRequestsOut() { return requestsOut; }
-    public void setRequestsOut(List<Request> requestsOut) { this.requestsOut = requestsOut; }
-
-    public void acceptRequest(String requestUid) {
-
-    }
-
-    public void declineRequest(String requestUid) {
-
-    }
-
-    public void confirmRequestAcceptance(String requestUid) {
-
-    }
-
 }

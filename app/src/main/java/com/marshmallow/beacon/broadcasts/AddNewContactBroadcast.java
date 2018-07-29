@@ -21,6 +21,7 @@ public class AddNewContactBroadcast extends BaseStatusBroadcast {
     public static final String CONTACT_REQUEST_SUBMITTED = "CONTACT_REQUEST_SUBMITTED";
     public static final String CONTACT_NOT_FOUND = "CONTACT_NOT_FOUND";
     public static final String CONTACT_REQUEST_FAILED = "CONTACT_REQUEST_FAILED";
+    public static final String REQUEST_CREATION_FAILED = "REQUEST_CREATION_FAILED";
 
     public AddNewContactBroadcast(String statusMessage, String data) {
         super();
@@ -46,6 +47,11 @@ public class AddNewContactBroadcast extends BaseStatusBroadcast {
 
     public Intent getContactNotFoundBroadcast() {
         intent.putExtra(statusKey, CONTACT_NOT_FOUND);
+        return intent;
+    }
+
+    public Intent getRequestCreationFailedBroadcast() {
+        intent.putExtra(statusKey, REQUEST_CREATION_FAILED);
         return intent;
     }
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marshmallow.beacon.R;
+import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
 
@@ -50,8 +51,14 @@ public class NewContactActivity extends AppCompatActivity {
         addContactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                username = contactUserNameEditText.getText().toString();
-                BeaconBackend.getInstance().sendNewContactRequest(username);
+                if (isValidEntry()) {
+                    if (notAlreadyAContact()) {
+                        showProgressBar("Submitting contact request...");
+                        username = contactUserNameEditText.getText().toString();
+                        String tempUsername = contactUserNameEditText.getText().toString();
+                        BeaconBackend.getInstance().sendNewContactRequest(getApplicationContext(), tempUsername);
+                    }
+                }
             }
         });
 
@@ -71,8 +78,13 @@ public class NewContactActivity extends AppCompatActivity {
                         case AddNewContactBroadcast.CONTACT_REQUEST_FAILED:
                             contactRequestSubmitFailed(intent.getStringExtra(AddNewContactBroadcast.statusMessageKey));
                             break;
+
                         case AddNewContactBroadcast.CONTACT_NOT_FOUND:
                             contactRequestContactNotFound();
+                            break;
+
+                        case AddNewContactBroadcast.REQUEST_CREATION_FAILED:
+                            requestCreationFailed(intent.getStringExtra(AddNewContactBroadcast.statusMessageKey));
                             break;
                     }
                 }
@@ -80,6 +92,30 @@ public class NewContactActivity extends AppCompatActivity {
         };
 
         registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private boolean notAlreadyAContact() {
+        String requestedUsername = contactUserNameEditText.getText().toString();
+        if (UserManager.getInstance().getUser().getRolodex().getUsernames().contains(requestedUsername)) {
+            Toast.makeText(this, "You are already connected to " + requestedUsername, Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void requestCreationFailed(String failureString) {
+        hideProgressBar();
+        Toast.makeText(this, failureString, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isValidEntry() {
+        if (contactUserNameEditText.toString().isEmpty()) {
+            contactUserNameEditText.setError("username can't be empty");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void contactRequestContactNotFound() {

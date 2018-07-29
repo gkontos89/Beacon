@@ -4,6 +4,7 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -18,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.marshmallow.beacon.ContactRequestManager;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
@@ -26,6 +28,7 @@ import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.Contact;
+import com.marshmallow.beacon.models.Request;
 import com.marshmallow.beacon.models.User;
 import com.marshmallow.beacon.models.UserEvent;
 
@@ -42,20 +45,16 @@ public class FirebaseBackend implements BeaconBackendInterface{
     private DatabaseReference userReference = null;
     private DatabaseReference statsSupplyTotalRef = null;
     private DatabaseReference statsDemandTotalRef = null;
-    private DatabaseReference requestsInRef = null;
-    private DatabaseReference requestsOutRef = null;
+    private Query requestsInQuery = null;
+    private Query requestsOutQuery = null;
     private ValueEventListener userValueEventListener = null;
     private ValueEventListener statsSupplyTotalRefEventListener = null;
     private ValueEventListener statsDemandTotalRefEventListener = null;
-    private ChildEventListener requestsInRefListener = null;
-    private ChildEventListener requestsOutRefListener = null;
+    private ChildEventListener requestsInQueryListener = null;
+    private ChildEventListener requestsOutQueryListener = null;
     private HashMap<Query, ChildEventListener> contactReferences = null;
-//    private HashMap<Query, ValueEventListener> contactReferences = null;
-//    private HashMap<DatabaseReference, ValueEventListener> contactReferences = null;
-    private HashMap<DatabaseReference, ChildEventListener> requestReferences = null;
     private Integer supplyTotal;
     private Integer demandTotal;
-
 
     public FirebaseBackend() {
         firebaseAuth = FirebaseAuth.getInstance();
@@ -66,6 +65,10 @@ public class FirebaseBackend implements BeaconBackendInterface{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
+                if (requestsInQuery == null && requestsOutQuery == null) {
+                    initializeRequestListeners(context);
+                }
+
                 LoadUserStatusBroadcast loadUserStatusBroadcast = new LoadUserStatusBroadcast(null, null);
                 Intent intent = loadUserStatusBroadcast.getSuccessfulBroadcast();
                 context.sendBroadcast(intent);
@@ -83,24 +86,31 @@ public class FirebaseBackend implements BeaconBackendInterface{
         userReference.addValueEventListener(userValueEventListener);
     }
 
-    public void initializeRequestListeners() {
-        requestsInRefListener = new ChildEventListener() {
+    private void initializeRequestListeners(final Context context) {
+        String username = UserManager.getInstance().getUser().getUsername();
+        requestsInQuery = FirebaseDatabase.getInstance().getReference("requests").orderByChild("to").equalTo(username);
+        requestsOutQuery = FirebaseDatabase.getInstance().getReference("requests").orderByChild("from").equalTo(username);
+
+        requestsInQueryListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                /* Requests will come in the form of a UID for all requests in the system. Set
-                   a listener on that request
-                 */
-
+                Request requestIn = dataSnapshot.getValue(Request.class);
+                ContactRequestManager.getInstance().addRequestIn(requestIn);
+                // TODO submit broadcast
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Request requestIn = dataSnapshot.getValue(Request.class);
+                ContactRequestManager.getInstance().addRequestIn(requestIn);
+                // TODO submit broadcast
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                Request request = dataSnapshot.getValue(Request.class);
+                ContactRequestManager.getInstance().removeRequestIn(request);
+                // TODO submit broadcast
             }
 
             @Override
@@ -110,24 +120,30 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                // TODO submit error
             }
         };
 
-        requestsOutRefListener = new ChildEventListener() {
+        requestsOutQueryListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Request requestOut = dataSnapshot.getValue(Request.class);
+                ContactRequestManager.getInstance().addRequestOut(requestOut);
+                // TODO submit broadcast
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Request requestOut = dataSnapshot.getValue(Request.class);
+                ContactRequestManager.getInstance().addRequestOut(requestOut);
+                // TODO submit broadcast
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                Request requestOut = dataSnapshot.getValue(Request.class);
+                ContactRequestManager.getInstance().addRequestOut(requestOut);
+                // TODO submit broadcast
             }
 
             @Override
@@ -137,17 +153,15 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                // submit error
             }
         };
 
-//        requestsInRef = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid()).child("requestsIn");
-//        requestsOutRef = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid()).child("requestsOut");
-//        requestsInRef.addChildEventListener(requestsInRefListener);
-//        requestsOutRef.addChildEventListener(requestsOutRefListener);
+        requestsInQuery.addChildEventListener(requestsInQueryListener);
+        requestsOutQuery.addChildEventListener(requestsOutQueryListener);
     }
 
-    public void initializeStatsListeners() {
+    private void initializeStatsListeners() {
         statsSupplyTotalRefEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -191,6 +205,16 @@ public class FirebaseBackend implements BeaconBackendInterface{
         statsDemandTotalRef = null;
 
         removeContactListeners();
+        removeRequestListeners();
+    }
+
+    private void removeRequestListeners() {
+        requestsInQuery.removeEventListener(requestsInQueryListener);
+        requestsOutQuery.removeEventListener(requestsOutQueryListener);
+        requestsInQueryListener = null;
+        requestsOutQueryListener = null;
+        requestsInQuery = null;
+        requestsOutQuery = null;
     }
 
     @Override
@@ -230,7 +254,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
                         if (task.isSuccessful()) {
                             initializeUserListeners(context);
                             initializeStatsListeners();
-                            initializeRequestListeners();
                         } else {
                             SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(task.getException().getMessage(), null);
                             Intent intent = signInStatusBroadcast.getFailureBroadcast();
@@ -254,7 +277,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void setUserSupplyStatus(Boolean status) {
-        // TODO handle timestamp
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.child(firebaseAuth.getUid()).child("supplyStatus").setValue(status);
         Long timestamp = System.currentTimeMillis();
@@ -375,19 +397,21 @@ public class FirebaseBackend implements BeaconBackendInterface{
     }
 
     public void removeContactListeners() {
-        for (HashMap.Entry<Query, ChildEventListener> entry : contactReferences.entrySet()) {
-            Query query = entry.getKey();
-            ChildEventListener childEventListener = entry.getValue();
-            query.removeEventListener(childEventListener);
-            childEventListener = null;
-            query = null;
-        }
+        if (contactReferences != null) {
+            for (HashMap.Entry<Query, ChildEventListener> entry : contactReferences.entrySet()) {
+                Query query = entry.getKey();
+                ChildEventListener childEventListener = entry.getValue();
+                query.removeEventListener(childEventListener);
+                childEventListener = null;
+                query = null;
+            }
 
-        contactReferences.clear();
+            contactReferences.clear();
+        }
     }
 
     @Override
-    public void sendNewContactRequest(final Context context, String username) {
+    public void sendNewContactRequest(final Context context, final String username) {
         // First make sure the requested user exists
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("users").orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -395,8 +419,21 @@ public class FirebaseBackend implements BeaconBackendInterface{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // If user exists submit the request!
                 if (dataSnapshot.exists()) {
-                    AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast(null, null);
-                    context.sendBroadcast(addNewContactBroadcast.getSuccessfulBroadcast());
+                    // Create Request model and submit to database
+                    Request request = new Request();
+                    request.setTo(username);
+                    request.setFrom(UserManager.getInstance().getUser().getUsername());
+                    request.setStatus(Request.Status.PENDING);
+                    DatabaseReference requestsReference = FirebaseDatabase.getInstance().getReference("requests");
+                    String requestUniqueId = requestsReference.child("requests").push().getKey();
+                    if (requestUniqueId != null) {
+                        requestsReference.child(requestUniqueId).setValue(request);
+                        AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast(null, null);
+                        context.sendBroadcast(addNewContactBroadcast.getSuccessfulBroadcast());
+                    } else {
+                        AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast("Request creation failed...", null);
+                        context.sendBroadcast(addNewContactBroadcast.getRequestCreationFailedBroadcast());
+                    }
                 } else {
                     AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast(null, null);
                     context.sendBroadcast(addNewContactBroadcast.getContactNotFoundBroadcast());
