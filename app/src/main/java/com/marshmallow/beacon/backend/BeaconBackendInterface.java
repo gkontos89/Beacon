@@ -53,4 +53,6 @@ public interface BeaconBackendInterface {
     void declineRequest(final Context context, Request request);
 
     void confirmRequest(Context context, Request request);
+
+    void cancelRequest(Context context, Request request);
 }

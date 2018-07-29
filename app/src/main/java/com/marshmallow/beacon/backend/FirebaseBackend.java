@@ -4,7 +4,6 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -462,6 +461,12 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void confirmRequest(Context context, Request request) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("requests").child(request.getUid()).removeValue();
+    }
+
+    @Override
+    public void cancelRequest(Context context, Request request) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
     }

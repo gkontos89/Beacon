@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NewContactActivity" />
+        <activity android:name=".ui.IncomingContactRequestsActivity" />
     </application>
 
 </manifest>

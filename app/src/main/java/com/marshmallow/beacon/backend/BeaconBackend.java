@@ -93,4 +93,9 @@ public class BeaconBackend implements BeaconBackendInterface {
     public void confirmRequest(Context context, Request request) {
         backendHandle.confirmRequest(context, request);
     }
+
+    @Override
+    public void cancelRequest(Context context, Request request) {
+        backendHandle.cancelRequest(context, request);
+    }
 }
