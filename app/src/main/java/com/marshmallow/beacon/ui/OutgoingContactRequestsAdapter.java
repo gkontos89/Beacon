@@ -24,10 +24,15 @@ public class OutgoingContactRequestsAdapter extends RecyclerView.Adapter<Outgoin
     public OutgoingContactRequestsAdapter(Vector<Request> outgoingRequests) {
         this.outgoingRequests = outgoingRequests;
     }
+
+    public void setOutgoingRequestReference(Vector<Request> outgoingRequests) {
+        this.outgoingRequests = outgoingRequests;
+    }
+
     @NonNull
     @Override
     public OutgoingContactRequestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.incoming_request_basic, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.outgoing_request_basic, parent, false);
         return new OutgoingContactRequestHolder(v);
     }
 
@@ -57,10 +62,10 @@ public class OutgoingContactRequestsAdapter extends RecyclerView.Adapter<Outgoin
                         BeaconBackend.getInstance().cancelRequest(outgoingRequest);
                         break;
                     case ACCEPTED:
-                        BeaconBackend.getInstance().acceptRequest(outgoingRequest);
+                        BeaconBackend.getInstance().confirmRequest(outgoingRequest);
                         break;
                     case DECLINED:
-                        BeaconBackend.getInstance().declineRequest(outgoingRequest);
+                        BeaconBackend.getInstance().confirmRequest(outgoingRequest);
                         break;
                 }
             }

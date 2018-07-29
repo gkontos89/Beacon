@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:layout_margin="8dp"
-                android:text="@string/incoming_requests_home_title"
+                android:text="@string/outgoing_requests_home_title"
                 android:gravity="start"/>
 
             <TextView

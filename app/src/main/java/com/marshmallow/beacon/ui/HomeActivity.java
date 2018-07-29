@@ -101,6 +101,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
+        updateRequestCounts();
         registerReceiver(broadcastReceiver, intentFilter);
     }
 

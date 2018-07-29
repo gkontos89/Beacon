@@ -49,6 +49,7 @@ public class IncomingContactRequestsActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 incomingRequests = ContactRequestManager.getInstance().getIncomingRequests();
+                incomingContactRequestsAdapter.setIncomingRequestReference(incomingRequests);
                 incomingContactRequestsAdapter.notifyDataSetChanged();
             }
         };

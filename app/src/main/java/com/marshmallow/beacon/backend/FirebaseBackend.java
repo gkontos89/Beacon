@@ -29,6 +29,7 @@ import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.Contact;
 import com.marshmallow.beacon.models.Request;
+import com.marshmallow.beacon.models.Rolodex;
 import com.marshmallow.beacon.models.User;
 import com.marshmallow.beacon.models.UserEvent;
 
@@ -450,6 +451,9 @@ public class FirebaseBackend implements BeaconBackendInterface{
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         request.setStatus(Request.Status.ACCEPTED);
         databaseReference.child("requests").child(request.getUid()).setValue(request);
+        Rolodex rolodex = UserManager.getInstance().getUser().getRolodex();
+        rolodex.addUsername(request.getFrom());
+        databaseReference.child("users").child(firebaseAuth.getUid()).child("rolodex").setValue(rolodex);
     }
 
     @Override
@@ -463,6 +467,9 @@ public class FirebaseBackend implements BeaconBackendInterface{
     public void confirmRequest(Request request) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
+        Rolodex rolodex = UserManager.getInstance().getUser().getRolodex();
+        rolodex.addUsername(request.getTo());
+        databaseReference.child("users").child(firebaseAuth.getUid()).child("rolodex").setValue(rolodex);
     }
 
     @Override

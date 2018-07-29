@@ -38,4 +38,5 @@
     <string name="incoming_request_accept_button_text">Accept</string>
     <string name="incoming_requests_title_text">Received Contact Requests</string>
     <string name="outgoing_requests_title_text">Sent Contact Requests</string>
+    <string name="outgoing_requests_home_title">Sent Contact Requests</string>
 </resources>

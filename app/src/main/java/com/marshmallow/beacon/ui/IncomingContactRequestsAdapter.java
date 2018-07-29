@@ -24,6 +24,11 @@ public class IncomingContactRequestsAdapter extends RecyclerView.Adapter<Incomin
     public IncomingContactRequestsAdapter(Vector<Request> incomingRequests) {
         this.incomingRequests = incomingRequests;
     }
+
+    public void setIncomingRequestReference(Vector<Request> incomingRequests) {
+        this.incomingRequests = incomingRequests;
+    }
+
     @NonNull
     @Override
     public IncomingContactRequestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
