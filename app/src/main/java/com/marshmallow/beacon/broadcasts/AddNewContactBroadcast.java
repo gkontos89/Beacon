@@ -43,4 +43,9 @@ public class AddNewContactBroadcast extends BaseStatusBroadcast {
         intent.putExtra(statusKey, CONTACT_REQUEST_FAILED);
         return intent;
     }
+
+    public Intent getContactNotFoundBroadcast() {
+        intent.putExtra(statusKey, CONTACT_NOT_FOUND);
+        return intent;
+    }
 }

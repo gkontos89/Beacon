@@ -74,7 +74,7 @@ public class BeaconBackend implements BeaconBackendInterface {
     public void removeContactListeners() { backendHandle.removeContactListeners(); }
 
     @Override
-    public void sendNewContactRequest(String username) {
-        backendHandle.sendNewContactRequest(username);
+    public void sendNewContactRequest(final Context context, String username) {
+        backendHandle.sendNewContactRequest(context, username);
     }
 }

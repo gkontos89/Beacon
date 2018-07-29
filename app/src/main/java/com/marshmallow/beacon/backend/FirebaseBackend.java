@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.UserManager;
+import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
@@ -386,23 +387,26 @@ public class FirebaseBackend implements BeaconBackendInterface{
     }
 
     @Override
-    public void sendNewContactRequest(String username) {
+    public void sendNewContactRequest(final Context context, String username) {
         // First make sure the requested user exists
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("users").orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // If user exists submit the request!
                 if (dataSnapshot.exists()) {
-
+                    AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast(null, null);
+                    context.sendBroadcast(addNewContactBroadcast.getSuccessfulBroadcast());
                 } else {
-                    
+                    AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast(null, null);
+                    context.sendBroadcast(addNewContactBroadcast.getContactNotFoundBroadcast());
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                AddNewContactBroadcast addNewContactBroadcast = new AddNewContactBroadcast(databaseError.getMessage(), null);
+                context.sendBroadcast(addNewContactBroadcast.getFailureBroadcast());
             }
         });
     }

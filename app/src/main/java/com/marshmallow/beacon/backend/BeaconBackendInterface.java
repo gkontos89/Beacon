@@ -44,5 +44,5 @@ public interface BeaconBackendInterface {
 
     void storeUserEvent(UserEvent userEvent);
 
-    void sendNewContactRequest(String username);
+    void sendNewContactRequest(final Context context, String username);
 }
