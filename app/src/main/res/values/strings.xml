@@ -3,7 +3,7 @@
     <string name="home">Home</string>
     <string name="contacts">Contacts</string>
     <string name="coming_soon">Coming Soon</string>
-    <string name="interactions_string">Interactions</string>
+    <string name="incoming_requests_home_title">Received Contact Requests</string>
     <string name="requests_string">Requests</string>
     <string name="in_supply_string">In Supply</string>
     <string name="out_of_supply_string">Out of Supply</string>
@@ -22,4 +22,21 @@
     <string name="password_hint">Password</string>
     <string name="login_button_text">Log In</string>
     <string name="create_account_button_text">Create Account</string>
+    <string name="add_contact_button_text">Add New Contact</string>
+    <string name="contact_name_title">Contact Username</string>
+    <string name="submit_contact_request_text">Submit Contact Request</string>
+    <string name="contact_user_name_hint">username</string>
+    <string name="adding_contact_progress_bar_text">Submitting Request...</string>
+    <string name="direction_to">To:</string>
+    <string name="request_status_pending">Pending</string>
+    <string name="request_username_default">defaultUserName</string>
+    <string name="outgoing_request_action_button_cancel_text">Cancel</string>
+    <string name="outgoing_request_action_button_confirm_text">Confirm</string>
+    <string name="outgoing_request_action_button_clear_text">Clear</string>
+    <string name="direction_from">From:</string>
+    <string name="incoming_request_decline_button_text">Decline</string>
+    <string name="incoming_request_accept_button_text">Accept</string>
+    <string name="incoming_requests_title_text">Received Contact Requests</string>
+    <string name="outgoing_requests_title_text">Sent Contact Requests</string>
+    <string name="outgoing_requests_home_title">Sent Contact Requests</string>
 </resources>

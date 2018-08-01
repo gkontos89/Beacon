@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/direction_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/direction_from"
+            android:layout_alignParentStart="true"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/accept_request_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/request_status_text"
+            android:textAlignment="center"
+            android:gravity="end"
+            android:text="@string/incoming_request_accept_button_text"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/request_username"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@id/accept_request_action_button"
+            android:layout_alignParentStart="true"
+            android:text="@string/request_username_default"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/decline_request_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/accept_request_action_button"
+            android:textAlignment="center"
+            android:gravity="end"
+            android:text="@string/incoming_request_decline_button_text"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

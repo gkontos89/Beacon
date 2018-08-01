@@ -8,13 +8,13 @@ import java.util.Vector;
  */
 public class Rolodex {
 
-    private List<String> uids;
+    private List<String> usernames;
 
     public Rolodex() {
-        uids = new Vector<>();
+        usernames = new Vector<>();
     }
 
-    public List<String> getUids() { return uids; }
-    public void removeUid(String uid) { uids.remove(uid); }
-    public void addUid(String uid) { uids.add(uid); }
+    public List<String> getUsernames() { return usernames; }
+    public void removeUsername(String username) { usernames.remove(username); }
+    public void addUsername(String username) { usernames.add(username); }
 }

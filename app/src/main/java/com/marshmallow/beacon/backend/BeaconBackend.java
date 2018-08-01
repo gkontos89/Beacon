@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.marshmallow.beacon.models.CommunityEvent;
+import com.marshmallow.beacon.models.Request;
 import com.marshmallow.beacon.models.UserEvent;
 
 /**
@@ -72,4 +73,34 @@ public class BeaconBackend implements BeaconBackendInterface {
     public void initializeContactListeners(Context context) { backendHandle.initializeContactListeners(context); }
 
     public void removeContactListeners() { backendHandle.removeContactListeners(); }
+
+    @Override
+    public void sendNewContactRequest(final Context context, final Request request) {
+        backendHandle.sendNewContactRequest(context, request);
+    }
+
+    @Override
+    public void acceptRequest(Request request) {
+        backendHandle.acceptRequest(request);
+    }
+
+    @Override
+    public void declineRequest(Request request) {
+        backendHandle.declineRequest(request);
+    }
+
+    @Override
+    public void confirmRequest(Request request) {
+        backendHandle.confirmRequest(request);
+    }
+
+    @Override
+    public void cancelRequest(Request request) {
+        backendHandle.cancelRequest(request);
+    }
+
+    @Override
+    public void clearRequest(Request request) {
+        backendHandle.clearRequest(request);
+    }
 }
