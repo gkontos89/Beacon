@@ -26,12 +26,10 @@ import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
-import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.Contact;
 import com.marshmallow.beacon.models.Request;
 import com.marshmallow.beacon.models.Rolodex;
 import com.marshmallow.beacon.models.User;
-import com.marshmallow.beacon.models.UserEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -276,81 +274,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
         databaseReference.child(firebaseAuth.getUid()).setValue(user);
     }
 
-    @Override
-    public void setUserSupplyStatus(Boolean status) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        databaseReference.child(firebaseAuth.getUid()).child("supplyStatus").setValue(status);
-        Long timestamp = System.currentTimeMillis();
 
-        UserEvent userEvent = new UserEvent();
-        userEvent.setTimestamp(timestamp);
-        userEvent.setUserUniqueId(firebaseAuth.getUid());
-        userEvent.setSupplyStatus(status);
-        userEvent.setDemandStatus(UserManager.getInstance().getUser().getDemandStatus());
-        storeUserEvent(userEvent);
-
-        CommunityEvent communityEvent = new CommunityEvent();
-        // Lock down the demandTotal and supplyTotal seen at this event time
-        Integer demandTotal = this.demandTotal;
-        Integer supplyTotal = this.supplyTotal;
-        communityEvent.setDemandTotal(demandTotal);
-        if (status) {
-            supplyTotal +=1;
-        } else {
-            supplyTotal -=1;
-        }
-
-        communityEvent.setSupplyTotal(supplyTotal);
-        communityEvent.setTimestamp(timestamp);
-        storeCommunityEvent(communityEvent);
-    }
-
-    @Override
-    public void setUserDemandStatus(Boolean status) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        databaseReference.child(firebaseAuth.getUid()).child("demandStatus").setValue(status);
-        Long timestamp = System.currentTimeMillis();
-
-        // Handle user events for changes in Demand
-        UserEvent userEvent = new UserEvent();
-        userEvent.setTimestamp(timestamp);
-        userEvent.setUserUniqueId(firebaseAuth.getUid());
-        userEvent.setDemandStatus(status);
-        userEvent.setSupplyStatus(UserManager.getInstance().getUser().getSupplyStatus());
-        storeUserEvent(userEvent);
-
-        // Handle Community Events
-        CommunityEvent communityEvent = new CommunityEvent();
-        // Lock down the demandTotal and supplyTotal seen at this event time
-        Integer demandTotal = this.demandTotal;
-        Integer supplyTotal = this.supplyTotal;
-        communityEvent.setSupplyTotal(supplyTotal);
-        if (status) {
-            demandTotal +=1;
-        } else {
-            demandTotal -=1;
-        }
-
-        communityEvent.setDemandTotal(demandTotal);
-        communityEvent.setTimestamp(timestamp);
-        storeCommunityEvent(communityEvent);
-    }
-
-    @Override
-    public void storeCommunityEvent(CommunityEvent communityEvent) {
-        // Store the unique event
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("stats");
-        databaseReference.child("demandTotal").setValue(communityEvent.getDemandTotal());
-        databaseReference.child("supplyTotal").setValue(communityEvent.getSupplyTotal());
-        databaseReference.child("communityEvents").push().setValue(communityEvent);
-    }
-
-    @Override
-    public void storeUserEvent(UserEvent userEvent) {
-        // Store the unique event
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("stats/userEvents");
-        databaseReference.push().setValue(userEvent);
-    }
 
     public void initializeContactListeners(final Context context) {
         contactReferences = new HashMap<>();

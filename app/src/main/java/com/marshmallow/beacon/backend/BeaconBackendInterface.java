@@ -3,11 +3,7 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
-import com.marshmallow.beacon.models.CommunityEvent;
-import com.marshmallow.beacon.models.Contact;
 import com.marshmallow.beacon.models.Request;
-import com.marshmallow.beacon.models.User;
-import com.marshmallow.beacon.models.UserEvent;
 
 /**
  * This interface establishes the contract for all backend communications for Beacon so that
@@ -37,14 +33,6 @@ public interface BeaconBackendInterface {
      * Signs out the current user from the back end services
      */
     void signOutUser();
-
-    void setUserSupplyStatus(Boolean status);
-
-    void setUserDemandStatus(Boolean status);
-
-    void storeCommunityEvent(CommunityEvent communityEvent);
-
-    void storeUserEvent(UserEvent userEvent);
 
     void sendNewContactRequest(final Context context, final Request request);
 

@@ -3,9 +3,7 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
-import com.marshmallow.beacon.models.CommunityEvent;
 import com.marshmallow.beacon.models.Request;
-import com.marshmallow.beacon.models.UserEvent;
 
 /**
  * BeehiveBackend is the front facing API's that are used throughout the application.
@@ -48,26 +46,6 @@ public class BeaconBackend implements BeaconBackendInterface {
     @Override
     public void signOutUser() {
         backendHandle.signOutUser();
-    }
-
-    @Override
-    public void setUserDemandStatus(Boolean status) {
-        backendHandle.setUserDemandStatus(status);
-    }
-
-    @Override
-    public void setUserSupplyStatus(Boolean status) {
-        backendHandle.setUserSupplyStatus(status);
-    }
-
-    @Override
-    public void storeCommunityEvent(CommunityEvent communityEvent) {
-        backendHandle.storeCommunityEvent(communityEvent);
-    }
-
-    @Override
-    public void storeUserEvent(UserEvent userEvent) {
-        backendHandle.storeUserEvent(userEvent);
     }
 
     public void initializeContactListeners(Context context) { backendHandle.initializeContactListeners(context); }

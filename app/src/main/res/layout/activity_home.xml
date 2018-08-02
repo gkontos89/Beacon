@@ -154,7 +154,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <com.marshmallow.beacon.ui.DemandButton
+            <com.marshmallow.beacon.ui.StatusButton
                 android:id="@+id/demand_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
