@@ -168,7 +168,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void accountCreationSuccess() {
-        // TODO handle intermediary screen till user data has loaded
+        hideProgressBar();
+        Intent intent = new Intent(this, WelcomePrimaryActivity.class);
+        startActivity(intent);
     }
 
     public void accountCreationFailed(String failureString) {

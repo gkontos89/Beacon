@@ -230,16 +230,15 @@ public class FirebaseBackend implements BeaconBackendInterface{
                         if (task.isSuccessful()) {
                             // Trim email
                             String username = email.replace("@gmail.com", "");
-                            storeNewUser(username);
-                            initializeUserListeners(context);
-                            initializeStatsListeners();
+                            UserManager.getInstance().getUser().setUsername(username);
+                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
+                            Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
+                            context.sendBroadcast(intent);
                         } else {
                             CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(task.getException().getMessage(), null);
                             Intent intent = createUserStatusBroadcast.getFailureBroadcast();
                             context.sendBroadcast(intent);
                         }
-
-
                     }
                 });
     }
