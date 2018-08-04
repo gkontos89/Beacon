@@ -283,15 +283,15 @@ public class FirebaseBackend implements BeaconBackendInterface{
     public void initializeContactListeners(final Context context) {
         contactReferences = new HashMap<>();
         if (UserManager.getInstance().getUser().getRolodex() != null) {
-            List<String> usernames = UserManager.getInstance().getUser().getRolodex().getUsernames();
-            for (String username : usernames) {
+            List<String> userNames = UserManager.getInstance().getUser().getRolodex().getUsernames();
+            for (String username : userNames) {
                 Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("username").equalTo(username);
                 ChildEventListener childEventListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Contact contact = dataSnapshot.getValue(Contact.class);
                         ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
-                                contact.getDemandStatus(), contact.getSupplyStatus());
+                                contact.getSignedIn(), contact.getProfilePicture());
                         context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
                     }
 
@@ -299,7 +299,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Contact contact = dataSnapshot.getValue(Contact.class);
                         ContactUpdateBroadcast contactUpdateBroadcast = new ContactUpdateBroadcast(contact.getUsername(),
-                                contact.getDemandStatus(), contact.getSupplyStatus());
+                                contact.getSignedIn(), contact.getProfilePicture());
                         context.sendBroadcast(contactUpdateBroadcast.getBroadcastIntent());
                     }
 

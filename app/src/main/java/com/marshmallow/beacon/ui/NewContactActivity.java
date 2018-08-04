@@ -53,7 +53,7 @@ public class NewContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isValidEntry()) {
-                    if (notAlreadyAContact()) {
+                    if (notAlreadyAContact() && notSearchingThyself()) {
                         showProgressBar("Submitting contact request...");
                         username = contactUserNameEditText.getText().toString();
                         Request request = new Request(username, UserManager.getInstance().getUser().getUsername());
@@ -93,6 +93,16 @@ public class NewContactActivity extends AppCompatActivity {
         };
 
         registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private boolean notSearchingThyself() {
+        String requestedUsername = contactUserNameEditText.getText().toString();
+        if (requestedUsername.equals(UserManager.getInstance().getUser().getUsername())) {
+            Toast.makeText(this, "You cannot add yourself!", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private boolean notAlreadyAContact() {

@@ -2,81 +2,37 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:orientation="horizontal"
-        android:gravity="start">
+        android:layout_margin="8dp">
+
+        <ImageView
+            android:id="@+id/contact_profile_picture"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/rewards"/>
+
 
         <TextView
             android:id="@+id/contact_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/contact_profile_picture"
+            android:layout_centerInParent="true"
             android:textSize="20sp"
-            android:gravity="start"
             android:text="hello"/>
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/sign_in_status_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/contact_name"
+            android:src="@drawable/beacon_on_mini"
             android:layout_alignParentEnd="true"
-            android:gravity="end">
-
-            <RelativeLayout
-                android:id="@+id/supply_relative_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/supply_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="22dp"
-                    android:textSize="20sp"
-                    android:text="@string/supply_status_text"/>
-
-                <ImageView
-                    android:id="@+id/supply_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/supply_text"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/beacon_off_mini"
-                    android:contentDescription="@string/supply_status_text"/>
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/demand_relative_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/supply_relative_layout">
-
-                <TextView
-                    android:id="@+id/demand_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:textSize="20sp"
-                    android:text="@string/demand_status_text"/>
-
-                <ImageView
-                    android:id="@+id/demand_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/demand_text"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/beacon_on_mini"
-                    android:contentDescription="@string/demand_status_text"/>
-            </RelativeLayout>
-
-        </RelativeLayout>
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 

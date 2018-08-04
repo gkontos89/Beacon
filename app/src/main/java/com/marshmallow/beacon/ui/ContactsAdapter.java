@@ -1,6 +1,7 @@
 package com.marshmallow.beacon.ui;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,16 +42,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         String contactString = contactUsernames.get(position);
         Contact contact = UserManager.getInstance().getContacts().get(contactString);
         holder.contactNameText.setText(contact.getUsername());
-        if (contact.getDemandStatus()) {
-            holder.demandStatus.setImageResource(R.drawable.beacon_on_mini);
+        holder.contactProfilePicture.setImageBitmap(contact.getProfilePictureBitmap());
+        if (contact.getSignedIn()) {
+            holder.signedInStatus.setImageResource(R.drawable.beacon_on_mini);
         } else {
-            holder.demandStatus.setImageResource(R.drawable.beacon_off_mini);
-        }
-
-        if (contact.getSupplyStatus()) {
-            holder.supplyStatus.setImageResource(R.drawable.beacon_on_mini);
-        } else {
-            holder.supplyStatus.setImageResource(R.drawable.beacon_off_mini);
+            holder.signedInStatus.setImageResource(R.drawable.beacon_off_mini);
         }
 
         // TODO handle selecting a single contact
@@ -68,15 +64,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     public int getItemCount() { return contactUsernames.size(); }
 
     public class ContactHolder extends RecyclerView.ViewHolder {
+        public ImageView contactProfilePicture;
         public TextView contactNameText;
-        public ImageView supplyStatus;
-        public ImageView demandStatus;
+        public ImageView signedInStatus;
 
         public ContactHolder(View v) {
             super(v);
+            contactProfilePicture = v.findViewById(R.id.contact_profile_picture);
             contactNameText = v.findViewById(R.id.contact_name);
-            supplyStatus = v.findViewById(R.id.supply_status);
-            demandStatus = v.findViewById(R.id.demand_status);
+            signedInStatus = v.findViewById(R.id.sign_in_status_image);
         }
     }
 }

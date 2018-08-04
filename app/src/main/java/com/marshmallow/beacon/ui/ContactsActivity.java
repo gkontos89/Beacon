@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,14 +32,15 @@ import java.util.Vector;
 public class ContactsActivity extends BaseActivity {
 
     // GUI handles
-    CardView incomingRequestsCard;
-    TextView incomingRequestsCountText;
-    CardView outgoingRequestsCard;
-    TextView outgoingRequestsCountText;
+    private CardView incomingRequestsCard;
+    private TextView incomingRequestsCountText;
+    private CardView outgoingRequestsCard;
+    private TextView outgoingRequestsCountText;
+    private TextView noContactsText;
     private RecyclerView contactsRecyclerView;
+    private FloatingActionButton addContactButton;
     private RecyclerView.LayoutManager contactsLayoutManager;
     private ContactsAdapter contactsAdapter;
-    private Button addContactButton;
     private Vector<String> contactUsernames;
     private BroadcastReceiver broadcastReceiver;
     private IntentFilter intentFilter;
@@ -53,15 +55,17 @@ public class ContactsActivity extends BaseActivity {
         incomingRequestsCountText = findViewById(R.id.received_contact_request_count);
         outgoingRequestsCard = findViewById(R.id.outgoing_requests);
         outgoingRequestsCountText = findViewById(R.id.sent_contact_request_count);
+        noContactsText = findViewById(R.id.no_contacts_title);
         contactUsernames = new Vector<>();
         contactsRecyclerView = findViewById(R.id.contacts_recycler_view);
         contactsLayoutManager = new LinearLayoutManager(this);
         contactsRecyclerView.setLayoutManager(contactsLayoutManager);
         contactsAdapter = new ContactsAdapter(this, contactUsernames);
         contactsRecyclerView.setAdapter(contactsAdapter);
-        addContactButton = findViewById(R.id.add_contact_button);
+        addContactButton = findViewById(R.id.add_contact_fab);
 
         // UI initialization
+        updateNumberOfContacts();
         updateRequestCounts();
 
         // Set GUI business logic
@@ -101,14 +105,15 @@ public class ContactsActivity extends BaseActivity {
                         case ContactUpdateBroadcast.action:
                             Contact contact = new Contact();
                             contact.setUsername(intent.getStringExtra(ContactUpdateBroadcast.usernameKey));
-                            contact.setDemandStatus(intent.getBooleanExtra(ContactUpdateBroadcast.demandStatusKey, false));
-                            contact.setSupplyStatus(intent.getBooleanExtra(ContactUpdateBroadcast.supplyStatusKey, false));
+                            contact.setSignedIn(intent.getBooleanExtra(ContactUpdateBroadcast.signedInKey, false));
+                            contact.setProfilePicture(intent.getStringExtra(ContactUpdateBroadcast.profilePictureKey));
                             UserManager.getInstance().getContacts().put(contact.getUsername(), contact);
                             if (!contactUsernames.contains(contact.getUsername())) {
                                 contactUsernames.add(contact.getUsername());
                             }
 
                             contactsAdapter.notifyDataSetChanged();
+                            updateNumberOfContacts();
                             break;
 
                         case RequestUpdateBroadcast.action:
@@ -153,5 +158,15 @@ public class ContactsActivity extends BaseActivity {
     private void updateRequestCounts() {
         incomingRequestsCountText.setText(String.format("%d", ContactRequestManager.getInstance().getIncomingRequests().size()));
         outgoingRequestsCountText.setText(String.format("%d", ContactRequestManager.getInstance().getOutgoingRequests().size()));
+    }
+
+    private void updateNumberOfContacts() {
+        if (contactUsernames.size() != 0) {
+            noContactsText.setVisibility(View.GONE);
+            contactsRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            noContactsText.setVisibility(View.VISIBLE);
+            contactsRecyclerView.setVisibility(View.GONE);
+        }
     }
 }
