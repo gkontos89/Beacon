@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.marshmallow.beacon.models.Request;
+import com.marshmallow.beacon.models.User;
 
 /**
  * This interface establishes the contract for all backend communications for Beacon so that
@@ -33,6 +34,8 @@ public interface BeaconBackendInterface {
      * Signs out the current user from the back end services
      */
     void signOutUser();
+
+    void submitProfileUpdates(User user);
 
     void sendNewContactRequest(final Context context, final Request request);
 

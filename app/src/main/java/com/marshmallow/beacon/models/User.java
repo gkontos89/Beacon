@@ -9,8 +9,13 @@ import java.util.Vector;
 public class User {
 
     private String username;
-    private Boolean demandStatus;
-    private Boolean supplyStatus;
+    private Boolean signedIn;
+    private DataPoint firstName;
+    private DataPoint lastName;
+    private DataPoint email;
+    private DataPoint birthday;
+    private DataPoint city;
+    private DataPoint state;
     private Rolodex rolodex;
 
     public User () {
@@ -18,25 +23,75 @@ public class User {
 
     public User(String username) {
         this.username = username;
-        demandStatus = false;
-        supplyStatus = false;
+        this.signedIn = true;
+        this.firstName = new DataPoint(null, false);
+        this.lastName = new DataPoint(null, false);
+        this.email = new DataPoint(null, false);
+        this.birthday = new DataPoint(null, false);
+        this.city = new DataPoint(null, false);
+        this.state = new DataPoint(null, false);
         rolodex = new Rolodex();
     }
 
+    public Boolean getSignedIn() {
+        return signedIn;
+    }
+
+    public void setSignedIn(Boolean signedIn) {
+        this.signedIn = signedIn;
+    }
+
+    public DataPoint getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(DataPoint firstName) {
+        this.firstName = firstName;
+    }
+
+    public DataPoint getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(DataPoint lastName) {
+        this.lastName = lastName;
+    }
+
+    public DataPoint getEmail() {
+        return email;
+    }
+
+    public void setEmail(DataPoint email) {
+        this.email = email;
+    }
+
+    public DataPoint getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(DataPoint birthday) {
+        this.birthday = birthday;
+    }
+
+    public DataPoint getCity() {
+        return city;
+    }
+
+    public void setCity(DataPoint city) {
+        this.city = city;
+    }
+
+    public DataPoint getState() {
+        return state;
+    }
+
+    public void setState(DataPoint state) {
+        this.state = state;
+    }
+
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
-
-    public Boolean getDemandStatus() { return demandStatus; }
-
-    public void setDemandStatus(Boolean demandStatus) {
-        this.demandStatus = demandStatus;
-    }
-
-    public Boolean getSupplyStatus() { return supplyStatus; }
-
-    public void setSupplyStatus(Boolean supplyStatus) {
-        this.supplyStatus = supplyStatus;
-    }
 
     public Rolodex getRolodex() { return rolodex; }
     public void setRolodex(Rolodex rolodex) { this.rolodex = rolodex; }

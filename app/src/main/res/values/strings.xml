@@ -46,5 +46,16 @@
     <string name="welcome_primary_second_card">On Beacon, unlike other social media platforms, advertisers pay YOU for the marketing information you provide.\n\n
     Participation in surveys and visiting sponsored links nets you points to trade in for cash and prizes!</string>
     <string name="welcome_primary_third_card">And of course you can connect and chat with friends!</string>
+    <string name="edit_profile_instructions">Set which marketing data you provide when clicking sponsors or taking surveys.  Below you can see the points you earn based on the information you give out!</string>
+    <string name="edit_profile_first_name_text">First Name</string>
+    <string name="edit_profile_last_name_text">Last Name</string>
+    <string name="edit_profile_email_text">Email</string>
+    <string name="edit_profile_birthday_text">Birthday</string>
+    <string name="edit_profile_city_text">City</string>
+    <string name="edit_profile_state_text">State</string>
+    <string name="edit_profile_done_button_text">Done</string>
+    <string name="edit_profile_back_button_text">Back</string>
+    <string name="points_per_survey_text_string">Points earned per survey</string>
+    <string name="points_per_sponsor_text_string">Points earned on first visit to sponsor site</string>
 
 </resources>

@@ -24,7 +24,7 @@ public class WelcomePrimaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         // GUI instantiation
-        backButton = findViewById(R.id.welcome_primary_back_button);
+        backButton = findViewById(R.id.edit_profile_back_button);
         nextButton = findViewById(R.id.welcome_primary_next_button);
 
         backButton.setOnClickListener(new View.OnClickListener() {

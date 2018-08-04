@@ -52,7 +52,7 @@
 
 
     <Button
-        android:id="@+id/welcome_primary_back_button"
+        android:id="@+id/edit_profile_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/third_card"

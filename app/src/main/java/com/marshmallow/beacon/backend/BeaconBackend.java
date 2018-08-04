@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.marshmallow.beacon.models.Request;
+import com.marshmallow.beacon.models.User;
 
 /**
  * BeehiveBackend is the front facing API's that are used throughout the application.
@@ -47,6 +48,9 @@ public class BeaconBackend implements BeaconBackendInterface {
     public void signOutUser() {
         backendHandle.signOutUser();
     }
+
+    @Override
+    public void submitProfileUpdates(User user) { backendHandle.submitProfileUpdates(user); }
 
     public void initializeContactListeners(Context context) { backendHandle.initializeContactListeners(context); }
 

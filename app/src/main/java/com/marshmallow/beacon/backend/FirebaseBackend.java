@@ -230,7 +230,8 @@ public class FirebaseBackend implements BeaconBackendInterface{
                         if (task.isSuccessful()) {
                             // Trim email
                             String username = email.replace("@gmail.com", "");
-                            UserManager.getInstance().getUser().setUsername(username);
+                            User user = new User(username);
+                            UserManager.getInstance().setUser(user);
                             CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
                             Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
                             context.sendBroadcast(intent);
@@ -267,13 +268,17 @@ public class FirebaseBackend implements BeaconBackendInterface{
         firebaseAuth.signOut();
     }
 
+    @Override
+    public void submitProfileUpdates(User user) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        databaseReference.child(firebaseAuth.getUid()).setValue(user);
+    }
+
     private void storeNewUser(String username) {
         User user = new User(username);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.child(firebaseAuth.getUid()).setValue(user);
     }
-
-
 
     public void initializeContactListeners(final Context context) {
         contactReferences = new HashMap<>();

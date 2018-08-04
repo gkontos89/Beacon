@@ -24,6 +24,7 @@
         <activity android:name=".ui.IncomingContactRequestsActivity" />
         <activity android:name=".ui.OutgoingContactRequestsActivity" />
         <activity android:name=".ui.WelcomePrimaryActivity" />
+        <activity android:name=".ui.EditProfileActivity" />
     </application>
 
 </manifest>
