@@ -1,5 +1,6 @@
 package com.marshmallow.beacon.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -94,6 +95,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 editableUser.getCity().setValue(cityEditText.getText().toString());
                 editableUser.getState().setValue(stateEditText.getText().toString());
                 BeaconBackend.getInstance().submitProfileUpdates(editableUser);
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

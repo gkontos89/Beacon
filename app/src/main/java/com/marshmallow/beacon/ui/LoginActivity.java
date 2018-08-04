@@ -54,35 +54,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                // Handle back end status pertaining to the login screen
-                if (intent.getAction().equals(CreateUserStatusBroadcast.action)) {
-                    switch (intent.getStringExtra(CreateUserStatusBroadcast.statusKey)) {
-                        case CreateUserStatusBroadcast.CREATE_ACCOUNT_SUCCESSFUL:
-                            accountCreationSuccess();
-                            break;
-                        case CreateUserStatusBroadcast.CREATE_ACCOUNT_FAILED:
-                        default:
-                            accountCreationFailed(intent.getStringExtra(CreateUserStatusBroadcast.statusMessageKey));
-                            break;
-                    }
-                } else if (intent.getAction().equals(SignInStatusBroadcast.action)) {
-                    switch (intent.getStringExtra(SignInStatusBroadcast.statusKey)) {
-                        case SignInStatusBroadcast.SIGN_IN_SUCCESSFUL:
-                            signInSucceeded();
-                            break;
-                        case SignInStatusBroadcast.SIGN_IN_FAILED:
-                        default:
-                            signInFailed(intent.getStringExtra(SignInStatusBroadcast.statusMessageKey));
-                            break;
-                    }
-                } else if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
-                    switch (intent.getStringExtra(LoadUserStatusBroadcast.statusKey)) {
-                        case LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL:
-                            accountLoadingSucceeded();
-                            break;
-                        case LoadUserStatusBroadcast.USER_LOADED_FAILED:
-                            accountLoadingFailed(intent.getStringExtra(LoadUserStatusBroadcast.statusMessageKey));
-                            break;
+                if (intent.getAction() != null) {
+                    // Handle back end status pertaining to the login screen
+                    if (intent.getAction().equals(CreateUserStatusBroadcast.action)) {
+                        switch (intent.getStringExtra(CreateUserStatusBroadcast.statusKey)) {
+                            case CreateUserStatusBroadcast.CREATE_ACCOUNT_SUCCESSFUL:
+                                accountCreationSuccess();
+                                break;
+                            case CreateUserStatusBroadcast.CREATE_ACCOUNT_FAILED:
+                            default:
+                                accountCreationFailed(intent.getStringExtra(CreateUserStatusBroadcast.statusMessageKey));
+                                break;
+                        }
+                    } else if (intent.getAction().equals(SignInStatusBroadcast.action)) {
+                        switch (intent.getStringExtra(SignInStatusBroadcast.statusKey)) {
+                            case SignInStatusBroadcast.SIGN_IN_SUCCESSFUL:
+                                signInSucceeded();
+                                break;
+                            case SignInStatusBroadcast.SIGN_IN_FAILED:
+                            default:
+                                signInFailed(intent.getStringExtra(SignInStatusBroadcast.statusMessageKey));
+                                break;
+                        }
+                    } else if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
+                        switch (intent.getStringExtra(LoadUserStatusBroadcast.statusKey)) {
+                            case LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL:
+                                accountLoadingSucceeded();
+                                break;
+                            case LoadUserStatusBroadcast.USER_LOADED_FAILED:
+                                accountLoadingFailed(intent.getStringExtra(LoadUserStatusBroadcast.statusMessageKey));
+                                break;
+                        }
                     }
                 }
             }

@@ -7,7 +7,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -15,6 +17,7 @@ import com.marshmallow.beacon.ContactRequestManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.backend.BeaconBackend;
+import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
 
 /**
@@ -23,15 +26,12 @@ import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
 public class HomeActivity extends BaseActivity {
 
     // GUI handles
+    ImageView profilePicture;
     TextView usernameText;
-    CardView incomingRequestsCard;
-    TextView incomingRequestsCountText;
-    CardView outgoingRequestsCard;
-    TextView outgoingRequestsCountText;
-    BeaconButton supplyButton;
-    TextView supplyStatusText;
-    BeaconButton demandButton;
-    TextView demandStatusText;
+    TextView pointsTotalValue;
+    Button editProfileButton;
+    CardView rewardsCatalogCard;
+    CardView availableSurveysCard;
     BroadcastReceiver broadcastReceiver;
     IntentFilter intentFilter;
 
@@ -42,44 +42,53 @@ public class HomeActivity extends BaseActivity {
 
         // GUI handle instantiation
         usernameText = findViewById(R.id.username_title);
-        incomingRequestsCard = findViewById(R.id.incoming_requests);
-        incomingRequestsCountText = findViewById(R.id.received_contact_request_count);
-        outgoingRequestsCard = findViewById(R.id.outgoing_requests);
-        outgoingRequestsCountText = findViewById(R.id.sent_contact_request_count);
-        supplyButton = findViewById(R.id.supply_button);
-        supplyStatusText = findViewById(R.id.supply_status_text);
-        demandButton = findViewById(R.id.demand_button);
-        demandStatusText = findViewById(R.id.demand_status_text);
+        profilePicture = findViewById(R.id.home_profile_image);
+        pointsTotalValue = findViewById(R.id.points_total_value);
+        editProfileButton = findViewById(R.id.edit_profile_button);
+        rewardsCatalogCard = findViewById(R.id.rewards_card);
+        availableSurveysCard = findViewById(R.id.surveys_card);
 
         // UI initialization
+        // TODO profile picture
         usernameText.setText(UserManager.getInstance().getUser().getUsername());
-        updateRequestCounts();
-        supplyButton.initialize(UserManager.getInstance().getUser().getSupplyStatus(), supplyStatusText);
-        demandButton.initialize(UserManager.getInstance().getUser().getDemandStatus(), demandStatusText);
+        pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
 
-        incomingRequestsCard.setOnClickListener(new View.OnClickListener() {
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), IncomingContactRequestsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivity(intent);
             }
         });
 
-        outgoingRequestsCard.setOnClickListener(new View.OnClickListener() {
+        rewardsCatalogCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), OutgoingContactRequestsActivity.class);
-                startActivity(intent);
+                // TODO launch rewards catalog page
             }
         });
 
-        // Setup broadcast receivers for contact request updates
+        availableSurveysCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO launch surveys page
+            }
+        });
+
+        // Setup broadcast receivers for surveys and point totals
+        // TODO setup intent filter to catch survey broadcasts
         intentFilter = new IntentFilter();
-        intentFilter.addAction(RequestUpdateBroadcast.action);
+        intentFilter.addAction(LoadUserStatusBroadcast.action);
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateRequestCounts();
+                if (intent.getAction() != null) {
+                    if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
+                        if (intent.getStringExtra(LoadUserStatusBroadcast.statusKey) == LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL) {
+                            pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
+                        }
+                    }
+                }
             }
         };
 
@@ -101,12 +110,8 @@ public class HomeActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        updateRequestCounts();
         registerReceiver(broadcastReceiver, intentFilter);
     }
 
-    private void updateRequestCounts() {
-        incomingRequestsCountText.setText(String.format("%d", ContactRequestManager.getInstance().getIncomingRequests().size()));
-        outgoingRequestsCountText.setText(String.format("%d", ContactRequestManager.getInstance().getOutgoingRequests().size()));
-    }
+
 }

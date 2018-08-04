@@ -10,6 +10,7 @@ public class User {
 
     private String username;
     private Boolean signedIn;
+    private Integer points;
     private DataPoint firstName;
     private DataPoint lastName;
     private DataPoint email;
@@ -24,6 +25,7 @@ public class User {
     public User(String username) {
         this.username = username;
         this.signedIn = true;
+        this.points = 0;
         this.firstName = new DataPoint(null, false);
         this.lastName = new DataPoint(null, false);
         this.email = new DataPoint(null, false);
@@ -95,4 +97,12 @@ public class User {
 
     public Rolodex getRolodex() { return rolodex; }
     public void setRolodex(Rolodex rolodex) { this.rolodex = rolodex; }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
 }
