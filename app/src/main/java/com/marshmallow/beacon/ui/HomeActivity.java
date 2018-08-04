@@ -49,7 +49,7 @@ public class HomeActivity extends BaseActivity {
         availableSurveysCard = findViewById(R.id.surveys_card);
 
         // UI initialization
-        // TODO profile picture
+        profilePicture.setImageBitmap(UserManager.getInstance().getUser().getProfilePictureBitmap());
         usernameText.setText(UserManager.getInstance().getUser().getUsername());
         pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
 
@@ -84,7 +84,7 @@ public class HomeActivity extends BaseActivity {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction() != null) {
                     if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
-                        if (intent.getStringExtra(LoadUserStatusBroadcast.statusKey) == LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL) {
+                        if (intent.getStringExtra(LoadUserStatusBroadcast.statusKey).equals(LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL)) {
                             pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
                         }
                     }
@@ -112,6 +112,4 @@ public class HomeActivity extends BaseActivity {
         super.onResume();
         registerReceiver(broadcastReceiver, intentFilter);
     }
-
-
 }

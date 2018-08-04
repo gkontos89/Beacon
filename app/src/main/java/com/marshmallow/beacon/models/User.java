@@ -1,5 +1,12 @@
 package com.marshmallow.beacon.models;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import com.google.firebase.database.Exclude;
+
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Vector;
 
@@ -9,6 +16,7 @@ import java.util.Vector;
 public class User {
 
     private String username;
+    private String profilePicture;
     private Boolean signedIn;
     private Integer points;
     private DataPoint firstName;
@@ -24,6 +32,7 @@ public class User {
 
     public User(String username) {
         this.username = username;
+        this.profilePicture = null;
         this.signedIn = true;
         this.points = 0;
         this.firstName = new DataPoint(null, false);
@@ -104,5 +113,31 @@ public class User {
 
     public void setPoints(Integer points) {
         this.points = points;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    @Exclude
+    public Bitmap getProfilePictureBitmap() {
+        if (profilePicture != null) {
+            byte[] decodedString = Base64.decode(profilePicture, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        } else {
+            return  null;
+        }
+    }
+
+    @Exclude
+    public void setProfilePictureFromBitmap(Bitmap profilePictureBitmap) {
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        profilePictureBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        profilePicture = Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

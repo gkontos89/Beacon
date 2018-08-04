@@ -1,12 +1,16 @@
 package com.marshmallow.beacon.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -17,6 +21,8 @@ import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.models.DataPoint;
 import com.marshmallow.beacon.models.User;
 
+import java.io.IOException;
+
 
 /**
  * Created by George on 8/2/2018.
@@ -26,6 +32,7 @@ public class EditProfileActivity extends AppCompatActivity {
     // GUI handles
     private TextView pointsPerSurveyTextView;
     private TextView pointsPerSponsorTextView;
+    private ImageButton profileImageButton;
     private EditText firstNameEditText;
     private ToggleButton firstNameToggleButton;
     private EditText lastNameEditText;
@@ -40,6 +47,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private ToggleButton stateToggleButton;
     private Button backButton;
     private Button submitButton;
+
+    // Image handling
+    private int PICK_IMAGE_REQUEST = 1;
+    private boolean validImage = false;
 
     // Editable user
     private User editableUser;
@@ -100,6 +111,21 @@ public class EditProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Image button initialization
+        if (editableUser.getProfilePictureBitmap() != null) {
+            profileImageButton.setImageBitmap(editableUser.getProfilePictureBitmap());
+        }
+
+        profileImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+            }
+        });
     }
 
     private void updateUserMarketingValue() {
@@ -120,5 +146,21 @@ public class EditProfileActivity extends AppCompatActivity {
                 updateUserMarketingValue();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                profileImageButton.setImageBitmap(bitmap);
+                editableUser.setProfilePictureFromBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            validImage = true;
+        }
     }
 }
