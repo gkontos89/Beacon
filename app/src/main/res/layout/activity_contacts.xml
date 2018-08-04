@@ -10,7 +10,7 @@
         android:id="@+id/incoming_requests"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp">
+        android:layout_margin="8dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -46,7 +46,7 @@
         android:id="@+id/outgoing_requests"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
         android:layout_below="@id/incoming_requests">
 
         <RelativeLayout
@@ -91,6 +91,7 @@
         android:id="@+id/contacts_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:layout_above="@+id/bottom_navigation"
         android:layout_below="@id/outgoing_requests">
 
