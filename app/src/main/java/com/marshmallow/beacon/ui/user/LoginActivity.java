@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView passwordTextEntry;
     private LinearLayout progressBarLinearLayout;
     private TextView progressBarText;
+    private RadioGroup radioGroup;
 
     // BroadcastReceiver
     private IntentFilter intentFilter;

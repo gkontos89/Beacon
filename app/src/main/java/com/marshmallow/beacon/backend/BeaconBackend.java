@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.marshmallow.beacon.models.contacts.Request;
 import com.marshmallow.beacon.models.marketing.Sponsor;
+import com.marshmallow.beacon.models.marketing.SurveyResult;
 import com.marshmallow.beacon.models.user.User;
 
 /**
@@ -90,5 +91,10 @@ public class BeaconBackend implements BeaconBackendInterface {
     @Override
     public void storeSponsorVisit(Sponsor sponsor) {
         backendHandle.storeSponsorVisit(sponsor);
+    }
+
+    @Override
+    public void storeSurveyResult(SurveyResult surveyResult) {
+        backendHandle.storeSurveyResult(surveyResult);
     }
 }

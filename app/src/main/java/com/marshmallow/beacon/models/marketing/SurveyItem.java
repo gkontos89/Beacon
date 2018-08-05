@@ -9,7 +9,6 @@ class SurveyItem {
 
     private String question;
     private Vector<String> options;
-    private String answer;
 
     public SurveyItem() {
     }
@@ -28,13 +27,5 @@ class SurveyItem {
 
     public void setOptions(Vector<String> options) {
         this.options = options;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 }

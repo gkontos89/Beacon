@@ -14,9 +14,6 @@ public class SurveyResult {
     public SurveyResult() {
     }
 
-    public SurveyResult()
-
-
     public Vector<SurveyResponseItem> getSurveyResponseItems() {
         return surveyResponseItems;
     }
@@ -40,6 +37,4 @@ public class SurveyResult {
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
-
-
 }
