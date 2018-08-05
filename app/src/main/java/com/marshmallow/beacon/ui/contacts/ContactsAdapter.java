@@ -21,11 +21,11 @@ import java.util.Vector;
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactHolder>  {
 
     private Context context;
-    private Vector<String> contactUsernames;
+    private Vector<String> contactUserNames;
 
     public ContactsAdapter(Context context, Vector<String> contactUsernames) {
         this.context = context;
-        this.contactUsernames = contactUsernames;
+        this.contactUserNames = contactUsernames;
     }
 
     @NonNull
@@ -37,7 +37,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(@NonNull final ContactHolder holder, final int position) {
-        String contactString = contactUsernames.get(position);
+        String contactString = contactUserNames.get(position);
         Contact contact = UserManager.getInstance().getContacts().get(contactString);
         holder.contactNameText.setText(contact.getUsername());
         holder.contactProfilePicture.setImageBitmap(contact.getProfilePictureBitmap());
@@ -59,7 +59,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     }
 
     @Override
-    public int getItemCount() { return contactUsernames.size(); }
+    public int getItemCount() { return contactUserNames.size(); }
 
     public class ContactHolder extends RecyclerView.ViewHolder {
         public ImageView contactProfilePicture;

@@ -66,5 +66,7 @@
     <string name="no_contacts_text">You have no contacts!</string>
     <string name="sponsors">Sponsors</string>
     <string name="available_surveys_title_text">Available Surveys</string>
+    <string name="individual_survey_cancel_button_text">Cancel</string>
+    <string name="individual_survey_submit_button_text">Submit</string>
 
 </resources>

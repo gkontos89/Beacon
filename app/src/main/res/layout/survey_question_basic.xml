@@ -19,7 +19,7 @@
             android:text="hello"/>
 
         <LinearLayout
-            android:id="@+id/survey_question_radiogroup_linear_layout"
+            android:id="@+id/survey_question_radio_group_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/question"

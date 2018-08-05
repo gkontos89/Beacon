@@ -46,6 +46,7 @@ import java.util.List;
  */
 public class FirebaseBackend implements BeaconBackendInterface{
     private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase firebaseInst;
     private DatabaseReference userReference = null;
     private Query requestsInQuery = null;
     private Query requestsOutQuery = null;
@@ -56,6 +57,59 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     public FirebaseBackend() {
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseInst = FirebaseDatabase.getInstance();
+    }
+
+    @Override
+    public void createUserWithEmailAndPassword(final Context context, final Activity activity, final String email, String password) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Trim email
+                            String username = email.replace("@gmail.com", "");
+                            User user = new User(username);
+                            UserManager.getInstance().setUser(user);
+                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
+                            Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
+                            context.sendBroadcast(intent);
+                        } else {
+                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(task.getException().getMessage(), null);
+                            Intent intent = createUserStatusBroadcast.getFailureBroadcast();
+                            context.sendBroadcast(intent);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void signInWithEmailAndPassword(final Context context, final Activity activity, String email, String password) {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            initializeUserListeners(context);
+                        } else {
+                            SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(task.getException().getMessage(), null);
+                            Intent intent = signInStatusBroadcast.getFailureBroadcast();
+                            context.sendBroadcast(intent);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public Boolean isUserSignedIn() {
+        return (firebaseAuth.getCurrentUser() != null);
+    }
+
+    @Override
+    public void signOutUser() {
+        userReference.child("signedIn").setValue(false);
+        cleanupDatabaseReferences();
+        firebaseAuth.signOut();
     }
 
     public void initializeUserListeners(final Context context) {
@@ -80,14 +134,14 @@ public class FirebaseBackend implements BeaconBackendInterface{
             }
         };
 
-        userReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseAuth.getUid());
+        userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
         userReference.addValueEventListener(userValueEventListener);
     }
 
     private void initializeRequestListeners(final Context context) {
         String username = UserManager.getInstance().getUser().getUsername();
-        requestsInQuery = FirebaseDatabase.getInstance().getReference("requests").orderByChild("to").equalTo(username);
-        requestsOutQuery = FirebaseDatabase.getInstance().getReference("requests").orderByChild("from").equalTo(username);
+        requestsInQuery = firebaseInst.getReference("requests").orderByChild("to").equalTo(username);
+        requestsOutQuery = firebaseInst.getReference("requests").orderByChild("from").equalTo(username);
 
         requestsInQueryListener = new ChildEventListener() {
             @Override
@@ -176,66 +230,16 @@ public class FirebaseBackend implements BeaconBackendInterface{
         requestsOutQuery = null;
     }
 
-    @Override
-    public Boolean isUserSignedIn() {
-        return (firebaseAuth.getCurrentUser() != null);
-    }
-
-    @Override
-    public void createUserWithEmailAndPassword(final Context context, final Activity activity, final String email, String password) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Trim email
-                            String username = email.replace("@gmail.com", "");
-                            User user = new User(username);
-                            UserManager.getInstance().setUser(user);
-                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
-                            Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
-                            context.sendBroadcast(intent);
-                        } else {
-                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(task.getException().getMessage(), null);
-                            Intent intent = createUserStatusBroadcast.getFailureBroadcast();
-                            context.sendBroadcast(intent);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void signInWithEmailAndPassword(final Context context, final Activity activity, String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            initializeUserListeners(context);
-                        } else {
-                            SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(task.getException().getMessage(), null);
-                            Intent intent = signInStatusBroadcast.getFailureBroadcast();
-                            context.sendBroadcast(intent);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void signOutUser() {
-        cleanupDatabaseReferences();
-        firebaseAuth.signOut();
-    }
 
     @Override
     public void submitProfileUpdates(User user) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference databaseReference = firebaseInst.getReference("users");
         databaseReference.child(firebaseAuth.getUid()).setValue(user);
     }
 
     private void storeNewUser(String username) {
         User user = new User(username);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference databaseReference = firebaseInst.getReference("users");
         databaseReference.child(firebaseAuth.getUid()).setValue(user);
     }
 
@@ -244,7 +248,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
         if (UserManager.getInstance().getUser().getRolodex() != null) {
             List<String> userNames = UserManager.getInstance().getUser().getRolodex().getUsernames();
             for (String username : userNames) {
-                Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("username").equalTo(username);
+                Query query = firebaseInst.getReference("users").orderByChild("username").equalTo(username);
                 ChildEventListener childEventListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -301,14 +305,14 @@ public class FirebaseBackend implements BeaconBackendInterface{
     @Override
     public void sendNewContactRequest(final Context context, final Request request) {
         // First make sure the requested user exists
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference databaseReference = firebaseInst.getReference();
         databaseReference.child("users").orderByChild("username").equalTo(request.getTo()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // If user exists submit the request!
                 if (dataSnapshot.exists()) {
                     // Create Request model and submit to database
-                    DatabaseReference requestsReference = FirebaseDatabase.getInstance().getReference("requests");
+                    DatabaseReference requestsReference = firebaseInst.getReference("requests");
                     String requestUniqueId = requestsReference.child("requests").push().getKey();
                     if (requestUniqueId != null) {
                         request.setUid(requestUniqueId);
@@ -335,7 +339,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void acceptRequest(Request request) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference databaseReference = firebaseInst.getReference();
         request.setStatus(Request.Status.ACCEPTED);
         databaseReference.child("requests").child(request.getUid()).setValue(request);
         Rolodex rolodex = UserManager.getInstance().getUser().getRolodex();
@@ -349,14 +353,14 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void declineRequest(Request request) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference databaseReference = firebaseInst.getReference();
         request.setStatus(Request.Status.DECLINED);
         databaseReference.child("requests").child(request.getUid()).setValue(request);
     }
 
     @Override
     public void confirmRequest(Request request) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference databaseReference = firebaseInst.getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
         Rolodex rolodex = UserManager.getInstance().getUser().getRolodex();
         if (rolodex == null) {
@@ -374,14 +378,14 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     @Override
     public void cancelRequest(Request request) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference databaseReference = firebaseInst.getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
     }
 
     @Override
     public void storeSponsorVisit(Sponsor sponsor) {
         final User user = UserManager.getInstance().getUser();
-        final DatabaseReference sponsorReference = FirebaseDatabase.getInstance().getReference().child("sponsors").child(sponsor.getUid());
+        final DatabaseReference sponsorReference = firebaseInst.getReference().child("sponsors").child(sponsor.getUid());
         UserMarketDataSnapshot userMarketDataSnapshot = new UserMarketDataSnapshot(user);
         SponsorVisitEvent sponsorVisitEvent = new SponsorVisitEvent(userMarketDataSnapshot);
         String sponsorVisitKey = sponsorReference.child("sponsorVisitEvents").push().getKey();
@@ -399,7 +403,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
                     // Update the user's points
                     Integer gainedUserPoints = user.getPoints() + MarketingManager.getInstance().getUserSponsorMarketingValue(user);
-                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("users").child(firebaseAuth.getUid());
+                    DatabaseReference userReference = firebaseInst.getReference().child("users").child(firebaseAuth.getUid());
                     userReference.child("points").setValue(gainedUserPoints);
                 }
             }

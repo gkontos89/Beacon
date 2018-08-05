@@ -29,19 +29,16 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.home_button:
                         Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
                         startActivity(homeIntent);
-                        finish();
                         break;
 
                     case R.id.contacts_button:
                         Intent contactsIntent = new Intent(getApplicationContext(), ContactsActivity.class);
                         startActivity(contactsIntent);
-                        finish();
                         break;
 
                     case R.id.sponsors_button:
                         Intent sponsorsIntent = new Intent(getApplicationContext(), SponsorsActivity.class);
                         startActivity(sponsorsIntent);
-                        finish();
                         break;
                 }
 
