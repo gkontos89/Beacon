@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.models;
+package com.marshmallow.beacon.models.contacts;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

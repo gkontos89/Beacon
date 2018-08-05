@@ -3,8 +3,10 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
-import com.marshmallow.beacon.models.Request;
-import com.marshmallow.beacon.models.User;
+import com.marshmallow.beacon.models.contacts.Request;
+import com.marshmallow.beacon.models.marketing.Sponsor;
+import com.marshmallow.beacon.models.marketing.SurveyResult;
+import com.marshmallow.beacon.models.user.User;
 
 /**
  * This interface establishes the contract for all backend communications for Beacon so that
@@ -48,4 +50,8 @@ public interface BeaconBackendInterface {
     void cancelRequest(Request request);
 
     void clearRequest(Request request);
+
+    void storeSponsorVisit(Sponsor sponsor);
+
+    void storeSurveyResult(SurveyResult surveyResult);
 }

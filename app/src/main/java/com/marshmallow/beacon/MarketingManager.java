@@ -1,8 +1,8 @@
 package com.marshmallow.beacon;
 
-import com.marshmallow.beacon.models.SponsorMarketingInfo;
-import com.marshmallow.beacon.models.SurveyMarketingInfo;
-import com.marshmallow.beacon.models.User;
+import com.marshmallow.beacon.models.marketing.SponsorMarketValues;
+import com.marshmallow.beacon.models.marketing.SurveyMarketValues;
+import com.marshmallow.beacon.models.user.User;
 
 /**
  * Created by George on 8/3/2018.
@@ -10,8 +10,8 @@ import com.marshmallow.beacon.models.User;
 public class MarketingManager {
 
     private static MarketingManager instance = null;
-    private SponsorMarketingInfo sponsorMarketingInfo;
-    private SurveyMarketingInfo surveyMarketingInfo;
+    private SponsorMarketValues sponsorMarketValues;
+    private SurveyMarketValues surveyMarketValues;
 
     private MarketingManager() {
     }
@@ -24,46 +24,46 @@ public class MarketingManager {
         return instance;
     }
 
-    public SponsorMarketingInfo getSponsorMarketingInfo() {
-        return sponsorMarketingInfo;
+    public SponsorMarketValues getSponsorMarketValues() {
+        return sponsorMarketValues;
     }
 
-    public void setSponsorMarketingInfo(SponsorMarketingInfo sponsorMarketingInfo) {
-        this.sponsorMarketingInfo = sponsorMarketingInfo;
+    public void setSponsorMarketValues(SponsorMarketValues sponsorMarketValues) {
+        this.sponsorMarketValues = sponsorMarketValues;
     }
 
-    public SurveyMarketingInfo getSurveyMarketingInfo() {
-        return surveyMarketingInfo;
+    public SurveyMarketValues getSurveyMarketValues() {
+        return surveyMarketValues;
     }
 
-    public void setSurveyMarketingInfo(SurveyMarketingInfo surveyMarketingInfo) {
-        this.surveyMarketingInfo = surveyMarketingInfo;
+    public void setSurveyMarketValues(SurveyMarketValues surveyMarketValues) {
+        this.surveyMarketValues = surveyMarketValues;
     }
 
     public Integer getUserSponsorMarketingValue(User user) {
         Integer totalMarketingValue = 0;
         if (user.getFirstName().getShared()) {
-            totalMarketingValue += sponsorMarketingInfo.getFirstNameValue();
+            totalMarketingValue += sponsorMarketValues.getFirstNameValue();
         }
 
         if (user.getLastName().getShared()) {
-            totalMarketingValue += sponsorMarketingInfo.getLastNameValue();
+            totalMarketingValue += sponsorMarketValues.getLastNameValue();
         }
 
         if (user.getEmail().getShared()) {
-            totalMarketingValue += sponsorMarketingInfo.getEmailValue();
+            totalMarketingValue += sponsorMarketValues.getEmailValue();
         }
 
         if (user.getBirthday().getShared()) {
-            totalMarketingValue += sponsorMarketingInfo.getBirthdayValue();
+            totalMarketingValue += sponsorMarketValues.getBirthdayValue();
         }
 
         if (user.getCity().getShared()) {
-            totalMarketingValue += sponsorMarketingInfo.getCityValue();
+            totalMarketingValue += sponsorMarketValues.getCityValue();
         }
 
         if (user.getState().getShared()) {
-            totalMarketingValue += sponsorMarketingInfo.getStateValue();
+            totalMarketingValue += sponsorMarketValues.getStateValue();
         }
 
         return totalMarketingValue;
@@ -72,27 +72,27 @@ public class MarketingManager {
     public Integer getUserSurveyMarketingValue(User user) {
         Integer totalMarketingValue = 0;
         if (user.getFirstName().getShared()) {
-            totalMarketingValue += surveyMarketingInfo.getFirstNameValue();
+            totalMarketingValue += surveyMarketValues.getFirstNameValue();
         }
 
         if (user.getLastName().getShared()) {
-            totalMarketingValue += surveyMarketingInfo.getLastNameValue();
+            totalMarketingValue += surveyMarketValues.getLastNameValue();
         }
 
         if (user.getEmail().getShared()) {
-            totalMarketingValue += surveyMarketingInfo.getEmailValue();
+            totalMarketingValue += surveyMarketValues.getEmailValue();
         }
 
         if (user.getBirthday().getShared()) {
-            totalMarketingValue += surveyMarketingInfo.getBirthdayValue();
+            totalMarketingValue += surveyMarketValues.getBirthdayValue();
         }
 
         if (user.getCity().getShared()) {
-            totalMarketingValue += surveyMarketingInfo.getCityValue();
+            totalMarketingValue += surveyMarketValues.getCityValue();
         }
 
         if (user.getState().getShared()) {
-            totalMarketingValue += surveyMarketingInfo.getStateValue();
+            totalMarketingValue += surveyMarketValues.getStateValue();
         }
 
         return totalMarketingValue;

@@ -1,6 +1,5 @@
-package com.marshmallow.beacon.ui;
+package com.marshmallow.beacon.ui.contacts;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.backend.BeaconBackend;
-import com.marshmallow.beacon.models.Request;
+import com.marshmallow.beacon.models.contacts.Request;
 
 import java.util.Vector;
 

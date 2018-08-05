@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.ContactRequestManager;
+import com.marshmallow.beacon.MarketingManager;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
@@ -26,10 +27,14 @@ import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
-import com.marshmallow.beacon.models.Contact;
-import com.marshmallow.beacon.models.Request;
-import com.marshmallow.beacon.models.Rolodex;
-import com.marshmallow.beacon.models.User;
+import com.marshmallow.beacon.models.contacts.Contact;
+import com.marshmallow.beacon.models.contacts.Request;
+import com.marshmallow.beacon.models.marketing.SurveyResult;
+import com.marshmallow.beacon.models.user.Rolodex;
+import com.marshmallow.beacon.models.marketing.Sponsor;
+import com.marshmallow.beacon.models.marketing.SponsorVisitEvent;
+import com.marshmallow.beacon.models.marketing.UserMarketDataSnapshot;
+import com.marshmallow.beacon.models.user.User;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,18 +47,12 @@ import java.util.List;
 public class FirebaseBackend implements BeaconBackendInterface{
     private FirebaseAuth firebaseAuth;
     private DatabaseReference userReference = null;
-    private DatabaseReference statsSupplyTotalRef = null;
-    private DatabaseReference statsDemandTotalRef = null;
     private Query requestsInQuery = null;
     private Query requestsOutQuery = null;
     private ValueEventListener userValueEventListener = null;
-    private ValueEventListener statsSupplyTotalRefEventListener = null;
-    private ValueEventListener statsDemandTotalRefEventListener = null;
     private ChildEventListener requestsInQueryListener = null;
     private ChildEventListener requestsOutQueryListener = null;
     private HashMap<Query, ChildEventListener> contactReferences = null;
-    private Integer supplyTotal;
-    private Integer demandTotal;
 
     public FirebaseBackend() {
         firebaseAuth = FirebaseAuth.getInstance();
@@ -160,49 +159,10 @@ public class FirebaseBackend implements BeaconBackendInterface{
         requestsOutQuery.addChildEventListener(requestsOutQueryListener);
     }
 
-    private void initializeStatsListeners() {
-        statsSupplyTotalRefEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                supplyTotal = dataSnapshot.getValue(Integer.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        statsDemandTotalRefEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                demandTotal = dataSnapshot.getValue(Integer.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        statsSupplyTotalRef = FirebaseDatabase.getInstance().getReference("stats/supplyTotal");
-        statsDemandTotalRef = FirebaseDatabase.getInstance().getReference("stats/demandTotal");
-        statsSupplyTotalRef.addValueEventListener(statsSupplyTotalRefEventListener);
-        statsDemandTotalRef.addValueEventListener(statsDemandTotalRefEventListener);
-    }
-
     private void cleanupDatabaseReferences() {
         userReference.removeEventListener(userValueEventListener);
-        statsSupplyTotalRef.removeEventListener(statsSupplyTotalRefEventListener);
-        statsDemandTotalRef.removeEventListener(statsDemandTotalRefEventListener);
-
         userValueEventListener = null;
-        statsSupplyTotalRefEventListener = null;
-        statsDemandTotalRefEventListener = null;
         userReference = null;
-        statsSupplyTotalRef = null;
-        statsDemandTotalRef = null;
-
         removeContactListeners();
         removeRequestListeners();
     }
@@ -252,7 +212,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             initializeUserListeners(context);
-                            initializeStatsListeners();
                         } else {
                             SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(task.getException().getMessage(), null);
                             Intent intent = signInStatusBroadcast.getFailureBroadcast();
@@ -417,5 +376,43 @@ public class FirebaseBackend implements BeaconBackendInterface{
     public void cancelRequest(Request request) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
+    }
+
+    @Override
+    public void storeSponsorVisit(Sponsor sponsor) {
+        final User user = UserManager.getInstance().getUser();
+        final DatabaseReference sponsorReference = FirebaseDatabase.getInstance().getReference().child("sponsors").child(sponsor.getUid());
+        UserMarketDataSnapshot userMarketDataSnapshot = new UserMarketDataSnapshot(user);
+        SponsorVisitEvent sponsorVisitEvent = new SponsorVisitEvent(userMarketDataSnapshot);
+        String sponsorVisitKey = sponsorReference.child("sponsorVisitEvents").push().getKey();
+        if (sponsorVisitKey != null) {
+            sponsorReference.child("sponsorVisitEvents").child(sponsorVisitKey).setValue(sponsorVisitEvent);
+        }
+
+        // Check is user has hit this sponsor already
+        sponsorReference.child("usersVisited").equalTo(firebaseAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    // Store that the user has visited the sponsor
+                    sponsorReference.child("usersVisited").child(firebaseAuth.getUid()).setValue(true);
+
+                    // Update the user's points
+                    Integer gainedUserPoints = user.getPoints() + MarketingManager.getInstance().getUserSponsorMarketingValue(user);
+                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("users").child(firebaseAuth.getUid());
+                    userReference.child("points").setValue(gainedUserPoints);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+    }
+
+    @Override
+    public void storeSurveyResult(SurveyResult surveyResult) {
+
     }
 }

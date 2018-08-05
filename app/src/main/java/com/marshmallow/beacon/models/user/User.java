@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.models;
+package com.marshmallow.beacon.models.user;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,8 +7,6 @@ import android.util.Base64;
 import com.google.firebase.database.Exclude;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by George on 7/17/2018.

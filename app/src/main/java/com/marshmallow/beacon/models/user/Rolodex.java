@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.models;
+package com.marshmallow.beacon.models.user;
 
 import java.util.List;
 import java.util.Vector;

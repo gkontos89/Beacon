@@ -64,5 +64,6 @@
     <string name="profile_picture_title_text">Profile Picture</string>
     <string name="profile_picture_disclaimer_text">Profile pictures are not shared with advertisers!</string>
     <string name="no_contacts_text">You have no contacts!</string>
+    <string name="sponsors">Sponsors</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.ui;
+package com.marshmallow.beacon.ui.user;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,17 +8,14 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
-import com.marshmallow.beacon.ContactRequestManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
-import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
+import com.marshmallow.beacon.ui.BaseActivity;
 
 /**
  * Created by George on 7/13/2018.

@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.ui;
+package com.marshmallow.beacon.ui.user;
 
 import android.content.Intent;
 import android.os.Bundle;

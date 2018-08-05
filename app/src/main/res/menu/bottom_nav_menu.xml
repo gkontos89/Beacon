@@ -17,9 +17,9 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/coming_soon_button"
+        android:id="@+id/sponsors_button"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_gallery"
-        android:title="@string/coming_soon"
+        android:icon="@drawable/ic_baseline_star_24px"
+        android:title="@string/sponsors"
         app:showAsAction="ifRoom" />
 </menu>

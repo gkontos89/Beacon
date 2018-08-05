@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.ui;
+package com.marshmallow.beacon.ui.user;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,8 +18,8 @@ import com.marshmallow.beacon.MarketingManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.backend.BeaconBackend;
-import com.marshmallow.beacon.models.DataPoint;
-import com.marshmallow.beacon.models.User;
+import com.marshmallow.beacon.models.user.DataPoint;
+import com.marshmallow.beacon.models.user.User;
 
 import java.io.IOException;
 

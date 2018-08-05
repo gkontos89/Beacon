@@ -1,6 +1,6 @@
 package com.marshmallow.beacon;
 
-import com.marshmallow.beacon.models.Request;
+import com.marshmallow.beacon.models.contacts.Request;
 
 import java.util.HashMap;
 import java.util.Vector;

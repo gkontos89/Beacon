@@ -1,7 +1,7 @@
 package com.marshmallow.beacon;
 
-import com.marshmallow.beacon.models.Contact;
-import com.marshmallow.beacon.models.User;
+import com.marshmallow.beacon.models.contacts.Contact;
+import com.marshmallow.beacon.models.user.User;
 
 import java.util.HashMap;
 

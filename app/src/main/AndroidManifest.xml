@@ -12,19 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.BaseActivity" />
-        <activity android:name=".ui.HomeActivity"/>
-        <activity android:name=".ui.ContactsActivity" />
-        <activity android:name=".ui.LoginActivity">
+        <activity android:name=".ui.user.HomeActivity"/>
+        <activity android:name=".ui.contacts.ContactsActivity" />
+        <activity android:name=".ui.user.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.NewContactActivity" />
-        <activity android:name=".ui.IncomingContactRequestsActivity" />
-        <activity android:name=".ui.OutgoingContactRequestsActivity" />
-        <activity android:name=".ui.WelcomePrimaryActivity" />
-        <activity android:name=".ui.EditProfileActivity" />
+        <activity android:name=".ui.contacts.NewContactActivity" />
+        <activity android:name=".ui.contacts.IncomingContactRequestsActivity" />
+        <activity android:name=".ui.contacts.OutgoingContactRequestsActivity" />
+        <activity android:name=".ui.user.WelcomePrimaryActivity" />
+        <activity android:name=".ui.user.EditProfileActivity" />
+        <activity android:name=".ui.marketing.SponsorsActivity" />
     </application>
 
 </manifest>

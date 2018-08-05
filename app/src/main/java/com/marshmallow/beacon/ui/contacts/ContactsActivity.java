@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.ui;
+package com.marshmallow.beacon.ui.contacts;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,20 +10,17 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.firebase.ui.database.SnapshotParser;
 import com.marshmallow.beacon.ContactRequestManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.backend.BeaconBackend;
-import com.marshmallow.beacon.backend.FirebaseBackend;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
-import com.marshmallow.beacon.models.Contact;
+import com.marshmallow.beacon.models.contacts.Contact;
+import com.marshmallow.beacon.ui.BaseActivity;
 
-import java.util.List;
 import java.util.Vector;
 
 /**

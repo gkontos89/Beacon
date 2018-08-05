@@ -1,9 +1,10 @@
-package com.marshmallow.beacon.models;
+package com.marshmallow.beacon.models.marketing;
 
 /**
  * Created by George on 8/3/2018.
  */
-public class SurveyMarketingInfo {
+public class SponsorMarketValues {
+
     private Integer firstNameValue;
     private Integer lastNameValue;
     private Integer emailValue;
@@ -11,7 +12,7 @@ public class SurveyMarketingInfo {
     private Integer cityValue;
     private Integer stateValue;
 
-    public SurveyMarketingInfo() {
+    public SponsorMarketValues() {
     }
 
     public Integer getFirstNameValue() {

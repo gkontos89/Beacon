@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.models;
+package com.marshmallow.beacon.models.contacts;
 
 /**
  * Created by George on 7/17/2018.

@@ -3,8 +3,9 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
-import com.marshmallow.beacon.models.Request;
-import com.marshmallow.beacon.models.User;
+import com.marshmallow.beacon.models.contacts.Request;
+import com.marshmallow.beacon.models.marketing.Sponsor;
+import com.marshmallow.beacon.models.user.User;
 
 /**
  * BeehiveBackend is the front facing API's that are used throughout the application.
@@ -84,5 +85,10 @@ public class BeaconBackend implements BeaconBackendInterface {
     @Override
     public void clearRequest(Request request) {
         backendHandle.clearRequest(request);
+    }
+
+    @Override
+    public void storeSponsorVisit(Sponsor sponsor) {
+        backendHandle.storeSponsorVisit(sponsor);
     }
 }
