@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="start"
+    android:padding="8dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/edit_profile_instructions_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="15sp"
+            android:text="@string/edit_profile_instructions"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/points_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_profile_instructions_card"
+        android:layout_marginBottom="8dp">
+        <RelativeLayout
+            android:id="@+id/edit_profile_points_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_profile_instructions_card"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/points_per_survey_text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/points_per_survey_text_string"
+                android:labelFor="@+id/points_per_survey_text_view"/>
+
+            <TextView
+                android:id="@+id/points_per_survey_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/points_per_sponsor_text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/points_per_survey_text_title"
+                android:text="@string/points_per_sponsor_text_string"
+                android:labelFor="@+id/points_per_sponsor_text_view"/>
+
+            <TextView
+                android:id="@+id/points_per_sponsor_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/points_per_survey_text_title"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/profile_picture_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/points_card"
+        android:layout_marginBottom="16dp">
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/profile_picture_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_picture_title_text"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/profile_picture_disclaimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_picture_title"
+                android:layout_marginBottom="8dp"
+                android:text="@string/profile_picture_disclaimer_text"
+                android:textSize="12sp"/>
+            
+            <ImageButton
+                android:id="@+id/edit_profile_image_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_below="@id/profile_picture_disclaimer"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_baseline_account_box_24px"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/profile_picture_title_text">
+            </ImageButton>
+
+        </RelativeLayout>
+
+
+
+    </android.support.v7.widget.CardView>
+
+    <ScrollView
+        android:id="@+id/edit_profile_scrollview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_picture_card"
+        android:layout_above="@id/edit_profile_back_button">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp">
+            <RelativeLayout
+                android:id="@+id/first_name_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/edit_profile_first_name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:labelFor="@id/edit_profile_first_name_edit_text"
+                    android:textSize="15sp"
+                    android:text="@string/edit_profile_first_name_text"/>
+
+                <EditText
+                    android:id="@+id/edit_profile_first_name_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/edit_profile_first_name_text_view"
+                    android:inputType="text"/>
+
+                <ToggleButton
+                    android:id="@+id/first_name_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/last_name_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/edit_profile_last_name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_profile_last_name_text"/>
+
+                <EditText
+                    android:id="@+id/edit_profile_last_name_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/edit_profile_last_name_text_view"
+                    android:inputType="text"/>
+
+                <ToggleButton
+                    android:id="@+id/last_name_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/email_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_profile_email_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_profile_email_text"/>
+
+                <EditText
+                    android:id="@+id/edit_profile_email_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/edit_profile_email_text_view"
+                    android:inputType="textEmailAddress"/>
+
+                <ToggleButton
+                    android:id="@+id/email_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/birthday_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_profile_birthday_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_profile_birthday_text"/>
+
+                <EditText
+                    android:id="@+id/edit_profile_birthday_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_profile_birthday_text_view"
+                    android:inputType="text"/>
+
+                <ToggleButton
+                    android:id="@+id/birthday_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/city_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_profile_city_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_profile_city_text"/>
+
+                <EditText
+                    android:id="@+id/edit_profile_city_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_profile_city_text_view"
+                    android:inputType="text"/>
+
+                <ToggleButton
+                    android:id="@+id/city_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/state_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_profile_state_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_profile_state_text"/>
+
+                <EditText
+                    android:id="@+id/edit_profile_state_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_profile_state_text_view"
+                    android:inputType="text"/>
+
+                <ToggleButton
+                    android:id="@+id/state_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/edit_profile_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentBottom="true"
+        android:text="@string/edit_profile_back_button_text" />
+
+
+    <Button
+        android:id="@+id/edit_profile_done_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_profile_scrollview"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/edit_profile_done_button_text" />
+
+
+
+</RelativeLayout>

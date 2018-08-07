@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp">
+
+    <RelativeLayout
+        android:id="@+id/individual_survey_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/survey_picture"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/rewards"/>
+
+        <TextView
+            android:id="@+id/survey_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/survey_picture"
+            android:layout_centerInParent="true"
+            android:textSize="20sp"
+            android:text="hello"/>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/individual_survey_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/individual_survey_relative_layout"
+        android:layout_above="@id/individual_survey_cancel_button">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/individual_survey_cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentBottom="true"
+        android:text="@string/individual_survey_cancel_button_text" />
+
+
+    <Button
+        android:id="@+id/individual_survey_submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/individual_survey_rv"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/individual_survey_submit_button_text" />
+
+
+</RelativeLayout>

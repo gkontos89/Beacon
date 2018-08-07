@@ -8,18 +8,18 @@ import android.content.Intent;
 public class ContactUpdateBroadcast extends BaseStatusBroadcast {
     // Keys
     public static final String usernameKey = "username";
-    public static final String demandStatusKey = "demandStatus";
-    public static final String supplyStatusKey = "supplyStatus";
+    public static final String signedInKey = "signedInKey";
+    public static final String profilePictureKey = "profilePictureKey";
 
     // Fields
     public static final String action = "ContactUpdateBroadcast";
 
-    public ContactUpdateBroadcast(String username, Boolean demandStatus, Boolean supplyStatus) {
+    public ContactUpdateBroadcast(String username, Boolean signedInStatus, String profilePicture) {
         super();
         intent.setAction(action);
         intent.putExtra(usernameKey, username);
-        intent.putExtra(demandStatusKey, demandStatus);
-        intent.putExtra(supplyStatusKey, supplyStatus);
+        intent.putExtra(signedInKey, signedInStatus);
+        intent.putExtra(profilePictureKey, profilePicture);
     }
 
     public Intent getBroadcastIntent() {

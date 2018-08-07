@@ -3,9 +3,10 @@ package com.marshmallow.beacon.backend;
 import android.app.Activity;
 import android.content.Context;
 
-import com.marshmallow.beacon.models.CommunityEvent;
-import com.marshmallow.beacon.models.Request;
-import com.marshmallow.beacon.models.UserEvent;
+import com.marshmallow.beacon.models.contacts.Request;
+import com.marshmallow.beacon.models.marketing.Sponsor;
+import com.marshmallow.beacon.models.marketing.SurveyResult;
+import com.marshmallow.beacon.models.user.User;
 
 /**
  * BeehiveBackend is the front facing API's that are used throughout the application.
@@ -51,24 +52,7 @@ public class BeaconBackend implements BeaconBackendInterface {
     }
 
     @Override
-    public void setUserDemandStatus(Boolean status) {
-        backendHandle.setUserDemandStatus(status);
-    }
-
-    @Override
-    public void setUserSupplyStatus(Boolean status) {
-        backendHandle.setUserSupplyStatus(status);
-    }
-
-    @Override
-    public void storeCommunityEvent(CommunityEvent communityEvent) {
-        backendHandle.storeCommunityEvent(communityEvent);
-    }
-
-    @Override
-    public void storeUserEvent(UserEvent userEvent) {
-        backendHandle.storeUserEvent(userEvent);
-    }
+    public void submitProfileUpdates(User user) { backendHandle.submitProfileUpdates(user); }
 
     public void initializeContactListeners(Context context) { backendHandle.initializeContactListeners(context); }
 
@@ -102,5 +86,15 @@ public class BeaconBackend implements BeaconBackendInterface {
     @Override
     public void clearRequest(Request request) {
         backendHandle.clearRequest(request);
+    }
+
+    @Override
+    public void storeSponsorVisit(Sponsor sponsor) {
+        backendHandle.storeSponsorVisit(sponsor);
+    }
+
+    @Override
+    public void storeSurveyResult(SurveyResult surveyResult) {
+        backendHandle.storeSurveyResult(surveyResult);
     }
 }

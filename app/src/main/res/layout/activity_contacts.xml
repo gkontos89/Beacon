@@ -4,22 +4,115 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <Button
-        android:id="@+id/add_contact_button"
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/incoming_requests"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/incoming_requests_card_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:text="@string/incoming_requests_home_title"
+                android:gravity="start"/>
+
+            <TextView
+                android:id="@+id/received_contact_request_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/incoming_requests_card_text"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:gravity="end"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/outgoing_requests"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        android:layout_below="@id/incoming_requests">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/outgoing_requests_card_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:text="@string/outgoing_requests_home_title"
+                android:gravity="start"/>
+
+            <TextView
+                android:id="@+id/sent_contact_request_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/outgoing_requests_card_text"
+                android:textSize="20sp"
+                android:layout_margin="8dp"
+                android:gravity="end"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <TextView
+        android:id="@+id/no_contacts_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/add_contact_button_text"/>
+        android:layout_centerInParent="true"
+        android:text="@string/no_contacts_text"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/contacts_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@id/add_contact_button">
+        android:layout_below="@id/outgoing_requests">
 
     </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_contact_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorActionButton"
+        android:src="@drawable/ic_baseline_add_24px" />
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

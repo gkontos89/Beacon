@@ -10,28 +10,20 @@
         android:layout_margin="8dp">
 
         <ImageView
-            android:id="@+id/contact_profile_picture"
+            android:id="@+id/survey_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/rewards"/>
 
         <TextView
-            android:id="@+id/contact_name"
+            android:id="@+id/survey_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/contact_profile_picture"
+            android:layout_toEndOf="@id/survey_image"
             android:layout_centerInParent="true"
             android:textSize="20sp"
             android:text="hello"/>
-
-        <ImageView
-            android:id="@+id/sign_in_status_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/beacon_on_mini"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 
