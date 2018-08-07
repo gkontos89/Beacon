@@ -71,6 +71,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
                             String username = email.replace("@gmail.com", "");
                             User user = new User(username);
                             UserManager.getInstance().setUser(user);
+                            storeNewUser(username);
                             CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
                             Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
                             context.sendBroadcast(intent);

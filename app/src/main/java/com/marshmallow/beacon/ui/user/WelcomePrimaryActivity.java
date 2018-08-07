@@ -21,7 +21,7 @@ public class WelcomePrimaryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contacts);
+        setContentView(R.layout.activity_primary_welcome);
 
         // GUI instantiation
         backButton = findViewById(R.id.edit_profile_back_button);

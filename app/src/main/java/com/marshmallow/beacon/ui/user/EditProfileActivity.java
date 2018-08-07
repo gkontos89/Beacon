@@ -63,6 +63,7 @@ public class EditProfileActivity extends AppCompatActivity {
         // GUI instantiation
         pointsPerSponsorTextView = findViewById(R.id.points_per_sponsor_text_view);
         pointsPerSurveyTextView = findViewById(R.id.points_per_survey_text_view);
+        profileImageButton = findViewById(R.id.edit_profile_image_button);
         firstNameEditText = findViewById(R.id.edit_profile_first_name_edit_text);
         firstNameToggleButton = findViewById(R.id.first_name_toggle_button);
         lastNameEditText = findViewById(R.id.edit_profile_last_name_edit_text);

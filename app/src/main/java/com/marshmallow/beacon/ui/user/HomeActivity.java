@@ -46,7 +46,11 @@ public class HomeActivity extends BaseActivity {
         availableSurveysCard = findViewById(R.id.surveys_card);
 
         // UI initialization
-        profilePicture.setImageBitmap(UserManager.getInstance().getUser().getProfilePictureBitmap());
+        // TODO check if these values are valid?
+        if (UserManager.getInstance().getUser().getProfilePicture() != null) {
+            profilePicture.setImageBitmap(UserManager.getInstance().getUser().getProfilePictureBitmap());
+        }
+
         usernameText.setText(UserManager.getInstance().getUser().getUsername());
         pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
 
