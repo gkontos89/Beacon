@@ -13,6 +13,13 @@ public class SponsorMarketValues {
     private Integer stateValue;
 
     public SponsorMarketValues() {
+        // TODO remove
+        firstNameValue = 1;
+        lastNameValue = 1;
+        emailValue = 1;
+        birthdayValue = 1;
+        cityValue = 1;
+        stateValue = 1;
     }
 
     public Integer getFirstNameValue() {

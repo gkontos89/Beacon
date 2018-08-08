@@ -97,4 +97,8 @@ public class BeaconBackend implements BeaconBackendInterface {
     public void storeSurveyResult(SurveyResult surveyResult) {
         backendHandle.storeSurveyResult(surveyResult);
     }
+
+    public void initializeUserListeners(Context context) {
+        backendHandle.initializeUserListeners(context);
+    }
 }

@@ -45,6 +45,7 @@ public class ContactsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_contacts);
+        activityType = MainActivityTypes.CONTACTS;
         super.onCreate(savedInstanceState);
 
         // GUI handle instantiation

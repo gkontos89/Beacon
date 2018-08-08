@@ -17,6 +17,14 @@ import com.marshmallow.beacon.ui.user.HomeActivity;
  */
 public class BaseActivity extends AppCompatActivity {
 
+    protected MainActivityTypes activityType;
+
+    protected enum MainActivityTypes {
+        HOME,
+        CONTACTS,
+        SPONSORS
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,18 +35,36 @@ public class BaseActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()) {
                     case R.id.home_button:
-                        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                        startActivity(homeIntent);
+                        if (activityType != MainActivityTypes.HOME) {
+                            Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                            startActivity(homeIntent);
+                            finish();
+                        }
+
                         break;
 
                     case R.id.contacts_button:
-                        Intent contactsIntent = new Intent(getApplicationContext(), ContactsActivity.class);
-                        startActivity(contactsIntent);
+                        if (activityType != MainActivityTypes.CONTACTS) {
+                            if (activityType != MainActivityTypes.HOME) {
+                                finish();
+                            }
+
+                            Intent contactsIntent = new Intent(getApplicationContext(), ContactsActivity.class);
+                            startActivity(contactsIntent);
+                        }
+
                         break;
 
                     case R.id.sponsors_button:
-                        Intent sponsorsIntent = new Intent(getApplicationContext(), SponsorsActivity.class);
-                        startActivity(sponsorsIntent);
+                        if (activityType != MainActivityTypes.SPONSORS) {
+                            if (activityType != MainActivityTypes.HOME) {
+                                finish();
+                            }
+
+                            Intent sponsorsIntent = new Intent(getApplicationContext(), SponsorsActivity.class);
+                            startActivity(sponsorsIntent);
+                        }
+
                         break;
                 }
 

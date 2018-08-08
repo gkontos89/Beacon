@@ -136,6 +136,7 @@ public class FirebaseBackend implements BeaconBackendInterface{
         };
 
         userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
+        userReference.child("signedIn").setValue(true);
         userReference.addValueEventListener(userValueEventListener);
     }
 

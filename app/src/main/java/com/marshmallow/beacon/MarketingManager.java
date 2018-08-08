@@ -14,6 +14,8 @@ public class MarketingManager {
     private SurveyMarketValues surveyMarketValues;
 
     private MarketingManager() {
+        sponsorMarketValues = new SponsorMarketValues();
+        surveyMarketValues = new SurveyMarketValues();
     }
 
     public static MarketingManager getInstance() {

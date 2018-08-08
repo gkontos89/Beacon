@@ -45,8 +45,10 @@ public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.Sponso
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BeaconBackend.getInstance().storeSponsorVisit(sponsor);
+                // TODO add back in the visit
+                //BeaconBackend.getInstance().storeSponsorVisit(sponsor);
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(sponsor.getUrl()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

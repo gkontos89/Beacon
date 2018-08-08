@@ -23,10 +23,19 @@ public class SponsorsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_sponsors);
+        activityType = MainActivityTypes.SPONSORS;
         super.onCreate(savedInstanceState);
 
         // TODO get sponsors
         sponsors = new Vector<>();
+        Sponsor s1 = new Sponsor();
+        s1.setName("RAM Brewery");
+        s1.setUrl("https://www.theram.com/");
+        Sponsor s2 = new Sponsor();
+        s2.setName("Discover");
+        s2.setUrl("https://www.discover.com/");
+        sponsors.add(s1);
+        sponsors.add(s2);
         sponsorsRecyclerView = findViewById(R.id.sponsors_recycler_view);
         recyclerViewLayoutManager = new LinearLayoutManager(this);
         sponsorsRecyclerView.setLayoutManager(recyclerViewLayoutManager);
