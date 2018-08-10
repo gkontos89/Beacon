@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
-import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.models.marketing.Sponsor;
 
 import java.util.Vector;

@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.marshmallow.beacon.ContactRequestManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
-import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
 import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
 import com.marshmallow.beacon.models.contacts.Contact;

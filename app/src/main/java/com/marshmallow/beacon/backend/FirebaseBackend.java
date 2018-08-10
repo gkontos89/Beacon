@@ -1,15 +1,10 @@
 package com.marshmallow.beacon.backend;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -23,10 +18,7 @@ import com.marshmallow.beacon.MarketingManager;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
 import com.marshmallow.beacon.broadcasts.ContactUpdateBroadcast;
-import com.marshmallow.beacon.broadcasts.CreateUserStatusBroadcast;
-import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
-import com.marshmallow.beacon.broadcasts.SignInStatusBroadcast;
 import com.marshmallow.beacon.models.contacts.Contact;
 import com.marshmallow.beacon.models.contacts.Request;
 import com.marshmallow.beacon.models.marketing.SurveyResult;
@@ -44,7 +36,7 @@ import java.util.List;
  *
  * Created by George on 4/29/2018.
  */
-public class FirebaseBackend implements BeaconBackendInterface{
+public class FirebaseBackend {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseInst;
     private DatabaseReference userReference = null;
@@ -60,85 +52,17 @@ public class FirebaseBackend implements BeaconBackendInterface{
         firebaseInst = FirebaseDatabase.getInstance();
     }
 
-    @Override
-    public void createUserWithEmailAndPassword(final Context context, final Activity activity, final String email, String password) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Trim email
-                            String username = email.replace("@gmail.com", "");
-                            User user = new User(username);
-                            UserManager.getInstance().setUser(user);
-                            storeNewUser(username);
-                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(null, null);
-                            Intent intent = createUserStatusBroadcast.getSuccessfulBroadcast();
-                            context.sendBroadcast(intent);
-                        } else {
-                            CreateUserStatusBroadcast createUserStatusBroadcast = new CreateUserStatusBroadcast(task.getException().getMessage(), null);
-                            Intent intent = createUserStatusBroadcast.getFailureBroadcast();
-                            context.sendBroadcast(intent);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void signInWithEmailAndPassword(final Context context, final Activity activity, String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            initializeUserListeners(context);
-                        } else {
-                            SignInStatusBroadcast signInStatusBroadcast = new SignInStatusBroadcast(task.getException().getMessage(), null);
-                            Intent intent = signInStatusBroadcast.getFailureBroadcast();
-                            context.sendBroadcast(intent);
-                        }
-                    }
-                });
-    }
-
-    @Override
     public Boolean isUserSignedIn() {
         return (firebaseAuth.getCurrentUser() != null);
     }
 
-    @Override
     public void signOutUser() {
         userReference.child("signedIn").setValue(false);
         cleanupDatabaseReferences();
         firebaseAuth.signOut();
     }
 
-    public void initializeUserListeners(final Context context) {
-        userValueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
-                if (requestsInQuery == null && requestsOutQuery == null) {
-                    initializeRequestListeners(context);
-                }
 
-                LoadUserStatusBroadcast loadUserStatusBroadcast = new LoadUserStatusBroadcast(null, null);
-                Intent intent = loadUserStatusBroadcast.getSuccessfulBroadcast();
-                context.sendBroadcast(intent);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                LoadUserStatusBroadcast loadUserStatusBroadcast = new LoadUserStatusBroadcast(databaseError.getMessage(), null);
-                Intent intent = loadUserStatusBroadcast.getFailureBroadcast();
-                context.sendBroadcast(intent);
-            }
-        };
-
-        userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
-        userReference.child("signedIn").setValue(true);
-        userReference.addValueEventListener(userValueEventListener);
-    }
 
     private void initializeRequestListeners(final Context context) {
         String username = UserManager.getInstance().getUser().getUsername();
@@ -232,19 +156,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
         requestsOutQuery = null;
     }
 
-
-    @Override
-    public void submitProfileUpdates(User user) {
-        DatabaseReference databaseReference = firebaseInst.getReference("users");
-        databaseReference.child(firebaseAuth.getUid()).setValue(user);
-    }
-
-    private void storeNewUser(String username) {
-        User user = new User(username);
-        DatabaseReference databaseReference = firebaseInst.getReference("users");
-        databaseReference.child(firebaseAuth.getUid()).setValue(user);
-    }
-
     public void initializeContactListeners(final Context context) {
         contactReferences = new HashMap<>();
         if (UserManager.getInstance().getUser().getRolodex() != null) {
@@ -304,7 +215,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
         }
     }
 
-    @Override
     public void sendNewContactRequest(final Context context, final Request request) {
         // First make sure the requested user exists
         DatabaseReference databaseReference = firebaseInst.getReference();
@@ -338,8 +248,6 @@ public class FirebaseBackend implements BeaconBackendInterface{
             }
         });
     }
-
-    @Override
     public void acceptRequest(Request request) {
         DatabaseReference databaseReference = firebaseInst.getReference();
         request.setStatus(Request.Status.ACCEPTED);
@@ -353,14 +261,12 @@ public class FirebaseBackend implements BeaconBackendInterface{
         databaseReference.child("users").child(firebaseAuth.getUid()).child("rolodex").setValue(rolodex);
     }
 
-    @Override
     public void declineRequest(Request request) {
         DatabaseReference databaseReference = firebaseInst.getReference();
         request.setStatus(Request.Status.DECLINED);
         databaseReference.child("requests").child(request.getUid()).setValue(request);
     }
 
-    @Override
     public void confirmRequest(Request request) {
         DatabaseReference databaseReference = firebaseInst.getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
@@ -373,18 +279,15 @@ public class FirebaseBackend implements BeaconBackendInterface{
         databaseReference.child("users").child(firebaseAuth.getUid()).child("rolodex").setValue(rolodex);
     }
 
-    @Override
     public void clearRequest(Request request) {
         cancelRequest(request);
     }
 
-    @Override
     public void cancelRequest(Request request) {
         DatabaseReference databaseReference = firebaseInst.getReference();
         databaseReference.child("requests").child(request.getUid()).removeValue();
     }
 
-    @Override
     public void storeSponsorVisit(Sponsor sponsor) {
         final User user = UserManager.getInstance().getUser();
         final DatabaseReference sponsorReference = firebaseInst.getReference().child("sponsors").child(sponsor.getUid());
@@ -417,8 +320,4 @@ public class FirebaseBackend implements BeaconBackendInterface{
 
     }
 
-    @Override
-    public void storeSurveyResult(SurveyResult surveyResult) {
-
-    }
 }

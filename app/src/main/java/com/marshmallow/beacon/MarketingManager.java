@@ -10,12 +10,8 @@ import com.marshmallow.beacon.models.user.User;
 public class MarketingManager {
 
     private static MarketingManager instance = null;
-    private SponsorMarketValues sponsorMarketValues;
-    private SurveyMarketValues surveyMarketValues;
 
     private MarketingManager() {
-        sponsorMarketValues = new SponsorMarketValues();
-        surveyMarketValues = new SurveyMarketValues();
     }
 
     public static MarketingManager getInstance() {
@@ -26,23 +22,7 @@ public class MarketingManager {
         return instance;
     }
 
-    public SponsorMarketValues getSponsorMarketValues() {
-        return sponsorMarketValues;
-    }
-
-    public void setSponsorMarketValues(SponsorMarketValues sponsorMarketValues) {
-        this.sponsorMarketValues = sponsorMarketValues;
-    }
-
-    public SurveyMarketValues getSurveyMarketValues() {
-        return surveyMarketValues;
-    }
-
-    public void setSurveyMarketValues(SurveyMarketValues surveyMarketValues) {
-        this.surveyMarketValues = surveyMarketValues;
-    }
-
-    public Integer getUserSponsorMarketingValue(User user) {
+    public Integer getUserSponsorMarketingValue(User user, SponsorMarketValues sponsorMarketValues) {
         Integer totalMarketingValue = 0;
         if (user.getFirstName().getShared()) {
             totalMarketingValue += sponsorMarketValues.getFirstNameValue();
@@ -71,7 +51,7 @@ public class MarketingManager {
         return totalMarketingValue;
     }
 
-    public Integer getUserSurveyMarketingValue(User user) {
+    public Integer getUserSurveyMarketingValue(User user, SurveyMarketValues surveyMarketValues) {
         Integer totalMarketingValue = 0;
         if (user.getFirstName().getShared()) {
             totalMarketingValue += surveyMarketValues.getFirstNameValue();

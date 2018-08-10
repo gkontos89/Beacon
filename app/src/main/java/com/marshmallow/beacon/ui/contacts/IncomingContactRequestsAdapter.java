@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
-import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.models.contacts.Request;
 
 import java.util.Vector;

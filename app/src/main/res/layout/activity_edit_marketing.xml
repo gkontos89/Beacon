@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="start"
+    android:padding="8dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/edit_marketing_instructions_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="15sp"
+            android:text="@string/edit_marketing_instructions"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/points_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_marketing_instructions_card"
+        android:layout_marginBottom="8dp">
+        <RelativeLayout
+            android:id="@+id/edit_marketing_points_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_marketing_instructions_card"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/points_per_survey_text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/points_per_survey_text_string"
+                android:labelFor="@+id/points_per_survey_text_view"/>
+
+            <TextView
+                android:id="@+id/points_per_survey_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/points_per_sponsor_text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/points_per_survey_text_title"
+                android:text="@string/points_per_sponsor_text_string"
+                android:labelFor="@+id/points_per_sponsor_text_view"/>
+
+            <TextView
+                android:id="@+id/points_per_sponsor_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/points_per_survey_text_title"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <ScrollView
+        android:id="@+id/edit_marketing_scrollview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/points_card"
+        android:layout_above="@id/edit_marketing_back_button">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp">
+
+            <RelativeLayout
+                android:id="@+id/email_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_marketing_email_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_email_text"/>
+
+                <ToggleButton
+                    android:id="@+id/email_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/location_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_marketing_geolocation_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_geolocation_text"/>
+
+                <ToggleButton
+                    android:id="@+id/geolocation_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/first_name_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/edit_marketing_first_name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_first_name_text"/>
+
+                <ToggleButton
+                    android:id="@+id/first_name_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/last_name_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/edit_marketing_last_name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_last_name_text"/>
+
+                <ToggleButton
+                    android:id="@+id/last_name_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+                android:id="@+id/birthday_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_marketing_birthday_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_birthday_text"/>
+
+                <ToggleButton
+                    android:id="@+id/birthday_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/city_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_marketing_city_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_city_text"/>
+
+                <ToggleButton
+                    android:id="@+id/city_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/state_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_marketing_state_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_state_text"/>
+
+                <ToggleButton
+                    android:id="@+id/state_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/edit_marketing_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentBottom="true"
+        android:text="@string/edit_marketing_back_button_text" />
+
+
+    <Button
+        android:id="@+id/edit_marketing_submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_marketing_scrollview"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/edit_marketing_submit_button_text" />
+
+</RelativeLayout>

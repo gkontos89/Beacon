@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
-import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
 import com.marshmallow.beacon.models.contacts.Request;
 

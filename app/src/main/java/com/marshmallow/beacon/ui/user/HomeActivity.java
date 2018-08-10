@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
-import com.marshmallow.beacon.backend.BeaconBackend;
-import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
 import com.marshmallow.beacon.ui.BaseActivity;
 
 /**

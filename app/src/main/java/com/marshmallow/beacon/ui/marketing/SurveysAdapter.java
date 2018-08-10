@@ -1,7 +1,6 @@
 package com.marshmallow.beacon.ui.marketing;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.marshmallow.beacon.R;
-import com.marshmallow.beacon.backend.BeaconBackend;
 import com.marshmallow.beacon.models.marketing.Survey;
 
 import java.util.Vector;
