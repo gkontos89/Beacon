@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.ui.BaseActivity;
@@ -27,8 +30,10 @@ public class HomeActivity extends BaseActivity {
     Button editProfileButton;
     CardView rewardsCatalogCard;
     CardView availableSurveysCard;
-    BroadcastReceiver broadcastReceiver;
-    IntentFilter intentFilter;
+
+    // Firebase
+    private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase firebaseInst;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +49,11 @@ public class HomeActivity extends BaseActivity {
         rewardsCatalogCard = findViewById(R.id.rewards_card);
         availableSurveysCard = findViewById(R.id.surveys_card);
 
+        // Firebase
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseInst = FirebaseDatabase.getInstance();
+
         // UI initialization
-        // TODO check if these values are valid?
         if (UserManager.getInstance().getUser().getProfilePicture() != null) {
             profilePicture.setImageBitmap(UserManager.getInstance().getUser().getProfilePictureBitmap());
         }
@@ -74,42 +82,15 @@ public class HomeActivity extends BaseActivity {
                 // TODO launch surveys page
             }
         });
-
-        // Setup broadcast receivers for surveys and point totals
-        // TODO setup intent filter to catch survey broadcasts
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(LoadUserStatusBroadcast.action);
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() != null) {
-                    if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
-                        if (intent.getStringExtra(LoadUserStatusBroadcast.statusKey).equals(LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL)) {
-                            pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
-                        }
-                    }
-                }
-            }
-        };
-
-        registerReceiver(broadcastReceiver, intentFilter);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        BeaconBackend.getInstance().signOutUser();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unregisterReceiver(broadcastReceiver);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver(broadcastReceiver, intentFilter);
+        if (firebaseAuth.getUid() != null) {
+            DatabaseReference userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
+            userReference.child("signedIn").setValue(false);
+            firebaseAuth.signOut();
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.broadcasts.AddNewContactBroadcast;
@@ -30,9 +36,8 @@ public class NewContactActivity extends AppCompatActivity {
     private LinearLayout progressBarLinearLayout;
     private TextView progressBarText;
 
-    // Broadcast receiver
-    private IntentFilter intentFilter;
-    private BroadcastReceiver broadcastReceiver;
+    // Firebase
+    private FirebaseDatabase firebaseInst;
 
     // Username text
     private String username;
@@ -41,6 +46,9 @@ public class NewContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_contact);
+
+        // Firebase
+        firebaseInst = FirebaseDatabase.getInstance();
 
         // Set GUI handles
         contactUserNameEditText = findViewById(R.id.new_contact_username_edit_text);
@@ -55,43 +63,36 @@ public class NewContactActivity extends AppCompatActivity {
                     if (notAlreadyAContact() && notSearchingThyself()) {
                         showProgressBar("Submitting contact request...");
                         username = contactUserNameEditText.getText().toString();
-                        Request request = new Request(username, UserManager.getInstance().getUser().getUsername());
-                        BeaconBackend.getInstance().sendNewContactRequest(getApplicationContext(), request);
+                        final Request request = new Request(username, UserManager.getInstance().getUser().getUsername());
+                        firebaseInst.getReference().child("users").orderByChild("username").equalTo(request.getTo()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                // If user exists submit the request!
+                                if (dataSnapshot.exists()) {
+                                    // Create Request model and submit to database
+                                    DatabaseReference requestsReference = firebaseInst.getReference("requests");
+                                    String requestUniqueId = requestsReference.child("requests").push().getKey();
+                                    if (requestUniqueId != null) {
+                                        request.setUid(requestUniqueId);
+                                        requestsReference.child(requestUniqueId).setValue(request);
+                                        contactRequestSubmitSucceeded();
+                                    } else {
+                                        requestCreationFailed("Unable to create new request");
+                                    }
+                                } else {
+                                    contactRequestContactNotFound();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                contactRequestSubmitFailed(databaseError.getMessage());
+                            }
+                        });
                     }
                 }
             }
         });
-
-        // Set up broadcast receivers for status on new contact being added
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(AddNewContactBroadcast.action);
-
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(AddNewContactBroadcast.action)) {
-                    switch (intent.getStringExtra(AddNewContactBroadcast.statusKey)) {
-                        case AddNewContactBroadcast.CONTACT_REQUEST_SUBMITTED:
-                            contactRequestSubmitSucceeded();
-                            break;
-
-                        case AddNewContactBroadcast.CONTACT_REQUEST_FAILED:
-                            contactRequestSubmitFailed(intent.getStringExtra(AddNewContactBroadcast.statusMessageKey));
-                            break;
-
-                        case AddNewContactBroadcast.CONTACT_NOT_FOUND:
-                            contactRequestContactNotFound();
-                            break;
-
-                        case AddNewContactBroadcast.REQUEST_CREATION_FAILED:
-                            requestCreationFailed(intent.getStringExtra(AddNewContactBroadcast.statusMessageKey));
-                            break;
-                    }
-                }
-            }
-        };
-
-        registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private boolean notSearchingThyself() {
@@ -144,18 +145,6 @@ public class NewContactActivity extends AppCompatActivity {
         progressBarLinearLayout.setVisibility(View.GONE);
         SystemClock.sleep(300);
         finish();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unregisterReceiver(broadcastReceiver);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver(broadcastReceiver, intentFilter);
     }
 
     public void showProgressBar(String progressBarText) {
