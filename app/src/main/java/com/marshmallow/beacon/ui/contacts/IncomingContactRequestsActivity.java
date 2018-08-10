@@ -1,9 +1,5 @@
 package com.marshmallow.beacon.ui.contacts;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +17,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.marshmallow.beacon.ContactRequestManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
-import com.marshmallow.beacon.broadcasts.RequestUpdateBroadcast;
 import com.marshmallow.beacon.models.contacts.Request;
 import com.marshmallow.beacon.models.user.Rolodex;
 
