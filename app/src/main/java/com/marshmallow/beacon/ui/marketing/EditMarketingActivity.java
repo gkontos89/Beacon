@@ -124,6 +124,7 @@ public class EditMarketingActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 sponsorMarketValues = dataSnapshot.getValue(SponsorMarketValues.class);
+                updateUserMarketingValue();
             }
 
             @Override
@@ -135,6 +136,7 @@ public class EditMarketingActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 surveyMarketValues = dataSnapshot.getValue(SurveyMarketValues.class);
+                updateUserMarketingValue();
             }
 
             @Override
@@ -160,7 +162,12 @@ public class EditMarketingActivity extends AppCompatActivity{
     }
 
     private void updateUserMarketingValue() {
-        pointsPerSponsorTextView.setText(MarketingManager.getInstance().getUserSponsorMarketingValue(editableUser, sponsorMarketValues));
-        pointsPerSurveyTextView.setText(MarketingManager.getInstance().getUserSurveyMarketingValue(editableUser, surveyMarketValues));
+        if (sponsorMarketValues != null) {
+            pointsPerSponsorTextView.setText(MarketingManager.getInstance().getUserSponsorMarketingValue(editableUser, sponsorMarketValues).toString());
+        }
+
+        if (surveyMarketValues != null) {
+            pointsPerSurveyTextView.setText(MarketingManager.getInstance().getUserSurveyMarketingValue(editableUser, surveyMarketValues).toString());
+        }
     }
 }

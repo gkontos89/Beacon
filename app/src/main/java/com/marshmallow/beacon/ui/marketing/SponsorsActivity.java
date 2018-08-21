@@ -1,6 +1,5 @@
 package com.marshmallow.beacon.ui.marketing;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.marketing.Sponsor;
 import com.marshmallow.beacon.models.marketing.SponsorMarketValues;
 import com.marshmallow.beacon.models.marketing.SponsorVisitEvent;
-import com.marshmallow.beacon.models.marketing.SurveyMarketValues;
 import com.marshmallow.beacon.models.marketing.UserMarketDataSnapshot;
 import com.marshmallow.beacon.models.user.User;
 import com.marshmallow.beacon.ui.BaseActivity;
@@ -67,7 +65,6 @@ public class SponsorsActivity extends BaseActivity {
         initializeSponsorListeners();
         initializeMarketValueListeners();
 
-        // TODO get sponsors
         sponsors = new Vector<>();
         sponsorsRecyclerView = findViewById(R.id.sponsors_recycler_view);
         recyclerViewLayoutManager = new LinearLayoutManager(this);
@@ -103,8 +100,7 @@ public class SponsorsActivity extends BaseActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                sponsors.add(dataSnapshot.getValue(Sponsor.class));
-                sponsorsAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -152,10 +148,6 @@ public class SponsorsActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     storeSponsorVisit(sponsor);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(sponsor.getUrl()));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-
                 }
             });
         }
@@ -186,9 +178,9 @@ public class SponsorsActivity extends BaseActivity {
             sponsorReference.child("sponsorVisitEvents").child(sponsorVisitKey).setValue(sponsorVisitEvent);
         }
 
-        // TODO may need to launch an intentservice to launch the URI
+        // TODO show progress dialog with points calculated and added to profile
         // Check is user has hit this sponsor already
-        sponsorReference.child("usersVisited").equalTo(firebaseAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        sponsorReference.child("usersVisited").child(firebaseAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
@@ -201,11 +193,19 @@ public class SponsorsActivity extends BaseActivity {
                         userReference.child("points").setValue(gainedUserPoints);
                     }
                 }
+
+                visitSponsorSite(sponsor.getUrl());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    private void visitSponsorSite(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }

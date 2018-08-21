@@ -73,8 +73,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Image button initialization
         if (editableUser.getProfilePictureBitmap() != null) {
+            validImage = true;
             profileImageButton.setImageBitmap(editableUser.getProfilePictureBitmap());
         }
+
+        // Edit text setup
+        initializeTextFields();
 
         profileImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +113,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void initializeTextFields() {
+        firstNameEditText.setText(editableUser.getFirstName().getValue());
+        lastNameEditText.setText(editableUser.getLastName().getValue());
+        birthdayEditText.setText(editableUser.getBirthday().getValue());
+        cityEditText.setText(editableUser.getCity().getValue());
+        stateEditText.setText(editableUser.getState().getValue());
     }
 
     private boolean profileIsValid() {

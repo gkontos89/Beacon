@@ -36,8 +36,6 @@ public class BaseActivity extends AppCompatActivity {
                 switch(item.getItemId()) {
                     case R.id.home_button:
                         if (activityType != MainActivityTypes.HOME) {
-                            Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                            startActivity(homeIntent);
                             finish();
                         }
 

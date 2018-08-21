@@ -88,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgressBar("Logging in...");
                 final String email = emailTextEntry.getText().toString();
                 String password = passwordTextEntry.getText().toString();
                 firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -175,7 +176,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void accountLoadingSucceeded() {
-        hideProgressBar();
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
