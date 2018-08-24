@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.user.User;
+import com.marshmallow.beacon.ui.ProfileUpdateManager;
 import com.marshmallow.beacon.ui.marketing.EditMarketingActivity;
 
 import java.io.IOException;
@@ -50,6 +51,9 @@ public class EditProfileActivity extends AppCompatActivity {
     // Editable user
     private User editableUser;
 
+    // Activity handle
+    private EditProfileActivity self;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,9 @@ public class EditProfileActivity extends AppCompatActivity {
         // User instantiation
         editableUser = UserManager.getInstance().getUser();
 
+        // Activity handle
+        self = this;
+
         // Image button initialization
         if (editableUser.getProfilePictureBitmap() != null) {
             validImage = true;
@@ -95,6 +102,7 @@ public class EditProfileActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ProfileUpdateManager.getInstance().removeProfileUpdateActivity(self);
                 finish();
             }
         });
@@ -108,7 +116,14 @@ public class EditProfileActivity extends AppCompatActivity {
                     editableUser.getBirthday().setValue(birthdayEditText.getText().toString());
                     editableUser.getCity().setValue(cityEditText.getText().toString());
                     editableUser.getState().setValue(stateEditText.getText().toString());
+                    editableUser.getPhoneNumber().setValue(phoneEditText.getText().toString());
                     Intent intent = new Intent(getApplicationContext(), EditMarketingActivity.class);
+                    Intent activityStartIntent = getIntent();
+                    if (activityStartIntent.hasExtra("creatingAccount")) {
+                        intent.putExtra("creatingAccount", activityStartIntent.getBooleanExtra("creatingAccount", false));
+                    }
+
+                    ProfileUpdateManager.getInstance().addProfileUpdateActivity(self);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Please fill out all profile entries", Toast.LENGTH_SHORT).show();

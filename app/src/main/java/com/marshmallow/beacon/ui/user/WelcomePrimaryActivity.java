@@ -38,6 +38,7 @@ public class WelcomePrimaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                intent.putExtra("creatingAccount", true);
                 startActivity(intent);
                 finish();
             }

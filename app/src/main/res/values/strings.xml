@@ -23,13 +23,12 @@
     <string name="incoming_requests_title_text">Received Contact Requests</string>
     <string name="outgoing_requests_title_text">Sent Contact Requests</string>
     <string name="outgoing_requests_home_title">Sent Contact Requests</string>
-    <string name="login_secondary_string">The social marketing platform where you are in control of your personal data.</string>
+    <string name="login_secondary_string">The social network that connects customers with small businesses.</string>
     <string name="welcome_primary_back_button_text">Back</string>
     <string name="welcome_primary_next_button_text">Next</string>
-    <string name="welcome_primary_first_card">On Beacon we do not sell your personal data, you do, if you choose too.</string>
-    <string name="welcome_primary_second_card">On Beacon, unlike other social media platforms, advertisers pay YOU for the marketing information you provide.\n\n
-    Participation in surveys and visiting sponsored links nets you points to trade in for cash and prizes!</string>
-    <string name="welcome_primary_third_card">And of course you can connect and chat with friends!</string>
+    <string name="welcome_primary_first_card">Beacon is about connecting small businesses with customers without taking advantage of your personal information.</string>
+    <string name="welcome_primary_second_card">On Beacon we do not sell your personal data, you do, if you choose too.</string>
+    <string name="welcome_primary_third_card">On Beacon, small businesses pay YOU for the marketing information you provide.\n\nIn return they can grow their customer base and their businesses</string>
     <string name="edit_profile_instructions">Please fill out a complete marketing profile of yourself!</string>
     <string name="edit_marketing_instructions">Set which marketing data you provide when clicking sponsors or taking surveys.  Below you can see the points you earn based on the information you give out!</string>
     <string name="edit_profile_first_name_text">First Name</string>
@@ -60,5 +59,6 @@
     <string name="edit_marketing_geolocation_text">Geolocation</string>
     <string name="edit_marketing_email_text">Email</string>
     <string name="edit_profile_phone_number_text">Phone</string>
+    <string name="edit_marketing_phone_text">Phone</string>
 
 </resources>

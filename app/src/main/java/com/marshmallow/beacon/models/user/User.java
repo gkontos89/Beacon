@@ -25,6 +25,7 @@ public class User {
     private DataPoint city;
     private DataPoint state;
     private DataPoint phoneNumber;
+    private Boolean accountCreationComplete;
     private Rolodex rolodex;
 
     public User () {
@@ -43,6 +44,7 @@ public class User {
         this.city = new DataPoint(null, false);
         this.state = new DataPoint(null, false);
         this.phoneNumber = new DataPoint(null, false);
+        this.accountCreationComplete = false;
         rolodex = new Rolodex();
     }
 
@@ -157,5 +159,13 @@ public class User {
 
     public void setPhoneNumber(DataPoint phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Boolean getAccountCreationComplete() {
+        return accountCreationComplete;
+    }
+
+    public void setAccountCreationComplete(Boolean accountCreationComplete) {
+        this.accountCreationComplete = accountCreationComplete;
     }
 }

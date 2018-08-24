@@ -73,6 +73,10 @@ public class SponsorsActivity extends BaseActivity {
         sponsorsRecyclerView.setAdapter(sponsorsAdapter);
     }
 
+    private void initializeUserPointListener() {
+
+    }
+
     private void initializeMarketValueListeners() {
         sponsorMarketValueEventListener = new ValueEventListener() {
             @Override
@@ -215,6 +219,8 @@ public class SponsorsActivity extends BaseActivity {
                         // Update the user's points
                         Integer gainedUserPoints = user.getPoints() + MarketingManager.getInstance().getUserSponsorMarketingValue(user, sponsorMarketValues);
                         DatabaseReference userReference = firebaseInst.getReference().child("users").child(firebaseAuth.getUid());
+                        // TODO add listener for user
+                        user.setPoints(gainedUserPoints);
                         userReference.child("points").setValue(gainedUserPoints);
                     }
                 }

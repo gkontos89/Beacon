@@ -155,6 +155,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void removeListeners() {
+        userReference.removeEventListener(userValueEventListener);
+        userValueEventListener = null;
+    }
+
     public void accountCreationSuccess() {
         hideProgressBar();
         Intent intent = new Intent(this, WelcomePrimaryActivity.class);
@@ -176,8 +181,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void accountLoadingSucceeded() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
+        removeListeners();
+        hideProgressBar();
+        if (UserManager.getInstance().getUser().getAccountCreationComplete()) {
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, WelcomePrimaryActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void accountLoadingFailed(String failureString) {

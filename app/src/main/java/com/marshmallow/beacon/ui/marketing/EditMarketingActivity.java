@@ -1,5 +1,7 @@
 package com.marshmallow.beacon.ui.marketing;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +25,7 @@ import com.marshmallow.beacon.models.marketing.SponsorMarketValues;
 import com.marshmallow.beacon.models.marketing.SurveyMarketValues;
 import com.marshmallow.beacon.models.user.DataPoint;
 import com.marshmallow.beacon.models.user.User;
+import com.marshmallow.beacon.ui.ProfileUpdateManager;
 import com.marshmallow.beacon.ui.user.HomeActivity;
 
 /**
@@ -40,6 +43,7 @@ public class EditMarketingActivity extends AppCompatActivity{
     private ToggleButton birthdayToggleButton;
     private ToggleButton cityToggleButton;
     private ToggleButton stateToggleButton;
+    private ToggleButton phoneToggleButton;
     private Button backButton;
     private Button submitButton;
 
@@ -77,6 +81,8 @@ public class EditMarketingActivity extends AppCompatActivity{
         birthdayToggleButton = findViewById(R.id.birthday_toggle_button);
         cityToggleButton = findViewById(R.id.city_toggle_button);
         stateToggleButton = findViewById(R.id.state_toggle_button);
+        phoneToggleButton = findViewById(R.id.phone_toggle_button);
+
         backButton = findViewById(R.id.edit_marketing_back_button);
         submitButton = findViewById(R.id.edit_marketing_submit_button);
 
@@ -90,6 +96,7 @@ public class EditMarketingActivity extends AppCompatActivity{
         initializeEditProfileRelation(birthdayToggleButton, editableUser.getBirthday());
         initializeEditProfileRelation(cityToggleButton, editableUser.getCity());
         initializeEditProfileRelation(stateToggleButton, editableUser.getState());
+        initializeEditProfileRelation(phoneToggleButton, editableUser.getPhoneNumber());
 
         // Set up listeners for market values
         initializeMarketValueListeners();
@@ -105,17 +112,27 @@ public class EditMarketingActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 submitProfileUpdates();
+                ProfileUpdateManager.getInstance().destroyProfileUpdateActivities();
+                finish();
             }
         });
     }
 
-    private void submitProfileUpdates() {
-        DatabaseReference userReference = firebaseInst.getReference("users");
-        if (firebaseAuth.getUid() != null) {
-            userReference.child(firebaseAuth.getUid()).setValue(editableUser);
+    @Override
+    public void finish() {
+        super.finish();
+        Intent activityStartIntent = getIntent();
+        if (activityStartIntent.hasExtra("creatingAccount") && activityStartIntent.getBooleanExtra("creatingAccount", false)) {
             Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(intent);
-            finish();
+        }
+    }
+
+    private void submitProfileUpdates() {
+        DatabaseReference userReference = firebaseInst.getReference("users");
+        editableUser.setAccountCreationComplete(true);
+        if (firebaseAuth.getUid() != null) {
+            userReference.child(firebaseAuth.getUid()).setValue(editableUser);
         }
     }
 

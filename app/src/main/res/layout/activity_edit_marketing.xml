@@ -220,6 +220,25 @@
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/phone_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_marketing_phone_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_marketing_phone_text"/>
+
+                <ToggleButton
+                    android:id="@+id/phone_toggle_button"
+                    android:layout_width="64dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
         </LinearLayout>
 
     </ScrollView>

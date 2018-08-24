@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.user.User;
@@ -35,6 +39,8 @@ public class HomeActivity extends BaseActivity {
     // Firebase
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseInst;
+    private DatabaseReference userPointTotalReference;
+    private ValueEventListener userPointTotalValueEventListener;
 
     // User
     private User currentUser;
@@ -66,9 +72,8 @@ public class HomeActivity extends BaseActivity {
         }
 
         // TODO change to actual username one day...
-        String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
+        String fullName = currentUser.getFirstName().getValue() + " " + currentUser.getLastName().getValue();
         usernameText.setText(fullName);
-        pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
 
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,17 +94,61 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // TODO launch surveys page
+                // TODO publish survey count
             }
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    private void updatePointTotal() {
+        // Grab user point total from the database.  no need to grab entire user here
+        if (firebaseAuth.getUid() != null) {
+            userPointTotalReference = firebaseInst.getReference("users").child(firebaseAuth.getUid()).child("points");
+            userPointTotalValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Integer pointTotal = dataSnapshot.getValue(Integer.class);
+                    if (pointTotal != null) {
+                        pointsTotalValue.setText(pointTotal.toString());
+                    } else {
+                        pointsTotalValue.setText("0");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            userPointTotalReference.addValueEventListener(userPointTotalValueEventListener);
+        }
+    }
+
+    private void signOutUser() {
         if (firebaseAuth.getUid() != null) {
             DatabaseReference userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
             userReference.child("signedIn").setValue(false);
             firebaseAuth.signOut();
         }
+    }
+
+    @Override
+    public void onResume() {
+        updatePointTotal();
+        super.onResume();
+
+    }
+
+    @Override
+    public void onPause() {
+        userPointTotalReference.removeEventListener(userPointTotalValueEventListener);
+        userPointTotalValueEventListener = null;
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        signOutUser();
+        super.onDestroy();
     }
 }
