@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
+import com.marshmallow.beacon.models.user.User;
 import com.marshmallow.beacon.ui.BaseActivity;
 
 /**
@@ -35,6 +36,9 @@ public class HomeActivity extends BaseActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseInst;
 
+    // User
+    private User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_home);
@@ -53,12 +57,17 @@ public class HomeActivity extends BaseActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseInst = FirebaseDatabase.getInstance();
 
+        // User
+        currentUser = UserManager.getInstance().getUser();
+
         // UI initialization
-        if (UserManager.getInstance().getUser().getProfilePicture() != null) {
-            profilePicture.setImageBitmap(UserManager.getInstance().getUser().getProfilePictureBitmap());
+        if (currentUser.getProfilePicture() != null) {
+            profilePicture.setImageBitmap(currentUser.getProfilePictureBitmap());
         }
 
-        usernameText.setText(UserManager.getInstance().getUser().getUsername());
+        // TODO change to actual username one day...
+        String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
+        usernameText.setText(fullName);
         pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
 
         editProfileButton.setOnClickListener(new View.OnClickListener() {

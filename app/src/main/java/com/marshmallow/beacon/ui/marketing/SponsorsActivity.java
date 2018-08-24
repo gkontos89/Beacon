@@ -142,8 +142,33 @@ public class SponsorsActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(@NonNull final SponsorHolder holder, final int position) {
             final Sponsor sponsor = sponsors.get(position);
-            holder.sponsorImage.setImageBitmap(sponsor.getProfilePictureBitmap());
-            holder.sponsorName.setText(sponsor.getName());
+            // TODO handle sponsor image from database.  For now it is hardcoded in App
+            //holder.sponsorImage.setImageBitmap(sponsor.getProfilePictureBitmap());
+            String sponsorName = sponsor.getName();
+            holder.sponsorName.setText(sponsorName);
+            switch (sponsorName) {
+                case "At Home":
+                    holder.sponsorImage.setImageResource(R.drawable.at_work_sports_bar_and_grill);
+                    break;
+
+                case "Brick and Motor Botique":
+                    holder.sponsorImage.setImageResource(R.drawable.brick_and_motor_botique);
+                    break;
+
+                case "A Jacq of All Trades":
+                    holder.sponsorImage.setImageResource(R.drawable.jacq_of_all_trades);
+                    break;
+
+                case "Make It Train":
+                    holder.sponsorImage.setImageResource(R.drawable.make_it_train);
+                    break;
+
+                case "Rhodes Capital Management":
+                    holder.sponsorImage.setImageResource(R.drawable.rhodes_capital_management);
+                    break;
+            }
+
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

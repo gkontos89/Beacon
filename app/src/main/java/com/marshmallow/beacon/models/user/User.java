@@ -24,6 +24,7 @@ public class User {
     private DataPoint birthday;
     private DataPoint city;
     private DataPoint state;
+    private DataPoint phoneNumber;
     private Rolodex rolodex;
 
     public User () {
@@ -41,6 +42,7 @@ public class User {
         this.birthday = new DataPoint(null, false);
         this.city = new DataPoint(null, false);
         this.state = new DataPoint(null, false);
+        this.phoneNumber = new DataPoint(null, false);
         rolodex = new Rolodex();
     }
 
@@ -149,4 +151,11 @@ public class User {
         profilePicture = Base64.encodeToString(b, Base64.DEFAULT);
     }
 
+    public DataPoint getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(DataPoint phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

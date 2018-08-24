@@ -187,6 +187,27 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/phone_number_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/edit_profile_phone_number_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="@string/edit_profile_phone_number_text"/>
+
+                <EditText
+                    android:id="@+id/edit_profile_phone_number_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_profile_phone_number_text_view"
+                    android:inputType="phone"/>
+
+            </RelativeLayout>
+
         </LinearLayout>
 
     </ScrollView>

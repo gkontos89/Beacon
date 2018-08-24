@@ -35,6 +35,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText birthdayEditText;
     private EditText cityEditText;
     private EditText stateEditText;
+    private EditText phoneEditText;
     private Button backButton;
     private Button nextButton;
 
@@ -65,6 +66,7 @@ public class EditProfileActivity extends AppCompatActivity {
         birthdayEditText = findViewById(R.id.edit_profile_birthday_edit_text);
         cityEditText = findViewById(R.id.edit_profile_city_edit_text);
         stateEditText = findViewById(R.id.edit_profile_state_edit_text);
+        phoneEditText = findViewById(R.id.edit_profile_phone_number_edit_text);
         backButton = findViewById(R.id.edit_profile_back_button);
         nextButton = findViewById(R.id.edit_profile_next_button);
 
@@ -121,12 +123,14 @@ public class EditProfileActivity extends AppCompatActivity {
         birthdayEditText.setText(editableUser.getBirthday().getValue());
         cityEditText.setText(editableUser.getCity().getValue());
         stateEditText.setText(editableUser.getState().getValue());
+        phoneEditText.setText(editableUser.getPhoneNumber().getValue());
     }
 
     private boolean profileIsValid() {
         boolean profileIsValid = true;
         if (!validImage) {
             profileIsValid = false;
+            Toast.makeText(this, "Please select a profile picture", Toast.LENGTH_SHORT).show();
         }
 
         if (firstNameEditText.getText().toString().isEmpty()) {
@@ -152,6 +156,11 @@ public class EditProfileActivity extends AppCompatActivity {
         if (stateEditText.getText().toString().isEmpty()) {
             profileIsValid = false;
             stateEditText.setError("State name cannot be empty!");
+        }
+
+        if (phoneEditText.getText().toString().isEmpty()) {
+            profileIsValid = false;
+            phoneEditText.setError("Phone number cannot be empty");
         }
 
         return profileIsValid;

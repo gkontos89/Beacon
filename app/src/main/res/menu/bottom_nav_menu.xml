@@ -9,17 +9,19 @@
         android:title="@string/home"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/contacts_button"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_contacts_24px"
-        android:title="@string/contacts"
-        app:showAsAction="ifRoom" />
+
 
     <item
         android:id="@+id/sponsors_button"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_star_24px"
         android:title="@string/sponsors"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/contacts_button"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_android_24px"
+        android:title="@string/contacts"
         app:showAsAction="ifRoom" />
 </menu>

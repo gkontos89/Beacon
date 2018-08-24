@@ -41,17 +41,17 @@ public class BaseActivity extends AppCompatActivity {
 
                         break;
 
-                    case R.id.contacts_button:
-                        if (activityType != MainActivityTypes.CONTACTS) {
-                            if (activityType != MainActivityTypes.HOME) {
-                                finish();
-                            }
-
-                            Intent contactsIntent = new Intent(getApplicationContext(), ContactsActivity.class);
-                            startActivity(contactsIntent);
-                        }
-
-                        break;
+//                    case R.id.contacts_button:
+//                        if (activityType != MainActivityTypes.CONTACTS) {
+//                            if (activityType != MainActivityTypes.HOME) {
+//                                finish();
+//                            }
+//
+//                            Intent contactsIntent = new Intent(getApplicationContext(), ContactsActivity.class);
+//                            startActivity(contactsIntent);
+//                        }
+//
+//                        break;
 
                     case R.id.sponsors_button:
                         if (activityType != MainActivityTypes.SPONSORS) {
