@@ -12,6 +12,13 @@ public class SurveyMarketValues {
     private Integer stateValue;
 
     public SurveyMarketValues() {
+        // TODO remove
+        firstNameValue = 1;
+        lastNameValue = 1;
+        emailValue = 1;
+        birthdayValue = 1;
+        cityValue = 1;
+        stateValue = 1;
     }
 
     public Integer getFirstNameValue() {

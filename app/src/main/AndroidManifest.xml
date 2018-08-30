@@ -24,9 +24,11 @@
         <activity android:name=".ui.contacts.IncomingContactRequestsActivity" />
         <activity android:name=".ui.contacts.OutgoingContactRequestsActivity" />
         <activity android:name=".ui.user.WelcomePrimaryActivity" />
-        <activity android:name=".ui.user.EditProfileActivity" />
+        <activity android:name=".ui.user.EditProfileActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.marketing.SponsorsActivity" />
         <activity android:name=".ui.marketing.SurveysActivity" />
+        <activity android:name=".ui.marketing.EditMarketingActivity" />
     </application>
 
 </manifest>

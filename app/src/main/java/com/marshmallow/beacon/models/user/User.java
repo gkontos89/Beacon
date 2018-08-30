@@ -17,28 +17,34 @@ public class User {
     private String profilePicture;
     private Boolean signedIn;
     private Integer points;
+    private DataPoint geolocationOn;
     private DataPoint firstName;
     private DataPoint lastName;
     private DataPoint email;
     private DataPoint birthday;
     private DataPoint city;
     private DataPoint state;
+    private DataPoint phoneNumber;
+    private Boolean accountCreationComplete;
     private Rolodex rolodex;
 
     public User () {
     }
 
-    public User(String username) {
-        this.username = username;
+    public User(String email) {
+        this.username = null;
         this.profilePicture = null;
         this.signedIn = true;
         this.points = 0;
+        this.geolocationOn = new DataPoint(null, false);
         this.firstName = new DataPoint(null, false);
         this.lastName = new DataPoint(null, false);
-        this.email = new DataPoint(null, false);
+        this.email = new DataPoint(email, false);
         this.birthday = new DataPoint(null, false);
         this.city = new DataPoint(null, false);
         this.state = new DataPoint(null, false);
+        this.phoneNumber = new DataPoint(null, false);
+        this.accountCreationComplete = false;
         rolodex = new Rolodex();
     }
 
@@ -121,6 +127,14 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
+    public DataPoint getGeolocationOn() {
+        return geolocationOn;
+    }
+
+    public void setGeolocationOn(DataPoint geolocationOn) {
+        this.geolocationOn = geolocationOn;
+    }
+
     @Exclude
     public Bitmap getProfilePictureBitmap() {
         if (profilePicture != null) {
@@ -137,5 +151,21 @@ public class User {
         profilePictureBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
         profilePicture = Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public DataPoint getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(DataPoint phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Boolean getAccountCreationComplete() {
+        return accountCreationComplete;
+    }
+
+    public void setAccountCreationComplete(Boolean accountCreationComplete) {
+        this.accountCreationComplete = accountCreationComplete;
     }
 }

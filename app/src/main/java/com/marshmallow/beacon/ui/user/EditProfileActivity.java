@@ -8,18 +8,18 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.Toast;
 
-import com.marshmallow.beacon.MarketingManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
-import com.marshmallow.beacon.backend.BeaconBackend;
-import com.marshmallow.beacon.models.user.DataPoint;
 import com.marshmallow.beacon.models.user.User;
+import com.marshmallow.beacon.ui.ProfileUpdateManager;
+import com.marshmallow.beacon.ui.marketing.EditMarketingActivity;
 
 import java.io.IOException;
 
@@ -30,23 +30,19 @@ import java.io.IOException;
 public class EditProfileActivity extends AppCompatActivity {
 
     // GUI handles
-    private TextView pointsPerSurveyTextView;
-    private TextView pointsPerSponsorTextView;
     private ImageButton profileImageButton;
     private EditText firstNameEditText;
-    private ToggleButton firstNameToggleButton;
     private EditText lastNameEditText;
-    private ToggleButton lastNameToggleButton;
-    private EditText emailEditText;
-    private ToggleButton emailToggleButton;
     private EditText birthdayEditText;
-    private ToggleButton birthdayToggleButton;
     private EditText cityEditText;
-    private ToggleButton cityToggleButton;
     private EditText stateEditText;
-    private ToggleButton stateToggleButton;
+    private EditText phoneEditText;
     private Button backButton;
-    private Button submitButton;
+    private Button nextButton;
+
+    // Firebase
+    FirebaseAuth firebaseAuth;
+    FirebaseDatabase firebaseInst;
 
     // Image handling
     private int PICK_IMAGE_REQUEST = 1;
@@ -55,68 +51,43 @@ public class EditProfileActivity extends AppCompatActivity {
     // Editable user
     private User editableUser;
 
+    // Activity handle
+    private EditProfileActivity self;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        // Firebase instantiation
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseInst = FirebaseDatabase.getInstance();
+
         // GUI instantiation
-        pointsPerSponsorTextView = findViewById(R.id.points_per_sponsor_text_view);
-        pointsPerSurveyTextView = findViewById(R.id.points_per_survey_text_view);
         profileImageButton = findViewById(R.id.edit_profile_image_button);
         firstNameEditText = findViewById(R.id.edit_profile_first_name_edit_text);
-        firstNameToggleButton = findViewById(R.id.first_name_toggle_button);
         lastNameEditText = findViewById(R.id.edit_profile_last_name_edit_text);
-        lastNameToggleButton = findViewById(R.id.last_name_toggle_button);
-        emailEditText = findViewById(R.id.edit_profile_email_edit_text);
-        emailToggleButton = findViewById(R.id.email_toggle_button);
         birthdayEditText = findViewById(R.id.edit_profile_birthday_edit_text);
-        birthdayToggleButton = findViewById(R.id.birthday_toggle_button);
         cityEditText = findViewById(R.id.edit_profile_city_edit_text);
-        cityToggleButton = findViewById(R.id.city_toggle_button);
         stateEditText = findViewById(R.id.edit_profile_state_edit_text);
-        stateToggleButton = findViewById(R.id.state_toggle_button);
+        phoneEditText = findViewById(R.id.edit_profile_phone_number_edit_text);
         backButton = findViewById(R.id.edit_profile_back_button);
-        submitButton = findViewById(R.id.edit_profile_done_button);
+        nextButton = findViewById(R.id.edit_profile_next_button);
 
         // User instantiation
         editableUser = UserManager.getInstance().getUser();
 
-        updateUserMarketingValue();
-        initializeEditProfileRelation(firstNameToggleButton, firstNameEditText, editableUser.getFirstName());
-        initializeEditProfileRelation(lastNameToggleButton, lastNameEditText, editableUser.getLastName());
-        initializeEditProfileRelation(emailToggleButton, emailEditText, editableUser.getEmail());
-        initializeEditProfileRelation(birthdayToggleButton, birthdayEditText, editableUser.getBirthday());
-        initializeEditProfileRelation(cityToggleButton, cityEditText, editableUser.getCity());
-        initializeEditProfileRelation(stateToggleButton, stateEditText, editableUser.getState());
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editableUser.getFirstName().setValue(firstNameEditText.getText().toString());
-                editableUser.getLastName().setValue(lastNameEditText.getText().toString());
-                editableUser.getEmail().setValue(emailEditText.getText().toString());
-                editableUser.getBirthday().setValue(birthdayEditText.getText().toString());
-                editableUser.getCity().setValue(cityEditText.getText().toString());
-                editableUser.getState().setValue(stateEditText.getText().toString());
-                BeaconBackend.getInstance().submitProfileUpdates(editableUser);
-                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        // Activity handle
+        self = this;
 
         // Image button initialization
         if (editableUser.getProfilePictureBitmap() != null) {
+            validImage = true;
             profileImageButton.setImageBitmap(editableUser.getProfilePictureBitmap());
         }
+
+        // Edit text setup
+        initializeTextFields();
 
         profileImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,26 +98,87 @@ public class EditProfileActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
             }
         });
-    }
 
-    private void updateUserMarketingValue() {
-        pointsPerSponsorTextView.setText(MarketingManager.getInstance().getUserSponsorMarketingValue(editableUser).toString());
-        pointsPerSurveyTextView.setText(MarketingManager.getInstance().getUserSurveyMarketingValue(editableUser).toString());
-    }
-
-    private void initializeEditProfileRelation(ToggleButton toggleButton, final EditText editText, final DataPoint dataPoint) {
-        toggleButton.setChecked(dataPoint.getShared());
-        editText.setText(dataPoint.getValue());
-        editText.setEnabled(dataPoint.getShared());
-
-        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                dataPoint.setShared(isChecked);
-                editText.setEnabled(isChecked);
-                updateUserMarketingValue();
+            public void onClick(View v) {
+                ProfileUpdateManager.getInstance().removeProfileUpdateActivity(self);
+                finish();
             }
         });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (profileIsValid()) {
+                    editableUser.getFirstName().setValue(firstNameEditText.getText().toString());
+                    editableUser.getLastName().setValue(lastNameEditText.getText().toString());
+                    editableUser.getBirthday().setValue(birthdayEditText.getText().toString());
+                    editableUser.getCity().setValue(cityEditText.getText().toString());
+                    editableUser.getState().setValue(stateEditText.getText().toString());
+                    editableUser.getPhoneNumber().setValue(phoneEditText.getText().toString());
+                    Intent intent = new Intent(getApplicationContext(), EditMarketingActivity.class);
+                    Intent activityStartIntent = getIntent();
+                    if (activityStartIntent.hasExtra("creatingAccount")) {
+                        intent.putExtra("creatingAccount", activityStartIntent.getBooleanExtra("creatingAccount", false));
+                    }
+
+                    ProfileUpdateManager.getInstance().addProfileUpdateActivity(self);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please fill out all profile entries", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void initializeTextFields() {
+        firstNameEditText.setText(editableUser.getFirstName().getValue());
+        lastNameEditText.setText(editableUser.getLastName().getValue());
+        birthdayEditText.setText(editableUser.getBirthday().getValue());
+        cityEditText.setText(editableUser.getCity().getValue());
+        stateEditText.setText(editableUser.getState().getValue());
+        phoneEditText.setText(editableUser.getPhoneNumber().getValue());
+    }
+
+    private boolean profileIsValid() {
+        boolean profileIsValid = true;
+        if (!validImage) {
+            profileIsValid = false;
+            Toast.makeText(this, "Please select a profile picture", Toast.LENGTH_SHORT).show();
+        }
+
+        if (firstNameEditText.getText().toString().isEmpty()) {
+            profileIsValid = false;
+            firstNameEditText.setError("First name cannot be empty!");
+        }
+
+        if (lastNameEditText.getText().toString().isEmpty()) {
+            profileIsValid = false;
+            lastNameEditText.setError("Last name cannot be empty!");
+        }
+
+        if (birthdayEditText.getText().toString().isEmpty()) {
+            profileIsValid = false;
+            birthdayEditText.setError("Birthday name cannot be empty!");
+        }
+
+        if (cityEditText.getText().toString().isEmpty()) {
+            profileIsValid = false;
+            cityEditText.setError("City name cannot be empty!");
+        }
+
+        if (stateEditText.getText().toString().isEmpty()) {
+            profileIsValid = false;
+            stateEditText.setError("State name cannot be empty!");
+        }
+
+        if (phoneEditText.getText().toString().isEmpty()) {
+            profileIsValid = false;
+            phoneEditText.setError("Phone number cannot be empty");
+        }
+
+        return profileIsValid;
     }
 
     @Override

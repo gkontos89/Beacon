@@ -5,6 +5,7 @@ package com.marshmallow.beacon.models.marketing;
  */
 public class SponsorMarketValues {
 
+    private Integer geolocationValue;
     private Integer firstNameValue;
     private Integer lastNameValue;
     private Integer emailValue;
@@ -61,5 +62,13 @@ public class SponsorMarketValues {
 
     public void setStateValue(Integer stateValue) {
         this.stateValue = stateValue;
+    }
+
+    public Integer getGeolocationValue() {
+        return geolocationValue;
+    }
+
+    public void setGeolocationValue(Integer geolocationValue) {
+        this.geolocationValue = geolocationValue;
     }
 }

@@ -66,11 +66,11 @@
         android:layout_marginRight="50dp">
 
         <EditText
-            android:id="@+id/username_text"
+            android:id="@+id/email_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="@string/username_hint"/>
+            android:inputType="textEmailAddress"
+            android:hint="@string/email_hint"/>
 
         <EditText
             android:id="@+id/password_text"

@@ -5,16 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
-import com.marshmallow.beacon.backend.BeaconBackend;
-import com.marshmallow.beacon.broadcasts.LoadUserStatusBroadcast;
+import com.marshmallow.beacon.models.user.User;
 import com.marshmallow.beacon.ui.BaseActivity;
 
 /**
@@ -29,12 +35,20 @@ public class HomeActivity extends BaseActivity {
     Button editProfileButton;
     CardView rewardsCatalogCard;
     CardView availableSurveysCard;
-    BroadcastReceiver broadcastReceiver;
-    IntentFilter intentFilter;
+
+    // Firebase
+    private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase firebaseInst;
+    private DatabaseReference userPointTotalReference;
+    private ValueEventListener userPointTotalValueEventListener;
+
+    // User
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_home);
+        activityType = MainActivityTypes.HOME;
         super.onCreate(savedInstanceState);
 
         // GUI handle instantiation
@@ -45,14 +59,21 @@ public class HomeActivity extends BaseActivity {
         rewardsCatalogCard = findViewById(R.id.rewards_card);
         availableSurveysCard = findViewById(R.id.surveys_card);
 
+        // Firebase
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseInst = FirebaseDatabase.getInstance();
+
+        // User
+        currentUser = UserManager.getInstance().getUser();
+
         // UI initialization
-        // TODO check if these values are valid?
-        if (UserManager.getInstance().getUser().getProfilePicture() != null) {
-            profilePicture.setImageBitmap(UserManager.getInstance().getUser().getProfilePictureBitmap());
+        if (currentUser.getProfilePicture() != null) {
+            profilePicture.setImageBitmap(currentUser.getProfilePictureBitmap());
         }
 
-        usernameText.setText(UserManager.getInstance().getUser().getUsername());
-        pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
+        // TODO change to actual username one day...
+        String fullName = currentUser.getFirstName().getValue() + " " + currentUser.getLastName().getValue();
+        usernameText.setText(fullName);
 
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,44 +94,61 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // TODO launch surveys page
+                // TODO publish survey count
             }
         });
+    }
 
-        // Setup broadcast receivers for surveys and point totals
-        // TODO setup intent filter to catch survey broadcasts
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(LoadUserStatusBroadcast.action);
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() != null) {
-                    if (intent.getAction().equals(LoadUserStatusBroadcast.action)) {
-                        if (intent.getStringExtra(LoadUserStatusBroadcast.statusKey).equals(LoadUserStatusBroadcast.USER_LOADED_SUCCESSFUL)) {
-                            pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
-                        }
+    private void updatePointTotal() {
+        // Grab user point total from the database.  no need to grab entire user here
+        if (firebaseAuth.getUid() != null) {
+            userPointTotalReference = firebaseInst.getReference("users").child(firebaseAuth.getUid()).child("points");
+            userPointTotalValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Integer pointTotal = dataSnapshot.getValue(Integer.class);
+                    if (pointTotal != null) {
+                        pointsTotalValue.setText(pointTotal.toString());
+                    } else {
+                        pointsTotalValue.setText("0");
                     }
                 }
-            }
-        };
 
-        registerReceiver(broadcastReceiver, intentFilter);
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            userPointTotalReference.addValueEventListener(userPointTotalValueEventListener);
+        }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        BeaconBackend.getInstance().signOutUser();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unregisterReceiver(broadcastReceiver);
+    private void signOutUser() {
+        if (firebaseAuth.getUid() != null) {
+            DatabaseReference userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
+            userReference.child("signedIn").setValue(false);
+            firebaseAuth.signOut();
+        }
     }
 
     @Override
     public void onResume() {
+        updatePointTotal();
         super.onResume();
-        registerReceiver(broadcastReceiver, intentFilter);
+
+    }
+
+    @Override
+    public void onPause() {
+        userPointTotalReference.removeEventListener(userPointTotalValueEventListener);
+        userPointTotalValueEventListener = null;
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        signOutUser();
+        super.onDestroy();
     }
 }
