@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -268,9 +270,37 @@ public class SponsorsActivity extends BaseActivity {
             ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", earnedPoints));
             final PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             popupWindow.showAtLocation(findViewById(R.id.activity_sponsors_relative_layout), Gravity.CENTER, 0, 0);
-            ((Button)layout.findViewById(R.id.pop_up_button)).setOnClickListener(new View.OnClickListener() {
+
+            // Dim the background
+            final View container;
+            if (popupWindow.getBackground() == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    container = (View) popupWindow.getContentView().getParent();
+                } else {
+                    container = popupWindow.getContentView();
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    container = (View) popupWindow.getContentView().getParent().getParent();
+                } else {
+                    container = (View) popupWindow.getContentView().getParent();
+                }
+            }
+
+            Context context = popupWindow.getContentView().getContext();
+            final WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            final WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) container.getLayoutParams();
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            layoutParams.dimAmount = 0.75f;
+            windowManager.updateViewLayout(container, layoutParams);
+
+
+            (layout.findViewById(R.id.pop_up_button)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Un-dim the background
+                    layoutParams.dimAmount = 0.0f;
+                    windowManager.updateViewLayout(container, layoutParams);
                     popupWindow.dismiss();
                     visitSponsorSite(sponsor.getUrl());
                 }
