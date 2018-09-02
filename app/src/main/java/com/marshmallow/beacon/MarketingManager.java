@@ -48,6 +48,10 @@ public class MarketingManager {
             totalMarketingValue += sponsorMarketValues.getStateValue();
         }
 
+        if (user.getPhoneNumber().getShared()) {
+            totalMarketingValue += sponsorMarketValues.getPhoneValue();
+        }
+
         return totalMarketingValue;
     }
 
@@ -75,6 +79,10 @@ public class MarketingManager {
 
         if (user.getState().getShared()) {
             totalMarketingValue += surveyMarketValues.getStateValue();
+        }
+
+        if (user.getPhoneNumber().getShared()) {
+            totalMarketingValue += surveyMarketValues.getPhoneValue();
         }
 
         return totalMarketingValue;

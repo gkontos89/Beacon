@@ -15,6 +15,7 @@ public class UserMarketDataSnapshot {
     private String birthday;
     private String city;
     private String state;
+    private String phone;
 
     public UserMarketDataSnapshot() {
     }
@@ -27,6 +28,9 @@ public class UserMarketDataSnapshot {
         if (user.getBirthday().getShared()) {birthday = user.getBirthday().getValue(); }
         if (user.getCity().getShared()) { city = user.getCity().getValue(); }
         if (user.getState().getShared()) { state = user.getState().getValue(); }
+        if (user.getPhoneNumber().getShared()) {
+            phone = user.getState().getValue();
+        }
     }
 
 
@@ -84,5 +88,13 @@ public class UserMarketDataSnapshot {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

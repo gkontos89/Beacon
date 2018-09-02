@@ -10,6 +10,7 @@ public class SurveyMarketValues {
     private Integer birthdayValue;
     private Integer cityValue;
     private Integer stateValue;
+    private Integer phoneValue;
 
     public SurveyMarketValues() {
         // TODO remove
@@ -67,5 +68,13 @@ public class SurveyMarketValues {
 
     public void setStateValue(Integer stateValue) {
         this.stateValue = stateValue;
+    }
+
+    public Integer getPhoneValue() {
+        return phoneValue;
+    }
+
+    public void setPhoneValue(Integer phoneValue) {
+        this.phoneValue = phoneValue;
     }
 }
