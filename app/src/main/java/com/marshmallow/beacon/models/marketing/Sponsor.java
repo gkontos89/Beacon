@@ -5,17 +5,20 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 
 /**
  * Created by George on 8/5/2018.
  */
+@IgnoreExtraProperties
 public class Sponsor {
 
     private String uid;
     private String name;
     private String picture;
     private String url;
+    private Boolean visited;
 
     public Sponsor() {
     }
@@ -60,5 +63,14 @@ public class Sponsor {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    @Exclude
+    public Boolean getVisited() {
+        return visited;
+    }
+
+    public void setVisited(Boolean visited) {
+        this.visited = visited;
     }
 }

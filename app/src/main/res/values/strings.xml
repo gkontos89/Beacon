@@ -60,5 +60,8 @@
     <string name="edit_marketing_email_text">Email</string>
     <string name="edit_profile_phone_number_text">Phone</string>
     <string name="edit_marketing_phone_text">Phone</string>
+    <string name="store_sponsor_pop_up_text">Congrats! You\'ve earned</string>
+    <string name="pop_up_button_text">OK! Continue to Site...</string>
+    <string name="sponsor_not_visited_text">Earn Points!</string>
 
 </resources>

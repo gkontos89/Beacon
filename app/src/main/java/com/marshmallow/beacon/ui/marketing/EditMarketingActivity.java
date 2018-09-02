@@ -36,7 +36,6 @@ public class EditMarketingActivity extends AppCompatActivity{
     // GUI handles
     private TextView pointsPerSurveyTextView;
     private TextView pointsPerSponsorTextView;
-    private ToggleButton emailToggleButton;
     private ToggleButton geolocationToggleButton;
     private ToggleButton firstNameToggleButton;
     private ToggleButton lastNameToggleButton;
@@ -74,7 +73,6 @@ public class EditMarketingActivity extends AppCompatActivity{
         // GUI instantiation
         pointsPerSponsorTextView = findViewById(R.id.points_per_sponsor_text_view);
         pointsPerSurveyTextView = findViewById(R.id.points_per_survey_text_view);
-        emailToggleButton = findViewById(R.id.email_toggle_button);
         geolocationToggleButton = findViewById(R.id.geolocation_toggle_button);
         firstNameToggleButton = findViewById(R.id.first_name_toggle_button);
         lastNameToggleButton = findViewById(R.id.last_name_toggle_button);
@@ -89,7 +87,6 @@ public class EditMarketingActivity extends AppCompatActivity{
         // User instantiation
         editableUser = UserManager.getInstance().getUser();
 
-        initializeEditProfileRelation(emailToggleButton, editableUser.getEmail());
         initializeEditProfileRelation(geolocationToggleButton, editableUser.getGeolocationOn());
         initializeEditProfileRelation(firstNameToggleButton, editableUser.getFirstName());
         initializeEditProfileRelation(lastNameToggleButton, editableUser.getLastName());

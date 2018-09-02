@@ -12,6 +12,7 @@ public class SponsorMarketValues {
     private Integer birthdayValue;
     private Integer cityValue;
     private Integer stateValue;
+    private Integer phoneValue;
 
     public SponsorMarketValues() {
     }
@@ -70,5 +71,13 @@ public class SponsorMarketValues {
 
     public void setGeolocationValue(Integer geolocationValue) {
         this.geolocationValue = geolocationValue;
+    }
+
+    public Integer getPhoneValue() {
+        return phoneValue;
+    }
+
+    public void setPhoneValue(Integer phoneValue) {
+        this.phoneValue = phoneValue;
     }
 }

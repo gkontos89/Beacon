@@ -39,7 +39,7 @@ public class User {
         this.geolocationOn = new DataPoint(null, false);
         this.firstName = new DataPoint(null, false);
         this.lastName = new DataPoint(null, false);
-        this.email = new DataPoint(email, false);
+        this.email = new DataPoint(email, true);
         this.birthday = new DataPoint(null, false);
         this.city = new DataPoint(null, false);
         this.state = new DataPoint(null, false);

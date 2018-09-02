@@ -46,7 +46,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     // Image handling
     private int PICK_IMAGE_REQUEST = 1;
-    private boolean validImage = false;
+    // TODO change to false once images are better
+    private boolean validImage = true;
 
     // Editable user
     private User editableUser;
@@ -143,10 +144,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private boolean profileIsValid() {
         boolean profileIsValid = true;
-        if (!validImage) {
-            profileIsValid = false;
-            Toast.makeText(this, "Please select a profile picture", Toast.LENGTH_SHORT).show();
-        }
+        // TODO bring back profile pictures
+//        if (!validImage) {
+//            profileIsValid = false;
+//            Toast.makeText(this, "Please select a profile picture", Toast.LENGTH_SHORT).show();
+//        }
 
         if (firstNameEditText.getText().toString().isEmpty()) {
             profileIsValid = false;
