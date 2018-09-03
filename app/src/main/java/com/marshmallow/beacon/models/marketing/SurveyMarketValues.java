@@ -20,6 +20,7 @@ public class SurveyMarketValues {
         birthdayValue = 1;
         cityValue = 1;
         stateValue = 1;
+        phoneValue = 1;
     }
 
     public Integer getFirstNameValue() {
