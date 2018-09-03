@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_margin="8dp"
-                    android:text="KingPoopniak89"
+                    android:text="George Kontos"
                     android:gravity="start"/>
 
             </LinearLayout>
