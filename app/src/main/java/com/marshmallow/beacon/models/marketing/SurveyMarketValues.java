@@ -1,5 +1,7 @@
 package com.marshmallow.beacon.models.marketing;
 
+import android.content.IntentFilter;
+
 /**
  * Created by George on 8/3/2018.
  */
@@ -11,6 +13,7 @@ public class SurveyMarketValues {
     private Integer cityValue;
     private Integer stateValue;
     private Integer phoneValue;
+    private Integer geolocationValue;
 
     public SurveyMarketValues() {
         // TODO remove
@@ -77,5 +80,13 @@ public class SurveyMarketValues {
 
     public void setPhoneValue(Integer phoneValue) {
         this.phoneValue = phoneValue;
+    }
+
+    public void setGeolocationValue(Integer geolocationValue) {
+        this.geolocationValue = geolocationValue;
+    }
+
+    public Integer getGeolocationValue() {
+        return geolocationValue;
     }
 }
