@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.models.marketing.user;
+package com.marshmallow.beacon.models.user;
 
 import com.marshmallow.beacon.models.user.DataPoint;
 

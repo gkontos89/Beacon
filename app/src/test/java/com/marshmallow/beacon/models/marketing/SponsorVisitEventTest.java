@@ -1,4 +1,4 @@
-package com.marshmallow.beacon.models.marketing.marketing;
+package com.marshmallow.beacon.models.marketing;
 
 import com.marshmallow.beacon.models.marketing.SponsorVisitEvent;
 import com.marshmallow.beacon.models.marketing.UserMarketDataSnapshot;
