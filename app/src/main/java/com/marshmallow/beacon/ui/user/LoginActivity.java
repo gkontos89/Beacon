@@ -88,21 +88,23 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgressBar("Logging in...");
-                final String email = emailTextEntry.getText().toString();
+                String email = emailTextEntry.getText().toString();
                 String password = passwordTextEntry.getText().toString();
-                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            initializeUserListener();
-                        } else {
-                            if (task.getException() != null) {
-                                signInFailed(task.getException().getMessage());
+                if (emailIsValid(email) && passwordIsValid(password)) {
+                    showProgressBar("Logging in...");
+                    firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                initializeUserListener();
+                            } else {
+                                if (task.getException() != null) {
+                                    signInFailed(task.getException().getMessage());
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }

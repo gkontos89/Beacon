@@ -29,7 +29,7 @@ public class UserMarketDataSnapshot {
         if (user.getCity().getShared()) { city = user.getCity().getValue(); }
         if (user.getState().getShared()) { state = user.getState().getValue(); }
         if (user.getPhoneNumber().getShared()) {
-            phone = user.getState().getValue();
+            phone = user.getPhoneNumber().getValue();
         }
     }
 

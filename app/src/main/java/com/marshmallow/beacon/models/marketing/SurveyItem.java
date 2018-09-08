@@ -5,7 +5,7 @@ import java.util.Vector;
 /**
  * Created by George on 8/5/2018.
  */
-class SurveyItem {
+public class SurveyItem {
 
     private String question;
     private Vector<String> options;
