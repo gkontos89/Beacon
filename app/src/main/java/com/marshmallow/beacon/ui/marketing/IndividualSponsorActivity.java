@@ -25,9 +25,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.marshmallow.beacon.MarketingManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.marketing.Sponsor;
+import com.marshmallow.beacon.models.marketing.SponsorMarketValues;
 import com.marshmallow.beacon.models.user.User;
 
 /**
@@ -46,6 +48,7 @@ public class IndividualSponsorActivity extends AppCompatActivity {
 
     // Basic model data
     Sponsor sponsor;
+    private SponsorMarketValues sponsorMarketValues;
     private int sponsorImageResId;
     private boolean sponsorVisited;
     private boolean likedTriggeredOnce;
@@ -65,6 +68,9 @@ public class IndividualSponsorActivity extends AppCompatActivity {
     private DatabaseReference userLikeDataReference;
     private ValueEventListener userLikeStatusListener;
     private ValueEventListener userWebVisitedStatusListener;
+    private DatabaseReference sponsorMarketValueReference;
+    private ValueEventListener sponsorMarketValueEventListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,19 +102,15 @@ public class IndividualSponsorActivity extends AppCompatActivity {
 
         // Retrieve database values for user visit and likes
         setupUserVisitDataListeners();
+        initializeMarketValueListeners();
 
-        // TODO set up timer to say loading sponsor data to prevent people from clicking web links
-        // before it is determined whether they've visited or not
+        // TODO set up timer to say loading sponsor data to prevent people from clicking web links before it is determined whether they've visited or not
 
         // Set up interaction listeners
         websiteImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!sponsorVisited) {
-
-                } else {
-                    visitSponsorSite(sponsor.getUrl());
-                }
+                handleWebsiteVisitInteraction();
             }
         });
 
@@ -206,6 +208,23 @@ public class IndividualSponsorActivity extends AppCompatActivity {
         userVisitDataReference = null;
     }
 
+    private void initializeMarketValueListeners() {
+        // TODO move to sponsors having their own prices they are willing to pay out
+        sponsorMarketValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                sponsorMarketValues = dataSnapshot.getValue(SponsorMarketValues.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+
+        sponsorMarketValueReference = firebaseInst.getReference("sponsorMarketValues");
+        sponsorMarketValueReference.addValueEventListener(sponsorMarketValueEventListener);
+    }
+
     private void handleLikeInteractions(boolean liked) {
         userLikeDataReference.setValue(liked);
         if (!likedTriggeredOnce) {
@@ -220,7 +239,7 @@ public class IndividualSponsorActivity extends AppCompatActivity {
             View layout = inflater.inflate(R.layout.sponsor_like_pop_up, null);
             ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", 1)); // TODO get like/dislike market values
             final PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            popupWindow.showAtLocation(findViewById(R.id.activity_sponsors_relative_layout), Gravity.CENTER, 0, 0);
+            popupWindow.showAtLocation(findViewById(R.id.activity_individual_sponsor_layout), Gravity.CENTER, 0, 0);
 
             // Dim the background
             final View container;
@@ -254,6 +273,60 @@ public class IndividualSponsorActivity extends AppCompatActivity {
                     popupWindow.dismiss();
                 }
             });
+        }
+    }
+
+    private void handleWebsiteVisitInteraction() {
+        userWebVisitedDataReference.setValue(true);
+        if (!sponsorVisited) {
+            // Store user points
+            User user = UserManager.getInstance().getUser();
+            int newUserPoints = user.getPoints() + MarketingManager.getInstance().getUserSponsorMarketingValue(user, sponsorMarketValues);
+            DatabaseReference userReference = firebaseInst.getReference().child("users").child(firebaseAuth.getUid());
+            userReference.child("points").setValue(newUserPoints);
+
+            // Show pop up window
+            LayoutInflater inflater = (LayoutInflater) IndividualSponsorActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.sponsor_visit_popup, null);
+            ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", 1)); // TODO get like/dislike market values
+            final PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            popupWindow.showAtLocation(findViewById(R.id.activity_individual_sponsor_layout), Gravity.CENTER, 0, 0);
+
+            // Dim the background
+            final View container;
+            if (popupWindow.getBackground() == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    container = (View) popupWindow.getContentView().getParent();
+                } else {
+                    container = popupWindow.getContentView();
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    container = (View) popupWindow.getContentView().getParent().getParent();
+                } else {
+                    container = (View) popupWindow.getContentView().getParent();
+                }
+            }
+
+            Context context = popupWindow.getContentView().getContext();
+            final WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            final WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) container.getLayoutParams();
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            layoutParams.dimAmount = 0.75f;
+            windowManager.updateViewLayout(container, layoutParams);
+
+            (layout.findViewById(R.id.pop_up_button)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Un-dim the background
+                    layoutParams.dimAmount = 0.0f;
+                    windowManager.updateViewLayout(container, layoutParams);
+                    popupWindow.dismiss();
+                    visitSponsorSite(sponsor.getUrl());
+                }
+            });
+        } else {
+            visitSponsorSite(sponsor.getUrl());
         }
     }
 

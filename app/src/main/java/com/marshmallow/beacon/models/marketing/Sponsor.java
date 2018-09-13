@@ -18,7 +18,6 @@ public class Sponsor {
     private String name;
     private String picture;
     private String url;
-    private Boolean visited;
 
     public Sponsor() {
     }

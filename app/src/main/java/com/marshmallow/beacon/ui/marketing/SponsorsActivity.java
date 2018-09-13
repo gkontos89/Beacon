@@ -47,20 +47,13 @@ public class SponsorsActivity extends BaseActivity {
     private RecyclerView sponsorsRecyclerView;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     private SponsorsAdapter sponsorsAdapter;
-    private Vector<SponsorHandler> sponsorHandlers;
-    private HashMap<String, SponsorHandler> sponsorHashMap;
+    private Vector<Sponsor> sponsors;
 
     // Firebase
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseInst;
     private DatabaseReference sponsorsReference;
     private ChildEventListener sponsorChildEventListener;
-    private DatabaseReference sponsorMarketValueReference;
-    private ValueEventListener sponsorMarketValueEventListener;
-
-    // Marketing models
-    private SponsorMarketValues sponsorMarketValues;
-    private int sponsorCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +64,11 @@ public class SponsorsActivity extends BaseActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseInst = FirebaseDatabase.getInstance();
 
-        sponsorHandlers = new Vector<>();
-        sponsorHashMap = new HashMap<>();
+        sponsors = new Vector<>();
         sponsorsRecyclerView = findViewById(R.id.sponsors_recycler_view);
         recyclerViewLayoutManager = new LinearLayoutManager(this);
         sponsorsRecyclerView.setLayoutManager(recyclerViewLayoutManager);
-        sponsorsAdapter = new SponsorsAdapter(sponsorHandlers);
+        sponsorsAdapter = new SponsorsAdapter(sponsors);
         sponsorsRecyclerView.setAdapter(sponsorsAdapter);
     }
 
@@ -84,85 +76,25 @@ public class SponsorsActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         initializeSponsorListeners();
-        initializeMarketValueListeners();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         destroySponsorListeners();
-        destroyMarketValueListeners();
-    }
-
-    private class SponsorHandler {
-        private Sponsor sponsor;
-        private DatabaseReference userVisitReference;
-        private ValueEventListener userVisitListener;
-
-        SponsorHandler(Sponsor sponsor) {
-            this.sponsor = sponsor;
-            this.sponsor.setVisited(true);
-            setupUserVisitListeners();
-        }
-
-        private void setupUserVisitListeners() {
-            userVisitReference = firebaseInst.getReference("sponsorVisitData").child(sponsor.getUid()).child("usersVisited").child(firebaseAuth.getUid());
-            userVisitListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.exists()) {
-                        sponsor.setVisited(false);
-                    }
-
-                    sponsorHandlers.clear();
-                    sponsorHandlers.addAll(sponsorHashMap.values());
-                    sponsorCount--;
-
-                    if (sponsorCount == 0) {
-                        sponsorsAdapter.notifyDataSetChanged();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            };
-
-            userVisitReference.addListenerForSingleValueEvent(userVisitListener);
-        }
-
-        public Sponsor getSponsor() {
-            return sponsor;
-        }
-
-        public String getSponsorUid() {
-            return sponsor.getUid();
-        }
-
-        public String getSponsorUrl() {
-            return sponsor.getUrl();
-        }
-
-        public void cleanUpHandler() {
-            userVisitReference.removeEventListener(userVisitListener);
-            userVisitListener = null;
-            userVisitReference = null;
-        }
     }
 
     private void initializeSponsorListeners() {
-        sponsorCount = -1;
-        sponsorsReference = firebaseInst.getReference("sponsorHandlers");
+        sponsorsReference = firebaseInst.getReference("sponsors");
         sponsorsReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                sponsorCount = (int) dataSnapshot.getChildrenCount();
                 sponsorChildEventListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        SponsorHandler sponsorHandler = new SponsorHandler(dataSnapshot.getValue(Sponsor.class));
-                        sponsorHashMap.put(sponsorHandler.getSponsorUid(), sponsorHandler);
+                        Sponsor sponsor = dataSnapshot.getValue(Sponsor.class);
+                        sponsors.add(sponsor);
+                        sponsorsAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -200,43 +132,14 @@ public class SponsorsActivity extends BaseActivity {
         sponsorsReference.removeEventListener(sponsorChildEventListener);
         sponsorChildEventListener = null;
         sponsorsReference = null;
-
-        for (SponsorHandler sponsorHandler : sponsorHandlers) {
-            sponsorHandler.cleanUpHandler();
-        }
-
-        sponsorHandlers.clear();
-        sponsorHashMap.clear();
-    }
-
-    private void destroyMarketValueListeners() {
-        sponsorMarketValueReference.removeEventListener(sponsorMarketValueEventListener);
-        sponsorChildEventListener = null;
-        sponsorMarketValueReference = null;
-    }
-
-    private void initializeMarketValueListeners() {
-        sponsorMarketValueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                sponsorMarketValues = dataSnapshot.getValue(SponsorMarketValues.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        };
-
-        sponsorMarketValueReference = firebaseInst.getReference("sponsorMarketValues");
-        sponsorMarketValueReference.addValueEventListener(sponsorMarketValueEventListener);
     }
 
     public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.SponsorHolder> {
 
-        private Vector<SponsorHandler> sponsorAdapterHandlers;
+        private Vector<Sponsor> sponsors;
 
-        public SponsorsAdapter(Vector<SponsorHandler> sponsors) {
-            this.sponsorAdapterHandlers = sponsors;
+        public SponsorsAdapter(Vector<Sponsor> sponsors) {
+            this.sponsors = sponsors;
         }
 
         @NonNull
@@ -248,11 +151,11 @@ public class SponsorsActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(@NonNull final SponsorHolder holder, final int position) {
-            holder.setSponsorHandler(sponsorAdapterHandlers.get(position));
+            holder.setSponsor(sponsors.get(position));
             // TODO handle sponsor image from database.  For now it is hardcoded in App
             //holder.sponsorImage.setImageBitmap(sponsor.getProfilePictureBitmap());
-            holder.sponsorName.setText(holder.getSponsorHandler().getSponsor().getName());
-            switch (holder.getSponsorName()) {
+            holder.sponsorName.setText(holder.getSponsor().getName());
+            switch (holder.getSponsor().getName()) {
                 case "At Work Sports Bar":
                     holder.sponsorImage.setImageResource(R.drawable.at_work_sports_bar_and_grill);
                     holder.setSponsorImageResId(R.drawable.at_work_sports_bar_and_grill);
@@ -279,31 +182,25 @@ public class SponsorsActivity extends BaseActivity {
                     break;
             }
 
-            if (holder.hasVisited()) {
-                holder.sponsorVisitStatus.setVisibility(View.INVISIBLE);
-            }
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), IndividualSponsorActivity.class);
-                    intent.putExtra(IndividualSponsorActivity.sponsorUidKey, holder.getSponsorUid());
-                    intent.putExtra(IndividualSponsorActivity.sponsorNameKey, holder.getSponsorName());
+                    intent.putExtra(IndividualSponsorActivity.sponsorUidKey, holder.getSponsor().getUid());
+                    intent.putExtra(IndividualSponsorActivity.sponsorNameKey, holder.getSponsor().getName());
                     intent.putExtra(IndividualSponsorActivity.sponsorImageResIdKey, holder.getSponsorImageResId());
-                    intent.putExtra(IndividualSponsorActivity.sponsorUrlKey, holder.getSponsorUrl());
+                    intent.putExtra(IndividualSponsorActivity.sponsorUrlKey, holder.getSponsor().getUrl());
                     startActivity(intent);
-
-                    //handleSponsorClick(holder.getSponsorHandler());
                 }
             });
         }
 
         @Override
-        public int getItemCount() { return sponsorAdapterHandlers.size(); }
+        public int getItemCount() { return sponsors.size(); }
 
         public class SponsorHolder extends RecyclerView.ViewHolder {
 
-            public SponsorHandler sponsorHandler;
+            public Sponsor sponsor;
             public ImageView sponsorImage;
             public TextView sponsorName;
             public TextView sponsorVisitStatus;
@@ -316,24 +213,12 @@ public class SponsorsActivity extends BaseActivity {
                 sponsorVisitStatus = v.findViewById(R.id.sponsor_visit_status);
             }
 
-            public SponsorHandler getSponsorHandler() {
-                return sponsorHandler;
+            public Sponsor getSponsor() {
+                return sponsor;
             }
 
-            public void setSponsorHandler(SponsorHandler sponsorHandler) {
-                this.sponsorHandler = sponsorHandler;
-            }
-
-            public boolean hasVisited() {
-                return sponsorHandler.getSponsor().getVisited();
-            }
-
-            public String getSponsorName() {
-                return sponsorHandler.getSponsor().getName();
-            }
-
-            public String getSponsorUid() {
-                return sponsorHandler.getSponsorUid();
+            public void setSponsor(Sponsor sponsor) {
+                this.sponsor = sponsor;
             }
 
             public int getSponsorImageResId() {
@@ -343,92 +228,6 @@ public class SponsorsActivity extends BaseActivity {
             public void setSponsorImageResId(int sponsorImageResId) {
                 this.sponsorImageResId = sponsorImageResId;
             }
-
-            public String getSponsorUrl() {
-                return sponsorHandler.getSponsorUrl();
-            }
         }
-    }
-
-    private void handleSponsorClick(final SponsorHandler sponsorHandler) {
-        final User user = UserManager.getInstance().getUser();
-        DatabaseReference sponsorVisitEventsReference = firebaseInst.getReference().child("sponsorVisitData").child(sponsorHandler.getSponsor().getUid()).child("sponsorVisitEvents");
-        UserMarketDataSnapshot userMarketDataSnapshot = new UserMarketDataSnapshot(user);
-        SponsorVisitEvent sponsorVisitEvent = new SponsorVisitEvent(userMarketDataSnapshot);
-        String sponsorVisitKey = sponsorVisitEventsReference.push().getKey();
-        if (sponsorVisitKey != null) {
-            sponsorVisitEventsReference.child(sponsorVisitKey).setValue(sponsorVisitEvent);
-        }
-
-        // Handle if the user hasn't visited this site yet
-        if (!sponsorHandler.getSponsor().getVisited()) {
-            // Calculate earned points and store it in the user profile
-            Integer earnedPoints = MarketingManager.getInstance().getUserSponsorMarketingValue(user, sponsorMarketValues);
-            Integer newUserPoints = user.getPoints() + earnedPoints;
-            DatabaseReference userReference = firebaseInst.getReference().child("users").child(firebaseAuth.getUid());
-            user.setPoints(newUserPoints);
-            userReference.child("points").setValue(newUserPoints);
-
-            // Store that the user has visited the site
-            DatabaseReference sponsorUserVisitReference = firebaseInst.getReference("sponsorVisitData").child(sponsorHandler.getSponsor().getUid()).child("usersVisited");
-            sponsorUserVisitReference.child(firebaseAuth.getUid()).setValue(true);
-
-            // Change the sponsor status so that it will reflect on the card
-            sponsorHandler.getSponsor().setVisited(true);
-            sponsorHashMap.put(sponsorHandler.getSponsor().getUid(), sponsorHandler);
-            sponsorHandlers.clear();
-            sponsorHandlers.addAll(sponsorHashMap.values());
-            sponsorsAdapter.notifyDataSetChanged();
-
-            // Show pop up window
-            LayoutInflater inflater = (LayoutInflater) SponsorsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.sponsor_visit_popup, null);
-            ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", earnedPoints));
-            final PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            popupWindow.showAtLocation(findViewById(R.id.activity_sponsors_relative_layout), Gravity.CENTER, 0, 0);
-
-            // Dim the background
-            final View container;
-            if (popupWindow.getBackground() == null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    container = (View) popupWindow.getContentView().getParent();
-                } else {
-                    container = popupWindow.getContentView();
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    container = (View) popupWindow.getContentView().getParent().getParent();
-                } else {
-                    container = (View) popupWindow.getContentView().getParent();
-                }
-            }
-
-            Context context = popupWindow.getContentView().getContext();
-            final WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            final WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) container.getLayoutParams();
-            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-            layoutParams.dimAmount = 0.75f;
-            windowManager.updateViewLayout(container, layoutParams);
-
-
-            (layout.findViewById(R.id.pop_up_button)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Un-dim the background
-                    layoutParams.dimAmount = 0.0f;
-                    windowManager.updateViewLayout(container, layoutParams);
-                    popupWindow.dismiss();
-                    visitSponsorSite(sponsorHandler.getSponsor().getUrl());
-                }
-            });
-        } else {
-            visitSponsorSite(sponsorHandler.getSponsor().getUrl());
-        }
-    }
-
-    private void visitSponsorSite(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 }
