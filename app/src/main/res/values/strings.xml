@@ -62,6 +62,9 @@
     <string name="edit_marketing_phone_text">Phone</string>
     <string name="store_sponsor_pop_up_text">Congrats! You\'ve earned</string>
     <string name="pop_up_button_text">OK! Continue to Site...</string>
-    <string name="sponsor_not_visited_text">Earn Points!</string>
+    <string name="sponsor_interact_text">Visit site and provide feedback to earn points!</string>
+    <string name="post_button_text">Post Comment</string>
+    <string name="like_pop_up_button_text">OK</string>
+    <string name="store_sponsor_pop_up_text_filler">for providing feedback</string>
 
 </resources>

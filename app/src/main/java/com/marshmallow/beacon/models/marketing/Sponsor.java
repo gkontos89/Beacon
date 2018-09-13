@@ -64,13 +64,4 @@ public class Sponsor {
     public void setUid(String uid) {
         this.uid = uid;
     }
-
-    @Exclude
-    public Boolean getVisited() {
-        return visited;
-    }
-
-    public void setVisited(Boolean visited) {
-        this.visited = visited;
-    }
 }

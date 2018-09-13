@@ -1,13 +1,10 @@
 package com.marshmallow.beacon.ui.marketing;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,10 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +24,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.marshmallow.beacon.MarketingManager;
 import com.marshmallow.beacon.R;
@@ -42,7 +36,6 @@ import com.marshmallow.beacon.models.user.User;
 import com.marshmallow.beacon.ui.BaseActivity;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -54,7 +47,7 @@ public class SponsorsActivity extends BaseActivity {
     private RecyclerView sponsorsRecyclerView;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     private SponsorsAdapter sponsorsAdapter;
-    private Vector<SponsorHandler> sponsors;
+    private Vector<SponsorHandler> sponsorHandlers;
     private HashMap<String, SponsorHandler> sponsorHashMap;
 
     // Firebase
@@ -64,11 +57,6 @@ public class SponsorsActivity extends BaseActivity {
     private ChildEventListener sponsorChildEventListener;
     private DatabaseReference sponsorMarketValueReference;
     private ValueEventListener sponsorMarketValueEventListener;
-
-    // BroadcastReceiver
-    private BroadcastReceiver broadcastReceiver;
-    private IntentFilter intentFilter;
-    private static final String sponsorsRetrievedAction = "sponsorsRetrieved";
 
     // Marketing models
     private SponsorMarketValues sponsorMarketValues;
@@ -83,17 +71,27 @@ public class SponsorsActivity extends BaseActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseInst = FirebaseDatabase.getInstance();
 
-        sponsors = new Vector<>();
+        sponsorHandlers = new Vector<>();
         sponsorHashMap = new HashMap<>();
         sponsorsRecyclerView = findViewById(R.id.sponsors_recycler_view);
         recyclerViewLayoutManager = new LinearLayoutManager(this);
         sponsorsRecyclerView.setLayoutManager(recyclerViewLayoutManager);
-        sponsorsAdapter = new SponsorsAdapter(sponsors);
+        sponsorsAdapter = new SponsorsAdapter(sponsorHandlers);
         sponsorsRecyclerView.setAdapter(sponsorsAdapter);
+    }
 
-//        initializeSponsorBroadcastReceiver();
+    @Override
+    protected void onStart() {
+        super.onStart();
         initializeSponsorListeners();
         initializeMarketValueListeners();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        destroySponsorListeners();
+        destroyMarketValueListeners();
     }
 
     private class SponsorHandler {
@@ -116,8 +114,8 @@ public class SponsorsActivity extends BaseActivity {
                         sponsor.setVisited(false);
                     }
 
-                    sponsors.clear();
-                    sponsors.addAll(sponsorHashMap.values());
+                    sponsorHandlers.clear();
+                    sponsorHandlers.addAll(sponsorHashMap.values());
                     sponsorCount--;
 
                     if (sponsorCount == 0) {
@@ -141,40 +139,21 @@ public class SponsorsActivity extends BaseActivity {
         public String getSponsorUid() {
             return sponsor.getUid();
         }
-    }
 
-//    private void initializeSponsorBroadcastReceiver() {
-//        intentFilter = new IntentFilter();
-//        intentFilter.addAction(sponsorsRetrievedAction);
-//        broadcastReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                for (Map.Entry<String, Sponsor> entry : sponsorHashMap.entrySet()) {
-//                    final String sponsorUid = entry.getKey();
-//                    DatabaseReference userVisitReference = firebaseInst.getReference("sponsorVisitData").child(sponsorUid).child("usersVisited").child(firebaseAuth.getUid());
-//                    userVisitReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            if (!dataSnapshot.exists()) {
-//                                Sponsor sponsor = sponsorHashMap.get(sponsorUid);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                    });
-//                }
-//            }
-//        };
-//
-//        registerReceiver(broadcastReceiver, intentFilter);
-//    }
+        public String getSponsorUrl() {
+            return sponsor.getUrl();
+        }
+
+        public void cleanUpHandler() {
+            userVisitReference.removeEventListener(userVisitListener);
+            userVisitListener = null;
+            userVisitReference = null;
+        }
+    }
 
     private void initializeSponsorListeners() {
         sponsorCount = -1;
-        sponsorsReference = firebaseInst.getReference("sponsors");
+        sponsorsReference = firebaseInst.getReference("sponsorHandlers");
         sponsorsReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -217,6 +196,25 @@ public class SponsorsActivity extends BaseActivity {
         });
     }
 
+    private void destroySponsorListeners() {
+        sponsorsReference.removeEventListener(sponsorChildEventListener);
+        sponsorChildEventListener = null;
+        sponsorsReference = null;
+
+        for (SponsorHandler sponsorHandler : sponsorHandlers) {
+            sponsorHandler.cleanUpHandler();
+        }
+
+        sponsorHandlers.clear();
+        sponsorHashMap.clear();
+    }
+
+    private void destroyMarketValueListeners() {
+        sponsorMarketValueReference.removeEventListener(sponsorMarketValueEventListener);
+        sponsorChildEventListener = null;
+        sponsorMarketValueReference = null;
+    }
+
     private void initializeMarketValueListeners() {
         sponsorMarketValueEventListener = new ValueEventListener() {
             @Override
@@ -235,10 +233,10 @@ public class SponsorsActivity extends BaseActivity {
 
     public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.SponsorHolder> {
 
-        private Vector<SponsorHandler> sponsors;
+        private Vector<SponsorHandler> sponsorAdapterHandlers;
 
         public SponsorsAdapter(Vector<SponsorHandler> sponsors) {
-            this.sponsors = sponsors;
+            this.sponsorAdapterHandlers = sponsors;
         }
 
         @NonNull
@@ -250,60 +248,104 @@ public class SponsorsActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(@NonNull final SponsorHolder holder, final int position) {
-            final SponsorHandler sponsorHandler = sponsors.get(position);
+            holder.setSponsorHandler(sponsorAdapterHandlers.get(position));
             // TODO handle sponsor image from database.  For now it is hardcoded in App
             //holder.sponsorImage.setImageBitmap(sponsor.getProfilePictureBitmap());
-            String sponsorName = sponsorHandler.getSponsor().getName();
-            holder.sponsorName.setText(sponsorName);
-            switch (sponsorName) {
+            holder.sponsorName.setText(holder.getSponsorHandler().getSponsor().getName());
+            switch (holder.getSponsorName()) {
                 case "At Work Sports Bar":
                     holder.sponsorImage.setImageResource(R.drawable.at_work_sports_bar_and_grill);
+                    holder.setSponsorImageResId(R.drawable.at_work_sports_bar_and_grill);
                     break;
 
                 case "Brick and Motor Botique":
                     holder.sponsorImage.setImageResource(R.drawable.brick_and_motor_botique);
+                    holder.setSponsorImageResId(R.drawable.brick_and_motor_botique);
                     break;
 
                 case "A Jacq of All Trades":
                     holder.sponsorImage.setImageResource(R.drawable.jacq_of_all_trades);
+                    holder.setSponsorImageResId(R.drawable.jacq_of_all_trades);
                     break;
 
                 case "Make It Train":
                     holder.sponsorImage.setImageResource(R.drawable.make_it_train);
+                    holder.setSponsorImageResId(R.drawable.make_it_train);
                     break;
 
                 case "Rhodes Capital Management":
                     holder.sponsorImage.setImageResource(R.drawable.rhodes_capital_management);
+                    holder.setSponsorImageResId(R.drawable.rhodes_capital_management);
                     break;
             }
 
-            if (sponsorHandler.getSponsor().getVisited()) {
+            if (holder.hasVisited()) {
                 holder.sponsorVisitStatus.setVisibility(View.INVISIBLE);
             }
-
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    handleSponsorClick(sponsorHandler);
+                    Intent intent = new Intent(getApplicationContext(), IndividualSponsorActivity.class);
+                    intent.putExtra(IndividualSponsorActivity.sponsorUidKey, holder.getSponsorUid());
+                    intent.putExtra(IndividualSponsorActivity.sponsorNameKey, holder.getSponsorName());
+                    intent.putExtra(IndividualSponsorActivity.sponsorImageResIdKey, holder.getSponsorImageResId());
+                    intent.putExtra(IndividualSponsorActivity.sponsorUrlKey, holder.getSponsorUrl());
+                    startActivity(intent);
+
+                    //handleSponsorClick(holder.getSponsorHandler());
                 }
             });
         }
 
         @Override
-        public int getItemCount() { return sponsors.size(); }
+        public int getItemCount() { return sponsorAdapterHandlers.size(); }
 
         public class SponsorHolder extends RecyclerView.ViewHolder {
 
+            public SponsorHandler sponsorHandler;
             public ImageView sponsorImage;
             public TextView sponsorName;
             public TextView sponsorVisitStatus;
+            public int sponsorImageResId;
 
             public SponsorHolder(View v) {
                 super(v);
                 sponsorImage = v.findViewById(R.id.sponsor_image);
                 sponsorName = v.findViewById(R.id.sponsor_name);
                 sponsorVisitStatus = v.findViewById(R.id.sponsor_visit_status);
+            }
+
+            public SponsorHandler getSponsorHandler() {
+                return sponsorHandler;
+            }
+
+            public void setSponsorHandler(SponsorHandler sponsorHandler) {
+                this.sponsorHandler = sponsorHandler;
+            }
+
+            public boolean hasVisited() {
+                return sponsorHandler.getSponsor().getVisited();
+            }
+
+            public String getSponsorName() {
+                return sponsorHandler.getSponsor().getName();
+            }
+
+            public String getSponsorUid() {
+                return sponsorHandler.getSponsorUid();
+            }
+
+            public int getSponsorImageResId() {
+                return sponsorImageResId;
+            }
+
+            public void setSponsorImageResId(int sponsorImageResId) {
+                this.sponsorImageResId = sponsorImageResId;
+            }
+
+            public String getSponsorUrl() {
+                return sponsorHandler.getSponsorUrl();
             }
         }
     }
@@ -334,8 +376,8 @@ public class SponsorsActivity extends BaseActivity {
             // Change the sponsor status so that it will reflect on the card
             sponsorHandler.getSponsor().setVisited(true);
             sponsorHashMap.put(sponsorHandler.getSponsor().getUid(), sponsorHandler);
-            sponsors.clear();
-            sponsors.addAll(sponsorHashMap.values());
+            sponsorHandlers.clear();
+            sponsorHandlers.addAll(sponsorHashMap.values());
             sponsorsAdapter.notifyDataSetChanged();
 
             // Show pop up window

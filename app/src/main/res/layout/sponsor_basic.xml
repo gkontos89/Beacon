@@ -34,7 +34,7 @@
             android:background="#62f869"
             android:layout_alignParentEnd="true"
             android:textSize="16sp"
-            android:text="@string/sponsor_not_visited_text"/>
+            android:text="@string/sponsor_interact_text"/>
 
 
 
