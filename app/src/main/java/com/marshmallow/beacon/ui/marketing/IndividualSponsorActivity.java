@@ -1,7 +1,9 @@
 package com.marshmallow.beacon.ui.marketing;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -102,7 +104,11 @@ public class IndividualSponsorActivity extends AppCompatActivity {
         websiteImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                if (!sponsorVisited) {
+
+                } else {
+                    visitSponsorSite(sponsor.getUrl());
+                }
             }
         });
 
@@ -249,6 +255,12 @@ public class IndividualSponsorActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void visitSponsorSite(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void updateWebsiteVisitStatus(boolean visited) {
