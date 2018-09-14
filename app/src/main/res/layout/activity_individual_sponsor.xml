@@ -42,7 +42,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="16dp"
-            android:background="#16a916"
+            android:background="#FFC1BFBF"
             android:src="@drawable/ic_baseline_public_24px"/>
 
         <ImageView
@@ -51,14 +51,14 @@
             android:layout_height="50dp"
 
             android:layout_marginEnd="4dp"
-            android:background="#5167ca"
+            android:background="#FFC1BFBF"
             android:src="@drawable/ic_baseline_thumb_up_alt_24px"/>
 
         <ImageView
             android:id="@+id/dislike_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="#9e090e"
+            android:background="#FFC1BFBF"
             android:src="@drawable/ic_baseline_thumb_down_alt_24px"/>
 
     </LinearLayout>

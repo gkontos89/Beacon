@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -140,6 +141,8 @@ public class IndividualSponsorActivity extends AppCompatActivity {
                     long timestamp = System.currentTimeMillis();
                     firebaseInst.getReference("sponsorVisitData").child(sponsor.getUid()).child("posts").child(newPostKey).child("timestamp").setValue(timestamp);
                     firebaseInst.getReference("sponsorVisitData").child(sponsor.getUid()).child("posts").child(newPostKey).child("text").setValue(comment);
+                    Toast.makeText(IndividualSponsorActivity.this, "Commented posted", Toast.LENGTH_SHORT).show();
+                    postEditText.setText("");
                 }
             }
         });
@@ -345,9 +348,9 @@ public class IndividualSponsorActivity extends AppCompatActivity {
     private void updateLikeStatuses(boolean liked) {
         if (liked) {
             likeButton.setBackgroundColor(Color.parseColor("#5167ca"));
-            dislikeButton.setBackgroundColor(Color.parseColor("FFC1BFBF"));
+            dislikeButton.setBackgroundColor(Color.parseColor("#FFC1BFBF"));
         } else {
-            likeButton.setBackgroundColor(Color.parseColor("FFC1BFBF"));
+            likeButton.setBackgroundColor(Color.parseColor("#FFC1BFBF"));
             dislikeButton.setBackgroundColor(Color.parseColor("#9e090e"));
         }
     }

@@ -132,6 +132,7 @@ public class SponsorsActivity extends BaseActivity {
         sponsorsReference.removeEventListener(sponsorChildEventListener);
         sponsorChildEventListener = null;
         sponsorsReference = null;
+        sponsors.clear();
     }
 
     public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.SponsorHolder> {
@@ -203,14 +204,12 @@ public class SponsorsActivity extends BaseActivity {
             public Sponsor sponsor;
             public ImageView sponsorImage;
             public TextView sponsorName;
-            public TextView sponsorVisitStatus;
             public int sponsorImageResId;
 
             public SponsorHolder(View v) {
                 super(v);
                 sponsorImage = v.findViewById(R.id.sponsor_image);
                 sponsorName = v.findViewById(R.id.sponsor_name);
-                sponsorVisitStatus = v.findViewById(R.id.sponsor_visit_status);
             }
 
             public Sponsor getSponsor() {
