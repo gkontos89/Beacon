@@ -40,7 +40,9 @@ public class HomeActivity extends BaseActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseInst;
     private DatabaseReference userPointTotalReference;
+    private DatabaseReference userSurveyCountReference;
     private ValueEventListener userPointTotalValueEventListener;
+    private ValueEventListener userSurveyCountListener;
 
     // User
     private User currentUser;
@@ -99,7 +101,7 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
-    private void updatePointTotal() {
+    private void initializeUserListeners() {
         // Grab user point total from the database.  no need to grab entire user here
         if (firebaseAuth.getUid() != null) {
             userPointTotalReference = firebaseInst.getReference("users").child(firebaseAuth.getUid()).child("points");
@@ -124,6 +126,15 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
+    private void destroyUserListeners() {
+        userPointTotalReference.removeEventListener(userPointTotalValueEventListener);
+        userSurveyCountReference.removeEventListener(userSurveyCountListener);
+        userPointTotalValueEventListener = null;
+        userSurveyCountListener = null;
+        userPointTotalReference = null;
+        userSurveyCountReference = null;
+    }
+
     private void signOutUser() {
         if (firebaseAuth.getUid() != null) {
             DatabaseReference userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
@@ -134,16 +145,14 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onResume() {
-        updatePointTotal();
+        initializeUserListeners();
         super.onResume();
-
     }
 
     @Override
     public void onPause() {
-        userPointTotalReference.removeEventListener(userPointTotalValueEventListener);
-        userPointTotalValueEventListener = null;
         super.onPause();
+        destroyUserListeners();
     }
 
     @Override
