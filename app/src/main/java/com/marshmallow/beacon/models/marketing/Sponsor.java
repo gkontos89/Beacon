@@ -18,7 +18,6 @@ public class Sponsor {
     private String name;
     private String picture;
     private String url;
-    private Boolean visited;
 
     public Sponsor() {
     }
@@ -63,14 +62,5 @@ public class Sponsor {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    @Exclude
-    public Boolean getVisited() {
-        return visited;
-    }
-
-    public void setVisited(Boolean visited) {
-        this.visited = visited;
     }
 }
