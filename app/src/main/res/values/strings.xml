@@ -66,5 +66,6 @@
     <string name="post_button_text">Post Comment</string>
     <string name="like_pop_up_button_text">OK</string>
     <string name="store_sponsor_pop_up_text_filler">for providing feedback</string>
+    <string name="survey_submit_button_text">Submit Survey</string>
 
 </resources>

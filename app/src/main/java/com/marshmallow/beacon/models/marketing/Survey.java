@@ -7,6 +7,10 @@ import java.util.Vector;
  */
 public class Survey {
     private Vector<SurveyItem> surveyItems;
+    private int pointReward;
+    private String surveyTitle;
+    private String surveyUid;
+    private String sponsorUid;
 
     public Survey() {
     }
@@ -17,5 +21,37 @@ public class Survey {
 
     public void setSurveyItems(Vector<SurveyItem> surveyItems) {
         this.surveyItems = surveyItems;
+    }
+
+    public int getPointReward() {
+        return pointReward;
+    }
+
+    public void setPointReward(int pointReward) {
+        this.pointReward = pointReward;
+    }
+
+    public String getSurveyTitle() {
+        return surveyTitle;
+    }
+
+    public void setSurveyTitle(String surveyTitle) {
+        this.surveyTitle = surveyTitle;
+    }
+
+    public String getSurveyUid() {
+        return surveyUid;
+    }
+
+    public void setSurveyUid(String surveyUid) {
+        this.surveyUid = surveyUid;
+    }
+
+    public String getSponsorUid() {
+        return sponsorUid;
+    }
+
+    public void setSponsorUid(String sponsorUid) {
+        this.sponsorUid = sponsorUid;
     }
 }

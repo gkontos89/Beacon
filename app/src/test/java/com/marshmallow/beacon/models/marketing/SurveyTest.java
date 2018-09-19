@@ -21,4 +21,16 @@ public class SurveyTest {
         survey.setSurveyItems(surveyItems);
         assertEquals(surveyItems, survey.getSurveyItems());
     }
+
+    @Test
+    public void surveyPointTest() {
+        survey.setPointReward(10);
+        assertEquals(10, survey.getPointReward());
+    }
+
+    @Test
+    public void surveyTitleTest() {
+        survey.setSurveyTitle("A new survey");
+        assertEquals("A new survey", survey.getSurveyTitle());
+    }
 }

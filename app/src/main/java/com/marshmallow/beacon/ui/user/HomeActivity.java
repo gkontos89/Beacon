@@ -22,6 +22,7 @@ import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.user.User;
 import com.marshmallow.beacon.ui.BaseActivity;
+import com.marshmallow.beacon.ui.marketing.SurveysActivity;
 
 /**
  * Created by George on 7/13/2018.
@@ -32,6 +33,7 @@ public class HomeActivity extends BaseActivity {
     ImageView profilePicture;
     TextView usernameText;
     TextView pointsTotalValue;
+    TextView surveyCount;
     Button editProfileButton;
     CardView rewardsCatalogCard;
     CardView availableSurveysCard;
@@ -57,6 +59,7 @@ public class HomeActivity extends BaseActivity {
         usernameText = findViewById(R.id.username_title);
         profilePicture = findViewById(R.id.home_profile_image);
         pointsTotalValue = findViewById(R.id.points_total_value);
+        surveyCount = findViewById(R.id.survey_count);
         editProfileButton = findViewById(R.id.edit_profile_button);
         rewardsCatalogCard = findViewById(R.id.rewards_card);
         availableSurveysCard = findViewById(R.id.surveys_card);
@@ -95,8 +98,8 @@ public class HomeActivity extends BaseActivity {
         availableSurveysCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO launch surveys page
-                // TODO publish survey count
+                Intent intent = new Intent(getApplicationContext(), SurveysActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -123,6 +126,25 @@ public class HomeActivity extends BaseActivity {
             };
 
             userPointTotalReference.addValueEventListener(userPointTotalValueEventListener);
+
+            userSurveyCountReference = firebaseInst.getReference("distributedSurveys").child(firebaseAuth.getUid());
+            userSurveyCountListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        surveyCount.setText(String.format("%d", dataSnapshot.getChildrenCount()));
+                    } else {
+                        surveyCount.setText("0");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            userSurveyCountReference.addValueEventListener(userSurveyCountListener);
         }
     }
 
