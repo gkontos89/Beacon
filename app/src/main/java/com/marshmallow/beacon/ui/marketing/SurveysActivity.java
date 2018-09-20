@@ -143,7 +143,7 @@ public class SurveysActivity extends AppCompatActivity{
         }
 
         private void initializeSurveyControllerListeners() {
-            surveyObjectReference = firebaseInst.getReference("sponsorSurveys").child(distributedSurvey.getSponsorUid()).child("surveys").child(distributedSurvey.getSurveyUid());
+            surveyObjectReference = firebaseInst.getReference("sponsorSurveys").child(distributedSurvey.getSponsorUid()).child("surveys").child(distributedSurvey.getSurveyUid()).child("survey");
             surveyObjectReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

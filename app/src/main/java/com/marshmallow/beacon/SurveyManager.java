@@ -9,6 +9,7 @@ import com.marshmallow.beacon.models.marketing.SurveyResult;
 import com.marshmallow.beacon.models.marketing.UserMarketDataSnapshot;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -48,14 +49,30 @@ public class SurveyManager {
         surveyResponseItems.get(surveyItem).setAnswer(answer);
     }
 
-    public SurveyResult generateSurveyResult() {
-        long timestamp = System.currentTimeMillis();
-        UserMarketDataSnapshot userMarketDataSnapshot = new UserMarketDataSnapshot(UserManager.getInstance().getUser());
+    public boolean surveyCompleted() {
+        boolean surveyCompleted = true;
+        for (SurveyResponseItem surveyResponseItem : surveyResponseItems.values()) {
+            if (surveyResponseItem.getAnswer() == null) {
+                surveyCompleted = false;
+                break;
+            }
+        }
 
-        SurveyResult surveyResult = new SurveyResult();
-        surveyResult.setTimestamp(timestamp);
-        surveyResult.setUserMarketDataSnapshot(userMarketDataSnapshot);
-        surveyResult.setSurveyResponseItems((Vector<SurveyResponseItem>) surveyResponseItems.values());
-        return surveyResult;
+        return  surveyCompleted;
+    }
+
+    public SurveyResult generateSurveyResult() {
+        if (surveyCompleted()) {
+            long timestamp = System.currentTimeMillis();
+            UserMarketDataSnapshot userMarketDataSnapshot = new UserMarketDataSnapshot(UserManager.getInstance().getUser());
+
+            SurveyResult surveyResult = new SurveyResult();
+            surveyResult.setTimestamp(timestamp);
+            surveyResult.setUserMarketDataSnapshot(userMarketDataSnapshot);
+            surveyResult.setSurveyResponseItems((Vector<SurveyResponseItem>) surveyResponseItems.values());
+            return surveyResult;
+        } else {
+            return null;
+        }
     }
 }

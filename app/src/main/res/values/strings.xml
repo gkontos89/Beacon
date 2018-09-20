@@ -67,5 +67,8 @@
     <string name="like_pop_up_button_text">OK</string>
     <string name="store_sponsor_pop_up_text_filler">for providing feedback</string>
     <string name="survey_submit_button_text">Submit Survey</string>
+    <string name="survey_progress_bar_text">Submitting survey and adding points...</string>
+    <string name="survey_submit_feedback_text">from that survey</string>
+    <string name="survey_submited_text">Survey Submitted! You\'ve earned</string>
 
 </resources>
