@@ -73,7 +73,7 @@ public class IndividualSurveyActivity extends AppCompatActivity {
         submitSurveyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Post pop-up and store survey result
+                // Post pop-up, store survey result and remove survey from distributed list for the user
                 SurveyResult surveyResult = surveyManager.generateSurveyResult();
                 if (surveyResult != null) {
                     showSubmittingWheel();
@@ -88,6 +88,11 @@ public class IndividualSurveyActivity extends AppCompatActivity {
                     if (newResponseUid != null) {
                         responseReference.child(newResponseUid).setValue(surveyResult);
                     }
+
+                    // Remove from users distributed survey list
+                    // TODO add back in after testing
+//                    DatabaseReference distributedSurveyReference = firebaseInst.getReference("distributedSurveys").child(firebaseAuth.getUid()).child(surveyManager.getCurrentSurvey().getSurveyUid());
+//                    distributedSurveyReference.removeValue();
 
                     // Update the users points
                     int existingPoints = UserManager.getInstance().getUser().getPoints();
