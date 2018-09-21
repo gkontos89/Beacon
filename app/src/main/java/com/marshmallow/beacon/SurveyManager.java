@@ -32,6 +32,7 @@ public class SurveyManager {
     }
 
     public void setCurrentSurvey(Survey survey) {
+        surveyResponseItems = new HashMap<>();
         this.survey = survey;
         for (SurveyItem surveyItem : this.survey.getSurveyItems()) {
             SurveyResponseItem surveyResponseItem = new SurveyResponseItem();

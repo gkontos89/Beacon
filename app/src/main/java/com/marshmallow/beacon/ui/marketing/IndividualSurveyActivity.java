@@ -29,6 +29,7 @@ import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.marketing.SurveyItem;
 import com.marshmallow.beacon.models.marketing.SurveyResult;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -40,7 +41,7 @@ public class IndividualSurveyActivity extends AppCompatActivity {
     private RecyclerView surveyRecyclerView;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     private IndividualSurveyAdapter individualSurveyAdapter;
-    private Vector<SurveyItem> surveyItems;
+    private ArrayList<SurveyItem> surveyItems;
     private Button submitSurveyButton;
     private LinearLayout progressBarLayout;
 
@@ -61,7 +62,7 @@ public class IndividualSurveyActivity extends AppCompatActivity {
 
         surveyManager = SurveyManager.getInstance();
 
-        surveyItems = SurveyManager.getInstance().getCurrentSurvey().getSurveyItems();
+        surveyItems = (ArrayList<SurveyItem>) SurveyManager.getInstance().getCurrentSurvey().getSurveyItems();
         surveyRecyclerView = findViewById(R.id.individual_survey_recycler_view);
         recyclerViewLayoutManager = new LinearLayoutManager(this);
         surveyRecyclerView.setLayoutManager(recyclerViewLayoutManager);
@@ -164,9 +165,9 @@ public class IndividualSurveyActivity extends AppCompatActivity {
     }
 
     private class IndividualSurveyAdapter extends RecyclerView.Adapter<IndividualSurveyAdapter.IndividualSurveyHolder> {
-        private Vector<SurveyItem> surveyItems;
+        private ArrayList<SurveyItem> surveyItems;
 
-        public IndividualSurveyAdapter(Vector<SurveyItem> surveyItems) {
+        public IndividualSurveyAdapter(ArrayList<SurveyItem> surveyItems) {
             this.surveyItems = surveyItems;
         }
 
@@ -181,9 +182,13 @@ public class IndividualSurveyActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull final IndividualSurveyAdapter.IndividualSurveyHolder holder, final int position) {
             holder.setSurveyItem(surveyItems.get(position));
             holder.surveyQuestion.setText(holder.surveyItem.getQuestion());
+            int i =1;
             for (String option : holder.surveyItem.getOptions()) {
                 RadioButton radioButton = new RadioButton(getApplicationContext());
                 radioButton.setText(option);
+                radioButton.setId(i);
+                radioButton.setVisibility(View.VISIBLE);
+                i++;
                 holder.questionOptions.addView(radioButton);
             }
 
@@ -208,8 +213,8 @@ public class IndividualSurveyActivity extends AppCompatActivity {
 
             public IndividualSurveyHolder(View v) {
                 super(v);
-                surveyQuestion = findViewById(R.id.survey_question);
-                questionOptions = findViewById(R.id.radio_options);
+                surveyQuestion = v.findViewById(R.id.survey_question);
+                questionOptions = v.findViewById(R.id.radio_options);
             }
 
             public void setSurveyItem(SurveyItem surveyItem) {

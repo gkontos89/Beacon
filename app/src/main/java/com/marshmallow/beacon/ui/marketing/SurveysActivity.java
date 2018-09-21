@@ -27,6 +27,7 @@ import com.marshmallow.beacon.models.marketing.DistributedSurvey;
 import com.marshmallow.beacon.models.marketing.Sponsor;
 import com.marshmallow.beacon.models.marketing.Survey;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -41,6 +42,7 @@ public class SurveysActivity extends AppCompatActivity{
 
     // Models
     private Vector<SurveyController> surveyControllers;
+    private Vector<SurveyController> processedSurveyControllers;
 
     // Firebase
     private FirebaseDatabase firebaseInst;
@@ -54,10 +56,12 @@ public class SurveysActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
         surveyControllers = new Vector<>();
+        processedSurveyControllers = new Vector<>();
         surveysRecyclerView = findViewById(R.id.surveys_rv);
         recyclerViewLayoutManager = new LinearLayoutManager(this);
         surveysRecyclerView.setLayoutManager(recyclerViewLayoutManager);
-        surveysAdapter = new SurveysAdapter(surveyControllers);
+        surveysAdapter = new SurveysAdapter(processedSurveyControllers);
+//        surveysAdapter = new SurveysAdapter(surveyControllers);
         surveysRecyclerView.setAdapter(surveysAdapter);
 
         firebaseInst = FirebaseDatabase.getInstance();
@@ -77,11 +81,12 @@ public class SurveysActivity extends AppCompatActivity{
     }
 
     private void initializeDistributedSurveyListeners() {
+        // TODO this is an ugly hack for now, need to revisit
         distributedSurveysReference = firebaseInst.getReference("distributedSurveys").child(firebaseAuth.getUid());
         distributedSurveysListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                surveyControllers.add(new SurveyController((DistributedSurvey) dataSnapshot.getValue()));
+                surveyControllers.add(new SurveyController(dataSnapshot.getValue(DistributedSurvey.class)));
             }
 
             @Override
@@ -112,6 +117,8 @@ public class SurveysActivity extends AppCompatActivity{
         distributedSurveysReference.removeEventListener(distributedSurveysListener);
         distributedSurveysListener = null;
         distributedSurveysReference = null;
+        surveyControllers.clear();
+        processedSurveyControllers.clear();
     }
 
     private class SurveyController {
@@ -147,7 +154,7 @@ public class SurveysActivity extends AppCompatActivity{
             surveyObjectReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    survey = (Survey) dataSnapshot.getValue();
+                    survey = dataSnapshot.getValue(Survey.class);
                     surveyLoaded = true;
                     checkIfLoadingIsComplete();
                 }
@@ -162,7 +169,7 @@ public class SurveysActivity extends AppCompatActivity{
             sponsorReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    sponsor = (Sponsor) dataSnapshot.getValue();
+                    sponsor = dataSnapshot.getValue(Sponsor.class);
                     sponsorLoaded = true;
                     checkIfLoadingIsComplete();
                 }
@@ -176,6 +183,7 @@ public class SurveysActivity extends AppCompatActivity{
 
         private void checkIfLoadingIsComplete() {
             if (sponsorLoaded && surveyLoaded) {
+                processedSurveyControllers.add(this);
                 surveysAdapter.notifyDataSetChanged();
             }
         }
@@ -251,10 +259,10 @@ public class SurveysActivity extends AppCompatActivity{
 
             public SurveyHolder(View v) {
                 super(v);
-                surveyTitle = findViewById(R.id.survey_title);
-                pointsAwardedText = findViewById(R.id.points_awarded_text);
-                surveySponsorImage = findViewById(R.id.survey_image);
-                sponsoredByText = findViewById(R.id.sponsored_by_text);
+                surveyTitle = v.findViewById(R.id.survey_title);
+                pointsAwardedText = v.findViewById(R.id.points_awarded_text);
+                surveySponsorImage = v.findViewById(R.id.survey_image);
+                sponsoredByText = v.findViewById(R.id.sponsored_by_text);
             }
 
             public Survey getSurvey() {
