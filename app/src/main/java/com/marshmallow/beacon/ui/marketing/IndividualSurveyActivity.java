@@ -1,6 +1,7 @@
 package com.marshmallow.beacon.ui.marketing;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,7 +31,6 @@ import com.marshmallow.beacon.models.marketing.SurveyItem;
 import com.marshmallow.beacon.models.marketing.SurveyResult;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by George on 8/5/2018.
@@ -187,7 +187,9 @@ public class IndividualSurveyActivity extends AppCompatActivity {
                 RadioButton radioButton = new RadioButton(getApplicationContext());
                 radioButton.setText(option);
                 radioButton.setId(i);
-                radioButton.setVisibility(View.VISIBLE);
+                radioButton.setTextColor(Color.BLACK);
+                radioButton.setBackgroundColor(Color.LTGRAY);
+                radioButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 i++;
                 holder.questionOptions.addView(radioButton);
             }
