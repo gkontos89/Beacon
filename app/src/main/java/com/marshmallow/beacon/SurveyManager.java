@@ -70,7 +70,13 @@ public class SurveyManager {
             SurveyResult surveyResult = new SurveyResult();
             surveyResult.setTimestamp(timestamp);
             surveyResult.setUserMarketDataSnapshot(userMarketDataSnapshot);
-            surveyResult.setSurveyResponseItems((Vector<SurveyResponseItem>) surveyResponseItems.values());
+
+            // Handle the survey response items
+            surveyResult.setSurveyResponseItems(new Vector<SurveyResponseItem>());
+            for (SurveyResponseItem surveyResponseItem : surveyResponseItems.values()) {
+                surveyResult.getSurveyResponseItems().add(surveyResponseItem);
+            }
+
             return surveyResult;
         } else {
             return null;

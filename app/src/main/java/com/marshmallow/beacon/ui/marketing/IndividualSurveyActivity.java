@@ -96,6 +96,7 @@ public class IndividualSurveyActivity extends AppCompatActivity {
 //                    distributedSurveyReference.removeValue();
 
                     // Update the users points
+                    // TODO properly set up listeners for users points
                     int existingPoints = UserManager.getInstance().getUser().getPoints();
                     int newPointTotal = existingPoints + surveyManager.getCurrentSurvey().getPointReward();
                     DatabaseReference userPointReference = firebaseInst.getReference("users")
