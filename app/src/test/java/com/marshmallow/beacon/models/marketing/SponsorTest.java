@@ -38,18 +38,6 @@ public class SponsorTest {
     }
 
     @Test
-    public void visitedTrueTest() {
-        sponsor.setVisited(true);
-        assertTrue(sponsor.getVisited());
-    }
-
-    @Test
-    public void visitedFalseTest() {
-        sponsor.setVisited(false);
-        assertTrue(!sponsor.getVisited());
-    }
-
-    @Test
     public void pictureIsNullTest() {
         sponsor.setPicture(null);
         assertEquals(null, sponsor.getProfilePictureBitmap());

@@ -9,8 +9,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginBottom="20dp"
+        android:layout_margin="@dimen/default_padding"
         android:id="@+id/username_card">
 
         <RelativeLayout
@@ -85,7 +84,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/default_padding"
         android:layout_below="@id/username_card"
         android:id="@+id/rewards_card">
 
@@ -113,7 +112,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/default_padding"
         android:layout_below="@id/rewards_card"
         android:id="@+id/surveys_card">
 

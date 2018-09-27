@@ -30,6 +30,7 @@
         <activity android:name=".ui.marketing.SurveysActivity" />
         <activity android:name=".ui.marketing.EditMarketingActivity" />
         <activity android:name=".ui.marketing.IndividualSponsorActivity" />
+        <activity android:name=".ui.marketing.IndividualSurveyActivity" />
     </application>
 
 </manifest>

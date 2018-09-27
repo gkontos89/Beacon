@@ -1,5 +1,6 @@
 package com.marshmallow.beacon.models.marketing;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Vector;
 public class SurveyItem {
 
     private String question;
-    private Vector<String> options;
+    private List<String> options;
 
     public SurveyItem() {
     }
@@ -21,11 +22,11 @@ public class SurveyItem {
         this.question = question;
     }
 
-    public Vector<String> getOptions() {
+    public List<String> getOptions() {
         return options;
     }
 
-    public void setOptions(Vector<String> options) {
+    public void setOptions(List<String> options) {
         this.options = options;
     }
 }

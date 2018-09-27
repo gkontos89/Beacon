@@ -50,7 +50,6 @@ public class SponsorsActivity extends BaseActivity {
     private Vector<Sponsor> sponsors;
 
     // Firebase
-    private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseInst;
     private DatabaseReference sponsorsReference;
     private ChildEventListener sponsorChildEventListener;
@@ -61,7 +60,6 @@ public class SponsorsActivity extends BaseActivity {
         activityType = MainActivityTypes.SPONSORS;
         super.onCreate(savedInstanceState);
 
-        firebaseAuth = FirebaseAuth.getInstance();
         firebaseInst = FirebaseDatabase.getInstance();
 
         sponsors = new Vector<>();
