@@ -110,6 +110,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     updatedUser.setState(stateEditText.getText().toString());
                     updatedUser.setPhoneNumber(phoneEditText.getText().toString());
                     updatedUser.setAccountCreationComplete(true);
+                    updatedUser.setPoints(editableUser.getPoints());
                     UserManager.getInstance().storeNewUser(updatedUser);
 
                     finish();
