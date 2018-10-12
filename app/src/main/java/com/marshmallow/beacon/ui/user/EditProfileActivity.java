@@ -13,13 +13,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.user.User;
-import com.marshmallow.beacon.ui.ProfileUpdateManager;
-import com.marshmallow.beacon.ui.marketing.EditMarketingActivity;
 
 import java.io.IOException;
 
@@ -38,7 +35,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText stateEditText;
     private EditText phoneEditText;
     private Button backButton;
-    private Button nextButton;
+    private Button submitButton;
 
     // Firebase
     FirebaseAuth firebaseAuth;
@@ -51,9 +48,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     // Editable user
     private User editableUser;
-
-    // Activity handle
-    private EditProfileActivity self;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +67,10 @@ public class EditProfileActivity extends AppCompatActivity {
         stateEditText = findViewById(R.id.edit_profile_state_edit_text);
         phoneEditText = findViewById(R.id.edit_profile_phone_number_edit_text);
         backButton = findViewById(R.id.edit_profile_back_button);
-        nextButton = findViewById(R.id.edit_profile_next_button);
+        submitButton = findViewById(R.id.edit_profile_submit_button);
 
         // User instantiation
         editableUser = UserManager.getInstance().getUser();
-
-        // Activity handle
-        self = this;
 
         // Image button initialization
         if (editableUser.getProfilePictureBitmap() != null) {
@@ -103,29 +94,25 @@ public class EditProfileActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProfileUpdateManager.getInstance().removeProfileUpdateActivity(self);
                 finish();
             }
         });
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profileIsValid()) {
-                    editableUser.getFirstName().setValue(firstNameEditText.getText().toString());
-                    editableUser.getLastName().setValue(lastNameEditText.getText().toString());
-                    editableUser.getBirthday().setValue(birthdayEditText.getText().toString());
-                    editableUser.getCity().setValue(cityEditText.getText().toString());
-                    editableUser.getState().setValue(stateEditText.getText().toString());
-                    editableUser.getPhoneNumber().setValue(phoneEditText.getText().toString());
-                    Intent intent = new Intent(getApplicationContext(), EditMarketingActivity.class);
-                    Intent activityStartIntent = getIntent();
-                    if (activityStartIntent.hasExtra("creatingAccount")) {
-                        intent.putExtra("creatingAccount", activityStartIntent.getBooleanExtra("creatingAccount", false));
-                    }
+                    User updatedUser = new User();
+                    updatedUser.setFirstName(firstNameEditText.getText().toString());
+                    updatedUser.setLastName(lastNameEditText.getText().toString());
+                    updatedUser.setBirthday(birthdayEditText.getText().toString());
+                    updatedUser.setCity(cityEditText.getText().toString());
+                    updatedUser.setState(stateEditText.getText().toString());
+                    updatedUser.setPhoneNumber(phoneEditText.getText().toString());
+                    updatedUser.setAccountCreationComplete(true);
+                    UserManager.getInstance().storeNewUser(updatedUser);
 
-                    ProfileUpdateManager.getInstance().addProfileUpdateActivity(self);
-                    startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Please fill out all profile entries", Toast.LENGTH_SHORT).show();
                 }
@@ -134,12 +121,12 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void initializeTextFields() {
-        firstNameEditText.setText(editableUser.getFirstName().getValue());
-        lastNameEditText.setText(editableUser.getLastName().getValue());
-        birthdayEditText.setText(editableUser.getBirthday().getValue());
-        cityEditText.setText(editableUser.getCity().getValue());
-        stateEditText.setText(editableUser.getState().getValue());
-        phoneEditText.setText(editableUser.getPhoneNumber().getValue());
+        firstNameEditText.setText(editableUser.getFirstName());
+        lastNameEditText.setText(editableUser.getLastName());
+        birthdayEditText.setText(editableUser.getBirthday());
+        cityEditText.setText(editableUser.getCity());
+        stateEditText.setText(editableUser.getState());
+        phoneEditText.setText(editableUser.getPhoneNumber());
     }
 
     private boolean profileIsValid() {

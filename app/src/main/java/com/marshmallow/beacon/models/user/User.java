@@ -17,14 +17,14 @@ public class User {
     private String profilePicture;
     private Boolean signedIn;
     private Integer points;
-    private DataPoint geolocationOn;
-    private DataPoint firstName;
-    private DataPoint lastName;
-    private DataPoint email;
-    private DataPoint birthday;
-    private DataPoint city;
-    private DataPoint state;
-    private DataPoint phoneNumber;
+    private Boolean geolocationOn;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String birthday;
+    private String city;
+    private String state;
+    private String phoneNumber;
     private Boolean accountCreationComplete;
     private Rolodex rolodex;
 
@@ -36,14 +36,14 @@ public class User {
         this.profilePicture = null;
         this.signedIn = true;
         this.points = 0;
-        this.geolocationOn = new DataPoint(null, false);
-        this.firstName = new DataPoint(null, false);
-        this.lastName = new DataPoint(null, false);
-        this.email = new DataPoint(email, true);
-        this.birthday = new DataPoint(null, false);
-        this.city = new DataPoint(null, false);
-        this.state = new DataPoint(null, false);
-        this.phoneNumber = new DataPoint(null, false);
+        this.geolocationOn = null;
+        this.firstName = null;
+        this.lastName = null;
+        this.email = email;
+        this.birthday = null;
+        this.city = null;
+        this.state = null;
+        this.phoneNumber = null;
         this.accountCreationComplete = false;
         rolodex = new Rolodex();
     }
@@ -56,51 +56,51 @@ public class User {
         this.signedIn = signedIn;
     }
 
-    public DataPoint getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(DataPoint firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public DataPoint getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(DataPoint lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public DataPoint getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(DataPoint email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public DataPoint getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(DataPoint birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
-    public DataPoint getCity() {
+    public String getCity() {
         return city;
     }
 
-    public void setCity(DataPoint city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public DataPoint getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(DataPoint state) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -127,11 +127,11 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public DataPoint getGeolocationOn() {
+    public Boolean getGeolocationOn() {
         return geolocationOn;
     }
 
-    public void setGeolocationOn(DataPoint geolocationOn) {
+    public void setGeolocationOn(Boolean geolocationOn) {
         this.geolocationOn = geolocationOn;
     }
 
@@ -153,11 +153,11 @@ public class User {
         profilePicture = Base64.encodeToString(b, Base64.DEFAULT);
     }
 
-    public DataPoint getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(DataPoint phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

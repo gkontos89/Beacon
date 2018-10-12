@@ -22,17 +22,14 @@ public class UserMarketDataSnapshot {
 
     public UserMarketDataSnapshot(@NonNull User user) {
         username = user.getUsername();
-        if (user.getFirstName().getShared()) { firstName = user.getFirstName().getValue(); }
-        if (user.getLastName().getShared()) { lastName = user.getLastName().getValue(); }
-        if (user.getEmail().getShared()) { email = user.getEmail().getValue(); }
-        if (user.getBirthday().getShared()) {birthday = user.getBirthday().getValue(); }
-        if (user.getCity().getShared()) { city = user.getCity().getValue(); }
-        if (user.getState().getShared()) { state = user.getState().getValue(); }
-        if (user.getPhoneNumber().getShared()) {
-            phone = user.getPhoneNumber().getValue();
-        }
+        firstName = user.getFirstName();
+        lastName = user.getLastName();
+        email = user.getEmail();
+        birthday = user.getBirthday();
+        city = user.getCity();
+        state = user.getState();
+        phone = user.getPhoneNumber();
     }
-
 
     public String getUsername() {
         return username;

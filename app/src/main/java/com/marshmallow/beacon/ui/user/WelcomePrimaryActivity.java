@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.marshmallow.beacon.R;
+import com.marshmallow.beacon.UserManager;
 
 /**
  * Created by George on 8/2/2018.
@@ -43,5 +44,11 @@ public class WelcomePrimaryActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        UserManager.getInstance().signOutUser();
+        super.onDestroy();
     }
 }

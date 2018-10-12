@@ -26,12 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.marshmallow.beacon.MarketingManager;
 import com.marshmallow.beacon.R;
 import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.marketing.Sponsor;
 import com.marshmallow.beacon.models.marketing.SponsorMarketValues;
-import com.marshmallow.beacon.models.user.User;
 
 /**
  * Created by George on 9/12/2018.
@@ -212,7 +210,6 @@ public class IndividualSponsorActivity extends AppCompatActivity {
     }
 
     private void initializeMarketValueListeners() {
-        // TODO move to sponsors having their own prices they are willing to pay out
         sponsorMarketValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -232,15 +229,12 @@ public class IndividualSponsorActivity extends AppCompatActivity {
         userLikeDataReference.setValue(liked);
         if (!likedTriggeredOnce) {
             // Store user points
-            User user = UserManager.getInstance().getUser();
-            int newUserPoints = user.getPoints() + 1; // TODO get like/dislike market values
-            DatabaseReference userReference = firebaseInst.getReference().child("users").child(firebaseAuth.getUid());
-            userReference.child("points").setValue(newUserPoints);
+            UserManager.getInstance().addUserPoints(sponsorMarketValues.getFeedbackValue());
 
             // Show pop up window
             LayoutInflater inflater = (LayoutInflater) IndividualSponsorActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.sponsor_like_pop_up, null);
-            ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", 1)); // TODO get like/dislike market values
+            ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", sponsorMarketValues.getFeedbackValue().intValue()));
             final PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             popupWindow.showAtLocation(findViewById(R.id.activity_individual_sponsor_layout), Gravity.CENTER, 0, 0);
 
@@ -283,15 +277,12 @@ public class IndividualSponsorActivity extends AppCompatActivity {
         userWebVisitedDataReference.setValue(true);
         if (!sponsorVisited) {
             // Store user points
-            User user = UserManager.getInstance().getUser();
-            int newUserPoints = user.getPoints() + MarketingManager.getInstance().getUserSponsorMarketingValue(user, sponsorMarketValues);
-            DatabaseReference userReference = firebaseInst.getReference().child("users").child(firebaseAuth.getUid());
-            userReference.child("points").setValue(newUserPoints);
+            UserManager.getInstance().addUserPoints(sponsorMarketValues.getWebsiteVisits());
 
             // Show pop up window
             LayoutInflater inflater = (LayoutInflater) IndividualSponsorActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.sponsor_visit_popup, null);
-            ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", 1)); // TODO get like/dislike market values
+            ((TextView)layout.findViewById(R.id.pop_point_total)).setText(String.format("%d Points", sponsorMarketValues.getWebsiteVisits().intValue()));
             final PopupWindow popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             popupWindow.showAtLocation(findViewById(R.id.activity_individual_sponsor_layout), Gravity.CENTER, 0, 0);
 

@@ -13,6 +13,10 @@ public class SponsorMarketValues {
     private Integer cityValue;
     private Integer stateValue;
     private Integer phoneValue;
+    private Integer websiteVisitValue;
+    private Integer feedbackValue;
+
+
 
     public SponsorMarketValues() {
     }
@@ -79,5 +83,21 @@ public class SponsorMarketValues {
 
     public void setPhoneValue(Integer phoneValue) {
         this.phoneValue = phoneValue;
+    }
+
+    public Integer getWebsiteVisits() {
+        return websiteVisitValue;
+    }
+
+    public void setWebsiteVisitValue(Integer websiteVisitValue) {
+        this.websiteVisitValue = websiteVisitValue;
+    }
+
+    public Integer getFeedbackValue() {
+        return feedbackValue;
+    }
+
+    public void setFeedbackValue(Integer feedbackValue) {
+        this.feedbackValue = feedbackValue;
     }
 }

@@ -15,13 +15,13 @@ public class UserTest {
     @Before
     public void preTest() {
         user.setUsername("gk");
-        user.setFirstName(new DataPoint("George", true));
-        user.setLastName(new DataPoint("Kontos", true));
-        user.setBirthday(new DataPoint("6/15/1989", true));
-        user.setCity(new DataPoint("Des Plaines", true));
-        user.setState(new DataPoint("IL", true));
-        user.setPhoneNumber(new DataPoint("847", true));
-        user.setEmail(new DataPoint("gk@gmail.com", true));
+        user.setFirstName("George");
+        user.setLastName("Kontos");
+        user.setBirthday("6/15/1989");
+        user.setCity("Des Plaines");
+        user.setState("IL");
+        user.setPhoneNumber("847");
+        user.setEmail("gk@gmail.com");
     }
 
     @Test
@@ -31,20 +31,14 @@ public class UserTest {
         assertEquals(null, user.getProfilePicture());
         assertEquals(true, user.getSignedIn().booleanValue());
         assertEquals(0, user.getPoints().intValue());
-        assertEquals(null, user.getFirstName().getValue());
-        assertEquals(false, user.getFirstName().getShared().booleanValue());
-        assertEquals(null, user.getLastName().getValue());
-        assertEquals(false, user.getLastName().getShared().booleanValue());
-        assertEquals("gk@gmail.com", user.getEmail().getValue());
-        assertEquals(true, user.getEmail().getShared().booleanValue());
-        assertEquals(null, user.getBirthday().getValue());
-        assertEquals(false, user.getBirthday().getShared().booleanValue());
-        assertEquals(null, user.getCity().getValue());
-        assertEquals(false, user.getCity().getShared().booleanValue());
-        assertEquals(null, user.getState().getValue());
-        assertEquals(false, user.getState().getShared().booleanValue());
-        assertEquals(null, user.getPhoneNumber().getValue());
-        assertEquals(false, user.getPhoneNumber().getShared().booleanValue());
+        assertEquals(null, user.getFirstName());
+
+        assertEquals(null, user.getLastName());
+        assertEquals("gk@gmail.com", user.getEmail());
+        assertEquals(null, user.getBirthday());
+        assertEquals(null, user.getCity());
+        assertEquals(null, user.getState());
+        assertEquals(null, user.getPhoneNumber());
         assertEquals(false, user.getAccountCreationComplete().booleanValue());
     }
 
@@ -62,37 +56,37 @@ public class UserTest {
 
     @Test
     public void firstNameTest() {
-        assertEquals("George", user.getFirstName().getValue());
+        assertEquals("George", user.getFirstName());
     }
 
     @Test
     public void lastNameTest() {
-        assertEquals("Kontos", user.getLastName().getValue());
+        assertEquals("Kontos", user.getLastName());
     }
 
     @Test
     public void emailTest() {
-        assertEquals("gk@gmail.com", user.getEmail().getValue());
+        assertEquals("gk@gmail.com", user.getEmail());
     }
 
     @Test
     public void birthdayTest() {
-        assertEquals("6/15/1989", user.getBirthday().getValue());
+        assertEquals("6/15/1989", user.getBirthday());
     }
 
     @Test
     public void cityTest() {
-        assertEquals("Des Plaines", user.getCity().getValue());
+        assertEquals("Des Plaines", user.getCity());
     }
 
     @Test
     public void stateTest() {
-        assertEquals("IL", user.getState().getValue());
+        assertEquals("IL", user.getState());
     }
 
     @Test
     public void phoneTest() {
-        assertEquals("847", user.getPhoneNumber().getValue());
+        assertEquals("847", user.getPhoneNumber());
     }
 
     @Test

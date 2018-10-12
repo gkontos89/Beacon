@@ -1,41 +1,27 @@
 package com.marshmallow.beacon.ui.marketing;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.marshmallow.beacon.MarketingManager;
 import com.marshmallow.beacon.R;
-import com.marshmallow.beacon.UserManager;
 import com.marshmallow.beacon.models.marketing.Sponsor;
-import com.marshmallow.beacon.models.marketing.SponsorMarketValues;
-import com.marshmallow.beacon.models.marketing.SponsorVisitEvent;
-import com.marshmallow.beacon.models.marketing.UserMarketDataSnapshot;
-import com.marshmallow.beacon.models.user.User;
 import com.marshmallow.beacon.ui.BaseActivity;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 /**

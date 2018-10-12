@@ -29,7 +29,7 @@
     <string name="welcome_primary_first_card">Beacon is about connecting small businesses with customers without taking advantage of your personal information.</string>
     <string name="welcome_primary_second_card">On Beacon we do not sell your personal data, you do, if you choose too.</string>
     <string name="welcome_primary_third_card">On Beacon, small businesses pay YOU for the marketing information you provide.\n\nIn return they can grow their customer base and their businesses</string>
-    <string name="edit_profile_instructions">Please fill out a complete marketing profile of yourself!</string>
+    <string name="edit_profile_instructions">Please fill out a complete marketing profile of yourself to be shared with small businesses!</string>
     <string name="edit_marketing_instructions">Set which marketing data you provide when clicking sponsors or taking surveys.  Below you can see the points you earn based on the information you give out!</string>
     <string name="edit_profile_first_name_text">First Name</string>
     <string name="edit_profile_last_name_text">Last Name</string>

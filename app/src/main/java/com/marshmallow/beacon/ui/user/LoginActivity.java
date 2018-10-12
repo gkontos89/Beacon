@@ -70,9 +70,10 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                UserManager.getInstance().initializeUserListener();
                                 User user = new User(email);
                                 UserManager.getInstance().setUser(user);
-                                storeNewUser(user);
+                                UserManager.getInstance().storeNewUser(user);
                                 accountCreationSuccess();
                             } else {
                                 if (task.getException() != null) {
@@ -109,13 +110,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void storeNewUser(User user) {
-        DatabaseReference databaseReference = firebaseInst.getReference("users");
-        if (firebaseAuth.getUid() != null) {
-            databaseReference.child(firebaseAuth.getUid()).setValue(user);
-        }
-    }
-
     public Boolean emailIsValid(String email) {
         if (TextUtils.isEmpty(email)) {
             emailTextEntry.setError("Email Required");
@@ -141,6 +135,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserManager.getInstance().setUser(dataSnapshot.getValue(User.class));
+                UserManager.getInstance().initializeUserListener();
+                UserManager.getInstance().setUserSignInStatus(true);
                 accountLoadingSucceeded();
             }
 
@@ -152,7 +148,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if (firebaseAuth.getUid() != null) {
             userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
-            userReference.child("signedIn").setValue(true);
             userReference.addValueEventListener(userValueEventListener);
         }
     }
@@ -185,7 +180,8 @@ public class LoginActivity extends AppCompatActivity {
     public void accountLoadingSucceeded() {
         removeListeners();
         hideProgressBar();
-        if (UserManager.getInstance().getUser().getAccountCreationComplete()) {
+        if (UserManager.getInstance().getUser().getAccountCreationComplete() != null
+                && UserManager.getInstance().getUser().getAccountCreationComplete()) {
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
         } else {

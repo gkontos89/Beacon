@@ -1,7 +1,5 @@
 package com.marshmallow.beacon.models.marketing;
 
-import com.marshmallow.beacon.models.marketing.UserMarketDataSnapshot;
-import com.marshmallow.beacon.models.user.DataPoint;
 import com.marshmallow.beacon.models.user.User;
 
 import org.junit.Before;
@@ -19,13 +17,13 @@ public class UserMarketDataSnapshotTest {
     @Before
     public void preTest() {
         User user = new User();
-        user.setFirstName(new DataPoint("George", true));
-        user.setLastName(new DataPoint("Kontos", true));
-        user.setBirthday(new DataPoint("6/15/1989", true));
-        user.setCity(new DataPoint("Des Plaines", true));
-        user.setState(new DataPoint("IL", true));
-        user.setPhoneNumber(new DataPoint("847", true));
-        user.setEmail(new DataPoint("gk@gmail.com", true));
+        user.setFirstName("George");
+        user.setLastName("Kontos");
+        user.setBirthday("6/15/1989");
+        user.setCity("Des Plaines");
+        user.setState("IL");
+        user.setPhoneNumber("847");
+        user.setEmail("gk@gmail.com");
 
         userMarketDataSnapshot = new UserMarketDataSnapshot(user);
     }

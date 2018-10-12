@@ -41,9 +41,7 @@ public class HomeActivity extends BaseActivity {
     // Firebase
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseInst;
-    private DatabaseReference userPointTotalReference;
     private DatabaseReference userSurveyCountReference;
-    private ValueEventListener userPointTotalValueEventListener;
     private ValueEventListener userSurveyCountListener;
 
     // User
@@ -77,8 +75,9 @@ public class HomeActivity extends BaseActivity {
         }
 
         // TODO change to actual username one day...
-        String fullName = currentUser.getFirstName().getValue() + " " + currentUser.getLastName().getValue();
+        String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
         usernameText.setText(fullName);
+        pointsTotalValue.setText(UserManager.getInstance().getUser().getPoints().toString());
 
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,26 +106,6 @@ public class HomeActivity extends BaseActivity {
     private void initializeUserListeners() {
         // Grab user point total from the database.  no need to grab entire user here
         if (firebaseAuth.getUid() != null) {
-            userPointTotalReference = firebaseInst.getReference("users").child(firebaseAuth.getUid()).child("points");
-            userPointTotalValueEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Integer pointTotal = dataSnapshot.getValue(Integer.class);
-                    if (pointTotal != null) {
-                        pointsTotalValue.setText(pointTotal.toString());
-                    } else {
-                        pointsTotalValue.setText("0");
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            };
-
-            userPointTotalReference.addValueEventListener(userPointTotalValueEventListener);
-
             userSurveyCountReference = firebaseInst.getReference("distributedSurveys").child(firebaseAuth.getUid());
             userSurveyCountListener = new ValueEventListener() {
                 @Override
@@ -149,20 +128,9 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void destroyUserListeners() {
-        userPointTotalReference.removeEventListener(userPointTotalValueEventListener);
         userSurveyCountReference.removeEventListener(userSurveyCountListener);
-        userPointTotalValueEventListener = null;
         userSurveyCountListener = null;
-        userPointTotalReference = null;
         userSurveyCountReference = null;
-    }
-
-    private void signOutUser() {
-        if (firebaseAuth.getUid() != null) {
-            DatabaseReference userReference = firebaseInst.getReference("users").child(firebaseAuth.getUid());
-            userReference.child("signedIn").setValue(false);
-            firebaseAuth.signOut();
-        }
     }
 
     @Override
@@ -179,7 +147,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onDestroy() {
-        signOutUser();
+        UserManager.getInstance().signOutUser();
         super.onDestroy();
     }
 }

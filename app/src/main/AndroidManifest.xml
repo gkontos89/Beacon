@@ -28,7 +28,6 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.marketing.SponsorsActivity" />
         <activity android:name=".ui.marketing.SurveysActivity" />
-        <activity android:name=".ui.marketing.EditMarketingActivity" />
         <activity android:name=".ui.marketing.IndividualSponsorActivity" />
         <activity android:name=".ui.marketing.IndividualSurveyActivity" />
     </application>
